@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:bloc/bloc.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:meta/meta.dart';
@@ -48,6 +50,26 @@ class GeminiApiCubit extends Cubit<GeminiApiState> {
       emit(GeminiApiSuccess(translatedText));
     } catch (e) {
       emit(GeminiApiError("Loading"));
+    }
+  }
+
+  Future<void> fetchTextFromImage(File image) async {
+    emit(GeminiApiLoading());
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse('YOUR_API_URL'));
+      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      request.fields['prompt'] = 'display the words in the image provided';
+
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+        emit(GeminiApiSuccess(
+            responseBody)); // Assuming the response is plain text
+      } else {
+        emit(GeminiApiError('Failed to load text'));
+      }
+    } catch (e) {
+      emit(GeminiApiError(e.toString()));
     }
   }
 }
