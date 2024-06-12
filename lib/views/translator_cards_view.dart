@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
+import 'package:translate_and_learn_app/widgets/camera_translator_card.dart';
 import 'package:translate_and_learn_app/widgets/card_widget.dart';
 import 'package:translate_and_learn_app/widgets/microphon_translator_card.dart';
 import 'package:translate_and_learn_app/widgets/select_voice_camera_text.dart';
@@ -25,6 +26,9 @@ class TranslatorcardsView extends StatelessWidget {
                   color: kTranslatorcardColor,
                   hint: 'Text will appear here',
                 );
+              } else if (state is TranslatorCardCameraSelected) {
+                return const CameraTranslatorCard(
+                    color: kTranslatorcardColor, hint: 'Text will appear here');
               }
               return const TranslatorCard(
                 hint: 'Tap to enter text',
