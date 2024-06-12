@@ -31,6 +31,9 @@ class _LanguagecardState extends State<Languagecard> {
               const CustomDropDownButton(
                 translation: false,
               ),
+              const SizedBox(
+                height: 10,
+              ),
               Row(children: [
                 Expanded(
                   child: Text(

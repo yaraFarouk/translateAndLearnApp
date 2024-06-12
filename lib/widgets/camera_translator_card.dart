@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/floating_button.dart';
@@ -39,7 +40,7 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
   }
 
   void _sendImageToApi(File image) {
-    context.read<GeminiApiCubit>().fetchTextFromImage(image);
+    context.read<ImageToTextCubit>().fetchTextFromImage(image);
   }
 
   void _clearImage() {
@@ -51,13 +52,14 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<GeminiApiCubit, GeminiApiState>(
+    return BlocListener<ImageToTextCubit, ImageToTextState>(
       listener: (context, state) {
-        if (state is GeminiApiSuccess) {
+        if (state is ImageToTextSuccess) {
           setState(() {
             _text = state.response;
           });
-        } else if (state is GeminiApiError) {
+          context.read<GeminiApiCubit>().translateText(state.response);
+        } else if (state is ImageToTextError) {
           setState(() {
             _text = state.error;
           });
