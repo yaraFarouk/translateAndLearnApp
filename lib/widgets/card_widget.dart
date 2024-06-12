@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
@@ -45,8 +46,14 @@ class _LanguagecardState extends State<Languagecard> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                const TranslatorCardicons(
+                TranslatorCardicons(
                   icon1: FontAwesomeIcons.copy,
+                  onPressed1: () {
+                    Clipboard.setData(ClipboardData(text: widget.text));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Text copied to clipboard')),
+                    );
+                  },
                   icon2: FontAwesomeIcons.star,
                   icon3: FontAwesomeIcons.volumeHigh,
                 ),
