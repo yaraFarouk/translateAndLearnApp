@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
+import 'package:translate_and_learn_app/views/study_view.dart';
 
 class CustomDropDownButton extends StatefulWidget {
   const CustomDropDownButton({super.key, required this.translation});
@@ -51,6 +53,9 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
                     } else {
                       context
                           .read<GeminiApiCubit>()
+                          .updateLanguageTo(selectedValue);
+                      context
+                          .read<StudyWordsCubit>()
                           .updateLanguageTo(selectedValue);
                     }
                   });

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
 
@@ -29,8 +32,26 @@ class _LanguagecardState extends State<Languagecard> {
             padding: const EdgeInsets.all(16.0),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const CustomDropDownButton(
-                translation: false,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const CustomDropDownButton(
+                    translation: false,
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      FontAwesomeIcons.copy,
+                      color: kAppBarColor,
+                    ),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: widget.text));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Text copied to clipboard')),
+                      );
+                    },
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 10,
@@ -47,15 +68,22 @@ class _LanguagecardState extends State<Languagecard> {
                 ),
                 const SizedBox(width: 10),
                 TranslatorCardicons(
-                  icon1: FontAwesomeIcons.copy,
-                  onPressed1: () {
-                    Clipboard.setData(ClipboardData(text: widget.text));
+                  icon1: FontAwesomeIcons.star,
+                  icon2: FontAwesomeIcons.volumeHigh,
+                  icon3: FontAwesomeIcons.plus,
+                  onPressed3: () {
+                    // Add new words to the study words list
+                    BlocProvider.of<StudyWordsCubit>(context).addNewWords(
+                      BlocProvider.of<StudyWordsCubit>(context)
+                          .state
+                          .languageTo,
+                      widget.text,
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Text copied to clipboard')),
+                      const SnackBar(
+                          content: Text('Words added to study list')),
                     );
                   },
-                  icon2: FontAwesomeIcons.star,
-                  icon3: FontAwesomeIcons.volumeHigh,
                 ),
               ]),
             ])));

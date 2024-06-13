@@ -3,8 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
 
 class CustomBottomAppBar extends StatelessWidget {
-  const CustomBottomAppBar({super.key});
+  final int currentIndex;
+  final ValueChanged<int> onItemTapped;
 
+  const CustomBottomAppBar({
+    super.key,
+    required this.currentIndex,
+    required this.onItemTapped,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,16 +36,14 @@ class CustomBottomAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               IconButton(
-                icon: const Icon(Icons.translate, color: Colors.white),
-                onPressed: () {
-                  // Handle home button press
-                },
+                icon: Icon(Icons.translate,
+                    color: currentIndex == 0 ? kOrange : kPrimaryColor),
+                onPressed: () => onItemTapped(0),
               ),
               IconButton(
-                icon: const Icon(FontAwesomeIcons.book, color: Colors.white),
-                onPressed: () {
-                  // Handle search button press
-                },
+                icon: Icon(FontAwesomeIcons.book,
+                    color: currentIndex == 1 ? kOrange : kPrimaryColor),
+                onPressed: () => onItemTapped(1),
               ),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.chartSimple,
