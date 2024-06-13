@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
+import 'package:translate_and_learn_app/views/study_view.dart';
 import 'package:translate_and_learn_app/views/translator_cards_view.dart';
 import 'package:translate_and_learn_app/widgets/bottom_app_bar.dart';
 import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -16,8 +24,11 @@ class HomePage extends StatelessWidget {
         BlocProvider(
           create: (context) => TranslatorCardCubit(),
         ),
+        BlocProvider(
+          create: (context) => StudyWordsCubit(),
+        )
       ],
-      child: const Scaffold(
+      child: Scaffold(
         backgroundColor: kPrimaryColor,
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24),
@@ -29,11 +40,21 @@ class HomePage extends StatelessWidget {
                 icon: Icons.search,
               ),
               SizedBox(height: 20),
-              Expanded(child: TranslatorcardsView()),
+              Expanded(
+                child:
+                    _currentIndex == 0 ? TranslatorcardsView() : StudyScreen(),
+              ),
             ],
           ),
         ),
-        bottomNavigationBar: CustomBottomAppBar(),
+        bottomNavigationBar: CustomBottomAppBar(
+          currentIndex: _currentIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+        ),
       ),
     );
   }
