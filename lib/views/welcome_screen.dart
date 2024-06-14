@@ -132,6 +132,37 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
               ),
             ),
+          if (currentPageIndex > 0) // Check if it's not the first page
+            Positioned(
+              bottom: 40.h,
+              left: 20.w,
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      // Access the IntroductionScreen controller using the GlobalKey
+                      introKey.currentState?.previous();
+                    },
+                    label: const Text(
+                      'Back',
+                      style: TextStyle(fontFamily: 'CookieCrisp'),
+                    ),
+                    heroTag: 'back', // Unique hero tag for the BACK button
+                    backgroundColor: kAppBarColor, // Match the background color
+                    foregroundColor: Colors.white, // Text and icon color
+                    elevation: 4, // Match the elevation
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(40.0), // Match the shape
+                      side: const BorderSide(
+                          color: kAppBarColor, width: 2.0), // Match the border
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -179,7 +210,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (isLastPage)
             Center(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.setBool('hasSeenWelcome', true);
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (_) => const HomePage(),

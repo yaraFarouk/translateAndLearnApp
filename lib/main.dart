@@ -5,7 +5,6 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
-import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:translate_and_learn_app/views/welcome_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -58,9 +57,7 @@ class TranslateAndLearnApp extends StatelessWidget {
                 ),
               ],
               child: MaterialApp(
-                home: hasSeenWelcome
-                    ? const HomePage()
-                    : const OnboardingScreen(),
+                home: const OnboardingScreen(),
               ),
             ));
   }
