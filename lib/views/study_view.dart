@@ -8,7 +8,9 @@ class StudyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kPrimaryColor,
       appBar: AppBar(
+        backgroundColor: kPrimaryColor,
         centerTitle: true,
         title: const Text(
           'Study Words',
