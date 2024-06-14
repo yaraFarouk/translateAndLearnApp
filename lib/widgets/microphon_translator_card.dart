@@ -42,7 +42,7 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const CustomDropDownButton(translation: true),
+                  const CustomDropDownButton(translation: 1),
                   IconButton(
                     icon: const Icon(FontAwesomeIcons.star),
                     onPressed: () {

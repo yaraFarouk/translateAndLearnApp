@@ -21,15 +21,19 @@ class TranslatorcardsView extends StatelessWidget {
         children: [
           BlocBuilder<TranslatorCardCubit, TranslatorCardState>(
             builder: (context, state) {
+              final geminiApiCubit = context.read<GeminiApiCubit>();
               if (state is TranslatorCardMicrophoneSelected) {
+                geminiApiCubit.resetTranslation();
                 return const MicrophonTranslatorCard(
                   color: kTranslatorcardColor,
                   hint: 'Text will appear here',
                 );
               } else if (state is TranslatorCardCameraSelected) {
+                geminiApiCubit.resetTranslation();
                 return const CameraTranslatorCard(
                     color: kTranslatorcardColor, hint: 'Text will appear here');
               }
+              geminiApiCubit.resetTranslation();
               return const TranslatorCard(
                 hint: 'Tap to enter text',
                 color: kTranslatorcardColor,

@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomDropDownButton extends StatefulWidget {
   const CustomDropDownButton({super.key, required this.translation});
-  final bool translation;
+  final int translation;
 
   @override
   State<CustomDropDownButton> createState() => _CustomDropDownButtonState();
@@ -20,8 +21,8 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
     return Row(
       children: [
         Container(
-          width: 150,
-          height: 40,
+          width: 150.w,
+          height: 40.h,
           padding: const EdgeInsets.only(left: 16),
           decoration: BoxDecoration(
             color: kAppBarColor,
@@ -45,18 +46,18 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
                   setState(() {
                     selectedValue = newValue!;
                     // Update the Cubit with the new selected language
-                    if (widget.translation) {
+                    if (widget.translation == 1) {
                       context
                           .read<GeminiApiCubit>()
                           .updateLanguageFrom(selectedValue);
-                    } else {
+                    } else if (widget.translation == 0) {
                       context
                           .read<GeminiApiCubit>()
                           .updateLanguageTo(selectedValue);
                       context
                           .read<StudyWordsCubit>()
                           .updateLanguageTo(selectedValue);
-                    }
+                    } else {}
                   });
                 },
                 items: <String>[

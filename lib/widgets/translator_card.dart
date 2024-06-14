@@ -33,7 +33,7 @@ class _TranslatorCardState extends State<TranslatorCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomDropDownButton(
-              translation: true,
+              translation: 1,
             ),
             Row(children: [
               Expanded(
