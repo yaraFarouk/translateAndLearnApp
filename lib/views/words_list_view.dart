@@ -15,6 +15,7 @@ class WordListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kPrimaryColor,
       body: Column(
         children: [
           SizedBox(height: 70),
