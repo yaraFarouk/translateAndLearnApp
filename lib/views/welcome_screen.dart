@@ -56,7 +56,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               await prefs.setBool('hasSeenWelcome', true);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (_) => HomePage(),
+                  builder: (_) => const LanguageSelectionPage(),
                 ),
               );
             },
@@ -65,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               await prefs.setBool('hasSeenWelcome', true);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (_) => const HomePage(),
+                  builder: (_) => const LanguageSelectionPage(),
                 ),
               );
             },

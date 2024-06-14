@@ -5,7 +5,7 @@ import 'home_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LanguageSelectionPage extends StatefulWidget {
-  const LanguageSelectionPage({Key? key}) : super(key: key);
+  const LanguageSelectionPage({super.key});
 
   @override
   _LanguageSelectionPageState createState() => _LanguageSelectionPageState();
