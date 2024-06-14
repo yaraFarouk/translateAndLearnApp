@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -26,23 +27,28 @@ class _HomePageState extends State<HomePage> {
         ),
         BlocProvider(
           create: (context) => StudyWordsCubit(),
-        )
+        ),
       ],
       child: Scaffold(
         backgroundColor: kPrimaryColor,
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              SizedBox(height: 70),
-              CustomAppTopBar(
-                title: 'Translate & learn',
+              const SizedBox(height: 70),
+              const CustomAppTopBar(
+                title: 'Translate & Learn',
                 icon: Icons.search,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Expanded(
-                child:
-                    _currentIndex == 0 ? TranslatorcardsView() : StudyScreen(),
+                child: IndexedStack(
+                  index: _currentIndex,
+                  children: [
+                    const TranslatorcardsView(),
+                    StudyScreen(),
+                  ],
+                ),
               ),
             ],
           ),

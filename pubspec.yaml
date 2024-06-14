@@ -87,10 +87,13 @@ flutter:
   fonts:
     - family: CookieCrisp
       fonts:
-        - asset: assets/fonts/CookieCrisp-L36ly.ttf
+        - asset: assets/fonts/DMSerifDisplay-Italic.ttf
     - family: ShadeBlue
       fonts:
         - asset: assets/fonts/ShadeBlue-2OozX.ttf
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

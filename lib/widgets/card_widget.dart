@@ -36,7 +36,7 @@ class _LanguagecardState extends State<Languagecard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const CustomDropDownButton(
-                    translation: false,
+                    translation: 0,
                   ),
                   IconButton(
                     icon: const Icon(

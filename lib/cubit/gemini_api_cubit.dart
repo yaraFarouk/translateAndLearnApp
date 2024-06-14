@@ -64,6 +64,10 @@ class GeminiApiCubit extends Cubit<GeminiApiState> {
     });
   }
 
+  void resetTranslation() {
+    emit(GeminiApiInitial());
+  }
+
   @override
   Future<void> close() {
     _debounce?.cancel(); // Cancel any debounce timer on cubit close

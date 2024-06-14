@@ -3,6 +3,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/views/language_selection_screen.dart';
 import 'home_view.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -114,13 +115,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       // Access the IntroductionScreen controller using the GlobalKey
                       introKey.currentState?.next();
                     },
-                    label: const Text(
-                      'Next',
-                      style: TextStyle(fontFamily: 'CookieCrisp'),
+                    label: const Icon(
+                      Icons.arrow_forward, // Use arrow forward icon for next
+                      color: Colors.white,
                     ),
-                    heroTag: 'next', // Unique hero tag for the RETURN button
+                    heroTag: 'next', // Unique hero tag for the NEXT button
                     backgroundColor: kAppBarColor, // Match the background color
-                    foregroundColor: Colors.white, // Text and icon color
                     elevation: 4, // Match the elevation
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -145,13 +145,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       // Access the IntroductionScreen controller using the GlobalKey
                       introKey.currentState?.previous();
                     },
-                    label: const Text(
-                      'Back',
-                      style: TextStyle(fontFamily: 'CookieCrisp'),
+                    label: const Icon(
+                      Icons.arrow_back, // Use arrow back icon for back
+                      color: Colors.white,
                     ),
                     heroTag: 'back', // Unique hero tag for the BACK button
                     backgroundColor: kAppBarColor, // Match the background color
-                    foregroundColor: Colors.white, // Text and icon color
                     elevation: 4, // Match the elevation
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -185,14 +184,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (!isLastPage) Image.asset(imagePath, height: 400.h),
-          if (!isLastPage) SizedBox(height: 20.0.h),
           if (!isLastPage)
             Text(
               title,
               style: TextStyle(
                 fontSize: 20.0.sp,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'CookieCrisp',
+                fontFamily: 'Roboto',
               ),
               textAlign: TextAlign.center,
             ),
@@ -202,7 +200,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               body,
               style: TextStyle(
                 fontSize: 14.0.sp,
-                fontFamily: 'CookieCrisp',
+                fontFamily: 'Roboto',
               ),
               textAlign: TextAlign.center,
             ),
@@ -216,7 +214,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   await prefs.setBool('hasSeenWelcome', true);
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (_) => const HomePage(),
+                      builder: (_) => const LanguageSelectionPage(),
                     ),
                   );
                 },
@@ -227,10 +225,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   textStyle: TextStyle(fontSize: 20.sp),
                 ),
                 child: const Text(
-                  'Get Started',
+                  'Let\'s Go',
                   style: TextStyle(
                     color: kAppBarColor,
-                    fontFamily: 'CookieCrisp',
+                    fontFamily: 'Roboto',
                   ),
                 ),
               ),
