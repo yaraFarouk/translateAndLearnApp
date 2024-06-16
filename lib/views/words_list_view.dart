@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart'; // Ensure this is the correct path
+import 'package:localization/localization.dart';
 
 class WordListScreen extends StatelessWidget {
   final String language;
   final List<String> words;
 
   const WordListScreen({
-    Key? key,
+    super.key,
     required this.language,
     required this.words,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +19,12 @@ class WordListScreen extends StatelessWidget {
       backgroundColor: kPrimaryColor,
       body: Column(
         children: [
-          SizedBox(height: 70),
+          const SizedBox(height: 70),
           CustomAppTopBar(
-            title: 'Study New Words',
+            title: 'Study Words'.i18n(),
             icon: Icons.search,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Expanded(
             child: Stack(
               children: [
@@ -38,7 +39,7 @@ class WordListScreen extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 16),
-                      child: Container(
+                      child: SizedBox(
                         height: 150, // Set a fixed height for the square card
                         child: Card(
                           color: cardColor, // Set card color
@@ -46,7 +47,7 @@ class WordListScreen extends StatelessWidget {
                             child: Text(
                               words[index],
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 33,
                                   fontFamily: 'CookieCrisp',
                                   fontWeight:
@@ -80,7 +81,7 @@ class WordListScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(40.0), // Match the shape
-                        side: BorderSide(
+                        side: const BorderSide(
                             color: kAppBarColor,
                             width: 2.0), // Match the border
                       ),
@@ -102,11 +103,11 @@ class WordListScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(40.0),
             color: kAppBarColor,
           ),
-          child: Material(
+          child: const Material(
             color: kPrimaryColor,
             elevation: 4,
             shadowColor: kAppBarColor,
-            shape: const CircleBorder(),
+            shape: CircleBorder(),
             child: Center(
               // Ensure the text is centered
               child: Text(

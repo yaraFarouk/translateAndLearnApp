@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
-import 'package:translate_and_learn_app/views/welcome_screen.dart';
+import 'package:translate_and_learn_app/views/language_selection_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -15,11 +17,18 @@ void main() async {
   final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   final imageModel = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   final bool hasSeenWelcome = await checkWelcomeScreenSeen();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? languageCode = prefs.getString('nativeLanguageCode');
+  Locale? initialLocale;
+  if (languageCode != null) {
+    initialLocale = Locale(languageCode);
+  }
 
   runApp(TranslateAndLearnApp(
     model: model,
     imageModel: imageModel,
     hasSeenWelcome: hasSeenWelcome,
+    initialLocale: initialLocale,
   ));
 }
 
@@ -34,14 +43,17 @@ class TranslateAndLearnApp extends StatelessWidget {
     required this.model,
     required this.imageModel,
     required this.hasSeenWelcome,
+    this.initialLocale,
   });
 
   final GenerativeModel model;
   final GenerativeModel imageModel;
   final bool hasSeenWelcome;
-
+  final Locale? initialLocale;
   @override
   Widget build(BuildContext context) {
+    LocalJsonLocalization.delegate.directories = ['lib/i18n'];
+
     return ScreenUtilInit(
         designSize: Size(375, 812), // Adjust the design size as needed
         minTextAdapt: true,
@@ -57,7 +69,35 @@ class TranslateAndLearnApp extends StatelessWidget {
                 ),
               ],
               child: MaterialApp(
-                home: const OnboardingScreen(),
+                localizationsDelegates: [
+                  // delegate from flutter_localization
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+
+                  // delegate from localization package.
+                  //json-file
+                  LocalJsonLocalization.delegate,
+                  //or map
+                  MapLocalization.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('en', 'US'),
+                  Locale('es', 'ES'),
+                  Locale('fr', 'FR'),
+                  Locale('de', 'DE'),
+                  Locale('it', 'IT'),
+                  Locale('pt', 'BR'),
+                  Locale('zh', 'CN'),
+                  Locale('ja', 'JP'),
+                  Locale('pl', 'PL'),
+                  Locale('tr', 'TR'),
+                  Locale('ru', 'RU'),
+                  Locale('nl', 'NL'),
+                  Locale('ko', 'KR'),
+                ],
+                locale: initialLocale,
+                home: const LanguageSelectionPage(),
               ),
             ));
   }

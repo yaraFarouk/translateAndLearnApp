@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/constants.dart';
-import 'home_view.dart';
+import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:translate_and_learn_app/views/welcome_screen.dart';
 
 class LanguageSelectionPage extends StatefulWidget {
   const LanguageSelectionPage({super.key});
@@ -13,41 +14,41 @@ class LanguageSelectionPage extends StatefulWidget {
 
 class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
   String? selectedLanguage;
-  final List<String> languages = [
-    'English',
-    'Spanish',
-    'French',
-    'German',
-    'Italian',
-    'Portuguese',
-    'Chinese',
-    'Japanese',
-    'Polish',
-    'Turkish',
-    'Russian',
-    'Dutch',
-    'Korean'
-  ];
+  final Map<String, String> languageCodes = {
+    'English': 'en',
+    'Spanish': 'es',
+    'French': 'fr',
+    'German': 'de',
+    'Italian': 'it',
+    'Portuguese': 'pt',
+    'Chinese': 'zh',
+    'Japanese': 'ja',
+    'Polish': 'pl',
+    'Turkish': 'tr',
+    'Russian': 'ru',
+    'Dutch': 'nl',
+    'Korean': 'ko',
+  };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 50.0),
+                padding: EdgeInsets.only(top: 50.h),
                 child: Image.asset(
                   "assets/images/logo.png",
-                  height: 100.0.h,
+                  height: 100.h,
                 ),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Center(
               child: Text(
                 'Please select your native language:',
@@ -61,31 +62,31 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
               child: Container(
                 width: 200.w,
                 height: 60.h,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 decoration: BoxDecoration(
                   color: kAppBarColor,
-                  borderRadius: BorderRadius.circular(40.0),
+                  borderRadius: BorderRadius.circular(40.r),
                   border: Border.all(
                     color: kAppBarColor,
-                    width: 2.0,
+                    width: 2.w,
                   ),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                     dropdownColor: kAppBarColor,
                     icon:
                         const Icon(Icons.arrow_drop_down, color: Colors.white),
-                    iconSize: 30,
+                    iconSize: 30.sp,
                     elevation: 16,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(color: Colors.white, fontSize: 18.sp),
                     isExpanded: true,
                     value: selectedLanguage,
                     hint: const Text(
                       'Select Language',
                       style: TextStyle(color: Colors.white),
                     ),
-                    items: languages.map((String value) {
+                    items: languageCodes.keys.map((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
@@ -110,10 +111,12 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     await prefs.setString('nativeLanguage', selectedLanguage!);
+                    await prefs.setString(
+                        'nativeLanguageCode', languageCodes[selectedLanguage]!);
                     await prefs.setBool('hasSeenWelcome', true);
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (_) => const HomePage(),
+                        builder: (_) => const OnboardingScreen(),
                       ),
                     );
                   } else {
@@ -130,10 +133,10 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                       EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
                   textStyle: TextStyle(fontSize: 20.sp),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40.0),
-                    side: const BorderSide(
+                    borderRadius: BorderRadius.circular(40.r),
+                    side: BorderSide(
                       color: kTranslatorcardColor,
-                      width: 2.0,
+                      width: 2.w,
                     ),
                   ),
                 ),
@@ -146,8 +149,12 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                 ),
               ),
             ),
-            Image.asset(
-              "assets/images/select.png",
+            Padding(
+              padding: EdgeInsets.only(right: 18.w),
+              child: Image.asset(
+                "assets/images/select.png",
+                height: 350.h,
+              ),
             )
           ],
         ),

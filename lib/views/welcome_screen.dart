@@ -214,7 +214,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   await prefs.setBool('hasSeenWelcome', true);
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (_) => const LanguageSelectionPage(),
+                      builder: (_) => const HomePage(),
                     ),
                   );
                 },
