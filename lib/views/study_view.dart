@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
+import 'package:localization/localization.dart';
 
 class StudyScreen extends StatelessWidget {
   @override
@@ -12,17 +13,17 @@ class StudyScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
         centerTitle: true,
-        title: const Text(
-          'Study Words',
+        title: Text(
+          'study_words_title'.i18n(),
           style: TextStyle(fontFamily: 'CookieCrisp'),
         ),
       ),
       body: BlocBuilder<StudyWordsCubit, StudyWordsState>(
         builder: (context, state) {
           if (state.studyWords.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'No words added yet.',
+                'no_words_yet'.i18n(),
                 style: TextStyle(fontFamily: 'CookieCrisp'),
               ),
             );

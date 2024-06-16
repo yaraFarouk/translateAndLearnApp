@@ -27,20 +27,20 @@ class _TranslatorCardState extends State<TranslatorCard> {
       color: widget.color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       margin: const EdgeInsets.symmetric(vertical: 6),
-      child: const Padding(
+      child: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomDropDownButton(
+            const CustomDropDownButton(
               translation: 1,
             ),
             Row(children: [
               Expanded(
-                child: CustomTextField(hint: 'Tap to enter text'),
+                child: CustomTextField(hint: widget.hint),
               ),
-              SizedBox(width: 10),
-              TranslatorCardicons(
+              const SizedBox(width: 10),
+              const TranslatorCardicons(
                 icon1: FontAwesomeIcons.trash,
                 icon2: FontAwesomeIcons.star,
                 icon3: FontAwesomeIcons.volumeHigh,
