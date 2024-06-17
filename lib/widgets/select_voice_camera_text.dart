@@ -17,11 +17,11 @@ class ThreeFloatingButtons extends StatelessWidget {
         Color cameraButtonColor = kPrimaryColor;
 
         if (state is TranslatorCardTextSelected) {
-          textButtonColor = kOrange;
+          textButtonColor = kPurpil;
         } else if (state is TranslatorCardMicrophoneSelected) {
-          microphoneButtonColor = kOrange;
+          microphoneButtonColor = kPurpil;
         } else if (state is TranslatorCardCameraSelected) {
-          cameraButtonColor = kOrange;
+          cameraButtonColor = kPurpil;
         }
 
         return Padding(
