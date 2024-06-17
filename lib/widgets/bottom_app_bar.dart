@@ -37,12 +37,12 @@ class CustomBottomAppBar extends StatelessWidget {
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.translate,
-                    color: currentIndex == 0 ? kOrange : kPrimaryColor),
+                    color: currentIndex == 0 ? kPurpil : kPrimaryColor),
                 onPressed: () => onItemTapped(0),
               ),
               IconButton(
                 icon: Icon(FontAwesomeIcons.book,
-                    color: currentIndex == 1 ? kOrange : kPrimaryColor),
+                    color: currentIndex == 1 ? kPurpil : kPrimaryColor),
                 onPressed: () => onItemTapped(1),
               ),
               IconButton(
