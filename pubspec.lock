@@ -73,14 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  equatable:
-    dependency: "direct main"
-    description:
-      name: equatable
-      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -349,6 +341,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.14"
+  jieba_flutter:
+    dependency: "direct main"
+    description:
+      name: jieba_flutter
+      sha256: "7b14e38346f780e4e0cfc8a74ff1cb984eed285f7b99bbd0aa00051b5db1d040"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   leak_tracker:
     dependency: transitive
     description:

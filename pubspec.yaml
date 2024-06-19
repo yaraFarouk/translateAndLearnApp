@@ -48,7 +48,7 @@ dependencies:
   flutter_localizations: 
     sdk: flutter
   localization: ^2.1.1
-  equatable: ^2.0.5
+  jieba_flutter: ^0.1.1
 
 dev_dependencies:
   flutter_test:

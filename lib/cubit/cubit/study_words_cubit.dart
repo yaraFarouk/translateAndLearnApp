@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:characters/characters.dart';
+import 'package:jieba_flutter/analysis/jieba_segmenter.dart';
 
 part 'study_words_state.dart';
 
@@ -10,11 +11,11 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
     emit(state.copyWith(languageTo: language));
   }
 
-  void addNewWords(String language, String text) {
+  Future<void> addNewWords(String language, String text) async {
     final updatedWords = Map<String, Set<String>>.from(state.studyWords);
 
     // Get words from text based on language
-    final words = _getWords(language, text);
+    final words = await _getWords(language, text);
 
     // Ensure the language entry exists in the state
     if (!updatedWords.containsKey(language)) {
@@ -56,11 +57,11 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
   }
 
   // Helper function to get words based on language
-  List<String> _getWords(String language, String text) {
+  Future<List<String>> _getWords(String language, String text) async {
     if (language == 'Japanese') {
       return _segmentJapanese(text);
     } else if (language == 'Chinese') {
-      return _segmentChinese(text);
+      return await _segmentChinese(text);
     } else {
       return _segmentLatin(text);
     }
@@ -71,9 +72,12 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
     return text.split('');
   }
 
-  // Placeholder for Chinese word segmentation
-  List<String> _segmentChinese(String text) {
-    return text.split('');
+  // Function for Chinese word segmentation
+  Future<List<String>> _segmentChinese(String text) async {
+    await JiebaSegmenter.init();
+    var seg = JiebaSegmenter();
+    final segments = seg.process(text, SegMode.INDEX);
+    return segments.map((segment) => segment.word).toList();
   }
 
   List<String> _segmentLatin(String text) {
