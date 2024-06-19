@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
@@ -18,7 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-
+  final splittingModel =
+      GenerativeModel(model: 'gemini-1.5-flash', apiKey: kAPIKEY);
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -27,7 +29,7 @@ class _HomePageState extends State<HomePage> {
           create: (context) => TranslatorCardCubit(),
         ),
         BlocProvider(
-          create: (context) => StudyWordsCubit(),
+          create: (context) => StudyWordsCubit(splittingModel),
         ),
       ],
       child: Scaffold(

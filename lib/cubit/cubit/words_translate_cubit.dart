@@ -18,7 +18,7 @@ class WordsTranslateCubit extends Cubit<WordsTranslateState> {
     try {
       emit(WordsTranslateLoading());
       String prompt =
-          "You are a translator App that provide the most comman translation for a word from $languageFrom to $languageTo translate this word ($word), display the translation only without any adds or definitions";
+          "You are a translator App that provide the most comman translation word for a word from $languageFrom to $languageTo translate this word ($word), display the translation only without any adds or definitions";
 
       final content = [Content.text(prompt)];
       final response = await model.generateContent(content);

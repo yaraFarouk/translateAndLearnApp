@@ -48,7 +48,7 @@ dependencies:
   flutter_localizations: 
     sdk: flutter
   localization: ^2.1.1
-  jieba_flutter: ^0.1.1
+  
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +76,7 @@ flutter:
   assets:
     - assets/images/
     - lib/i18n/
+    
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
