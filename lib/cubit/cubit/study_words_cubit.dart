@@ -1,12 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:characters/characters.dart';
-import 'package:jieba_flutter/analysis/jieba_segmenter.dart';
-
+import 'package:google_generative_ai/google_generative_ai.dart';
 part 'study_words_state.dart';
 
 class StudyWordsCubit extends Cubit<StudyWordsState> {
-  StudyWordsCubit() : super(StudyWordsState());
-
+  StudyWordsCubit(this.model) : super(StudyWordsState());
+  final GenerativeModel model;
   void updateLanguageTo(String language) {
     emit(state.copyWith(languageTo: language));
   }
@@ -58,29 +57,12 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
 
   // Helper function to get words based on language
   Future<List<String>> _getWords(String language, String text) async {
-    if (language == 'Japanese') {
-      return _segmentJapanese(text);
-    } else if (language == 'Chinese') {
-      return await _segmentChinese(text);
-    } else {
-      return _segmentLatin(text);
-    }
-  }
-
-  // Placeholder for Japanese word segmentation
-  List<String> _segmentJapanese(String text) {
-    return text.split('');
-  }
-
-  // Function for Chinese word segmentation
-  Future<List<String>> _segmentChinese(String text) async {
-    await JiebaSegmenter.init();
-    var seg = JiebaSegmenter();
-    final segments = seg.process(text, SegMode.INDEX);
-    return segments.map((segment) => segment.word).toList();
-  }
-
-  List<String> _segmentLatin(String text) {
-    return text.split(RegExp(r'\s+'));
+    String prompt =
+        "split this $language text into individual $language words seperated by space : ($text)";
+    final content = [Content.text(prompt)];
+    final response = await model.generateContent(content);
+    final responseText = response.text!;
+    final words = responseText.split(RegExp(r'\s+'));
+    return words;
   }
 }

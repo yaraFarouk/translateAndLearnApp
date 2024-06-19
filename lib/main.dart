@@ -19,6 +19,7 @@ void main() async {
   final imageModel = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   final dictionaryModel =
       GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+
   final bool hasSeenWelcome = await checkWelcomeScreenSeen();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? languageCode = prefs.getString('nativeLanguageCode');
