@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/dictionary_cubit.dart';
-import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart'; // import the DictionaryCubit
+import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart';
+import 'package:translate_and_learn_app/widgets/text_container.dart'; // import the DictionaryCubit
 
 class WordDetailsScreen extends StatelessWidget {
   const WordDetailsScreen(
@@ -56,25 +57,25 @@ class WordDetailsView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSection(
-                    "Meaning",
-                    Text.rich(
+                TextContainer(
+                    title: "Meaning",
+                    content: Text.rich(
                       parseFormattedText(state.meaning),
-                      style: TextStyle(fontSize: 18.0),
+                      style: const TextStyle(fontSize: 18.0),
                     )),
-                SizedBox(height: 16.0),
-                _buildSection(
-                    "Definition",
-                    Text.rich(
+                const SizedBox(height: 16.0),
+                TextContainer(
+                    title: "Definition",
+                    content: Text.rich(
                       parseFormattedText(state.definition),
-                      style: TextStyle(fontSize: 18.0),
+                      style: const TextStyle(fontSize: 18.0),
                     )),
-                SizedBox(height: 16.0),
-                _buildSection(
-                    "Examples",
-                    Text.rich(
+                const SizedBox(height: 16.0),
+                TextContainer(
+                    title: "Examples",
+                    content: Text.rich(
                       parseFormattedText(state.examples),
-                      style: TextStyle(fontSize: 18.0),
+                      style: const TextStyle(fontSize: 18.0),
                     )),
               ],
             ),
@@ -85,32 +86,6 @@ class WordDetailsView extends StatelessWidget {
           return Container(); // Empty container for initial state
         }
       },
-    );
-  }
-
-  Widget _buildSection(String title, Widget content) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: kTranslationCardColor),
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: kPurpil,
-            ),
-          ),
-          SizedBox(height: 8.0),
-          content,
-        ],
-      ),
     );
   }
 }

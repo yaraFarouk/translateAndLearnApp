@@ -5,9 +5,12 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/words_translate_cubit.dart';
 import 'package:localization/localization.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:translate_and_learn_app/widgets/flip_transition.dart';
 import 'package:translate_and_learn_app/widgets/quiz_button.dart';
 import 'package:translate_and_learn_app/widgets/return_button.dart';
 import 'package:translate_and_learn_app/widgets/search_text_field.dart';
+import 'package:translate_and_learn_app/widgets/study_back_card.dart';
+import 'package:translate_and_learn_app/widgets/study_front_card.dart';
 import 'package:translate_and_learn_app/widgets/study_word_card.dart';
 
 class WordListScreen extends StatefulWidget {
@@ -132,13 +135,22 @@ class _WordListScreenState extends State<WordListScreen>
                             : kTranslatorcardColor;
 
                         return StudyWordCard(
-                            isFlipped: _isFlipped[index],
-                            index: index,
-                            cardColor: cardColor,
-                            filteredWord: filteredWords[index],
-                            reversedWord: reversedWords[index],
-                            languageFrom: widget.language,
-                            languageTo: "@@locale".i18n());
+                          isFlipped: _isFlipped[index],
+                          index: index,
+                          cardColor: cardColor,
+                          filteredWord: filteredWords[index],
+                          reversedWord: reversedWords[index],
+                          languageFrom: widget.language,
+                          languageTo: "@@locale".i18n(),
+                          onTap: () {
+                            _flipCard(index);
+                            if (_isFlipped[index]) {
+                              BlocProvider.of<WordsTranslateCubit>(context)
+                                  .translateText(filteredWords[index],
+                                      widget.language, "@@locale".i18n());
+                            }
+                          },
+                        );
                       },
                     ),
                     const ReturnButton(),

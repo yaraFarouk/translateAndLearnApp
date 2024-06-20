@@ -6,7 +6,8 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/answers_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/quiz_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/proof_cubit.dart';
-import 'package:translate_and_learn_app/views/score_page.dart'; // Import the score page
+import 'package:translate_and_learn_app/views/score_page.dart';
+import 'package:translate_and_learn_app/widgets/text_container.dart'; // Import the score page
 
 class QuizPage extends StatefulWidget {
   final List<String> words;
@@ -130,26 +131,17 @@ class _QuizPageState extends State<QuizPage> {
                               ));
                             } else if (state is QuizQuestionGenerated) {
                               return Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Container(
                                   padding: const EdgeInsets.all(16.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(16.0),
-                                    border: Border.all(
-                                      color: kTranslationCardColor,
-                                      width: 3,
+                                  child: TextContainer(
+                                    title: "Question",
+                                    content: Center(
+                                      child: Text(
+                                        state.question,
+                                        style: TextStyle(fontSize: 24.sp),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      state.question,
-                                      style: TextStyle(fontSize: 24.sp),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                              );
+                                  ));
                             } else if (state is QuizError) {
                               return Center(child: Text(state.message));
                             }
@@ -206,7 +198,7 @@ class _QuizPageState extends State<QuizPage> {
                                                 : answer == _selectedAnswer
                                                     ? Colors.red
                                                     : Colors.grey
-                                            : null,
+                                            : Colors.grey,
                                       );
                                     }).toList(),
                                   ),
@@ -229,26 +221,16 @@ class _QuizPageState extends State<QuizPage> {
                                 ));
                               } else if (state is ProofGenerated) {
                                 return Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Container(
                                     padding: const EdgeInsets.all(16.0),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      border: Border.all(
-                                        color: kTranslationCardColor,
-                                        width: 3,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Correct Answer: ${_shuffledWords[_currentWordIndex]}\nProof: ${state.proof}',
+                                    child: TextContainer(
+                                      title:
+                                          "Correct Answer: ${_shuffledWords[_currentWordIndex]} ",
+                                      content: Text(
+                                        ' Proof: ${state.proof}',
                                         style: TextStyle(fontSize: 16.sp),
                                         textAlign: TextAlign.center,
                                       ),
-                                    ),
-                                  ),
-                                );
+                                    ));
                               } else if (state is ProofError) {
                                 return Center(child: Text(state.message));
                               }
