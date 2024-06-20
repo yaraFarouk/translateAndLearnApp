@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
@@ -38,12 +39,15 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              const SizedBox(height: 70),
-              CustomAppTopBar(
-                title: 'translate_and_learn_title'.i18n(),
-                icon: Icons.search,
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 50.h),
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    height: 100.h,
+                  ),
+                ),
               ),
-              const SizedBox(height: 20),
               Expanded(
                 child: IndexedStack(
                   index: _currentIndex,
