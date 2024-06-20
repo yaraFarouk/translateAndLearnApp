@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/constants.dart';
-import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/views/welcome_screen.dart';
 

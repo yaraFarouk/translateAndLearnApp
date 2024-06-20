@@ -20,7 +20,7 @@ class ScorePage extends StatelessWidget {
       } else if (percentage >= 65) {
         return 'Good, but need more practice.';
       } else {
-        return 'Hmm, you need more practice.';
+        return 'Hmm.., you need more practice.';
       }
     }
 

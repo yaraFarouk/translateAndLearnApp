@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:meta/meta.dart';
-import 'package:translate_and_learn_app/views/words_list_view.dart';
 
 part 'proof_state.dart';
 

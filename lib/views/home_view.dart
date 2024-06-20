@@ -8,8 +8,6 @@ import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
 import 'package:translate_and_learn_app/views/study_view.dart';
 import 'package:translate_and_learn_app/views/translator_cards_view.dart';
 import 'package:translate_and_learn_app/widgets/bottom_app_bar.dart';
-import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart';
-import 'package:localization/localization.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
