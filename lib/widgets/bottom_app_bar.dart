@@ -53,6 +53,16 @@ class CustomBottomAppBar extends StatelessWidget {
                 },
               ),
               IconButton(
+                icon: Image.asset(
+                  'assets/images/google-gemini-icon.png', // Path to your image
+                  height: 28, // Adjust the height to your needs
+                  width: 28, // Adjust the width to your needs
+                ),
+                onPressed: () {
+                  // Handle translate button press
+                },
+              ),
+              IconButton(
                 icon: const Icon(FontAwesomeIcons.star, color: Colors.white),
                 onPressed: () {
                   // Handle settings button press

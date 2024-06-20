@@ -7,6 +7,7 @@ import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/cubit/dictionary_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
+import 'package:translate_and_learn_app/cubit/cubit/quiz_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:translate_and_learn_app/views/language_selection_screen.dart';
 import 'package:provider/provider.dart';
