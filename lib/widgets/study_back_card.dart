@@ -26,7 +26,7 @@ class StudyBackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (languageFrom == languageTo) {
       return Card(
-        key: ValueKey(true),
+        key: const ValueKey(true),
         color: cardColor,
         child: Center(
           child: Padding(
@@ -81,7 +81,7 @@ class StudyBackCard extends StatelessWidget {
           }
 
           return Card(
-            key: ValueKey(true),
+            key: const ValueKey(true),
             color: cardColor,
             child: Center(
               child: Padding(

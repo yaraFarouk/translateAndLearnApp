@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/dictionary_cubit.dart';
 import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart'; // import the DictionaryCubit
@@ -50,7 +49,7 @@ class WordDetailsView extends StatelessWidget {
     return BlocBuilder<DictionaryCubit, DictionaryState>(
       builder: (context, state) {
         if (state is DictionaryLoading) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (state is DictionarySuccess) {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),

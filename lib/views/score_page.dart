@@ -48,7 +48,7 @@ class ScorePage extends StatelessWidget {
               ),
             ),
           ),
-          Spacer(
+          const Spacer(
             flex: 1,
           ),
           Center(
@@ -87,7 +87,7 @@ class ScorePage extends StatelessWidget {
               ),
             ),
           ),
-          Spacer(
+          const Spacer(
             flex: 2,
           ),
           Align(
