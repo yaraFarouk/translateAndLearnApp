@@ -4,6 +4,7 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
 import 'package:localization/localization.dart';
+import 'package:translate_and_learn_app/widgets/search_text_field.dart';
 
 class StudyScreen extends StatefulWidget {
   @override
@@ -33,13 +34,8 @@ class _StudyScreenState extends State<StudyScreen> {
         backgroundColor: kPrimaryColor,
         centerTitle: true,
         title: _isSearchBarVisible
-            ? TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search...',
-                  border: InputBorder.none,
-                ),
-                autofocus: true,
+            ? SearchTextField(
+                searchController: _searchController,
                 onChanged: (value) {
                   setState(() {
                     _searchQuery = value.toLowerCase();
