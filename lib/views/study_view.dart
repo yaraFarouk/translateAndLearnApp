@@ -7,6 +7,8 @@ import 'package:localization/localization.dart';
 import 'package:translate_and_learn_app/widgets/search_text_field.dart';
 
 class StudyScreen extends StatefulWidget {
+  const StudyScreen({super.key});
+
   @override
   _StudyScreenState createState() => _StudyScreenState();
 }
@@ -44,7 +46,7 @@ class _StudyScreenState extends State<StudyScreen> {
               )
             : Text(
                 'study_words_title'.i18n(),
-                style: TextStyle(fontFamily: 'CookieCrisp'),
+                style: const TextStyle(fontFamily: 'CookieCrisp'),
               ),
         actions: [
           IconButton(
@@ -56,7 +58,8 @@ class _StudyScreenState extends State<StudyScreen> {
       body: Column(
         children: [
           if (!_isSearchBarVisible)
-            SizedBox(height: 16.0), // Add spacing when search bar is hidden
+            const SizedBox(
+                height: 16.0), // Add spacing when search bar is hidden
           Expanded(
             child: BlocBuilder<StudyWordsCubit, StudyWordsState>(
               builder: (context, state) {
@@ -68,7 +71,7 @@ class _StudyScreenState extends State<StudyScreen> {
                   return Center(
                     child: Text(
                       'no_words_yet'.i18n(),
-                      style: TextStyle(fontFamily: 'CookieCrisp'),
+                      style: const TextStyle(fontFamily: 'CookieCrisp'),
                     ),
                   );
                 }

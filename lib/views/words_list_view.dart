@@ -5,12 +5,9 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/words_translate_cubit.dart';
 import 'package:localization/localization.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:translate_and_learn_app/widgets/flip_transition.dart';
 import 'package:translate_and_learn_app/widgets/quiz_button.dart';
 import 'package:translate_and_learn_app/widgets/return_button.dart';
 import 'package:translate_and_learn_app/widgets/search_text_field.dart';
-import 'package:translate_and_learn_app/widgets/study_back_card.dart';
-import 'package:translate_and_learn_app/widgets/study_front_card.dart';
 import 'package:translate_and_learn_app/widgets/study_word_card.dart';
 
 class WordListScreen extends StatefulWidget {
@@ -111,7 +108,7 @@ class _WordListScreenState extends State<WordListScreen>
                         ),
                       if (_isSearching)
                         IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () {
                             setState(() {
                               _isSearching = false;

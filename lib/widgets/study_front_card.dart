@@ -15,7 +15,7 @@ class StudyFrontCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      key: ValueKey(false),
+      key: const ValueKey(false),
       color: cardColor,
       child: Center(
         child: Text(

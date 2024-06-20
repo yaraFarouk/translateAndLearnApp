@@ -18,7 +18,7 @@ class QuizButton extends StatelessWidget {
           color: kAppBarColor,
         ),
         child: FloatingActionButton(
-          shape: CircleBorder(),
+          shape: const CircleBorder(),
           onPressed: () {
             Navigator.push(
               context,

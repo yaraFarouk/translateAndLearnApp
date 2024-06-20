@@ -25,13 +25,13 @@ class TranslatorcardsView extends StatelessWidget {
               final geminiApiCubit = context.read<GeminiApiCubit>();
               if (state is TranslatorCardMicrophoneSelected) {
                 geminiApiCubit.resetTranslation();
-                return MicrophonTranslatorCard(
+                return const MicrophonTranslatorCard(
                   color: kTranslatorcardColor,
                   hint: 'Text will appear here',
                 );
               } else if (state is TranslatorCardCameraSelected) {
                 geminiApiCubit.resetTranslation();
-                return CameraTranslatorCard(
+                return const CameraTranslatorCard(
                     color: kTranslatorcardColor, hint: 'Text will appear here');
               }
               geminiApiCubit.resetTranslation();
