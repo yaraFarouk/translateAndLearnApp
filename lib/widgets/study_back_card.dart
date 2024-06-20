@@ -70,7 +70,7 @@ class StudyBackCard extends StatelessWidget {
     } else {
       return BlocBuilder<WordsTranslateCubit, WordsTranslateState>(
         builder: (context, state) {
-          String translation = 'Loading...';
+          String translation = '...';
 
           if (isFlipped) {
             if (state is WordsTranslateSuccess) {
@@ -115,7 +115,7 @@ class StudyBackCard extends StatelessWidget {
                           ),
                         );
                       },
-                      child: const Text('Details'),
+                      child: const Text('Study'),
                     ),
                   ],
                 ),
