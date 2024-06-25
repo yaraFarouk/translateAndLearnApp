@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/views/quiz_page.dart';
 
 class QuizButton extends StatelessWidget {
   const QuizButton({super.key, required this.words, required this.language});
-  final List<String> words;
+  final List<WordDetailsModel> words;
   final String language;
   @override
   Widget build(BuildContext context) {

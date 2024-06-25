@@ -8,12 +8,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/cubit/dictionary_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
+import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:translate_and_learn_app/views/language_selection_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  const apiKey = 'AIzaSyD2WmRS8KtpHKYi3DvMj_r1C_0-MBXmlPc';
+  const apiKey = 'AIzaSyBcjYQMdIZpKvmLvCsPIc15kFRxqCA0KNQ';
 
   final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   final imageModel = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
@@ -108,7 +109,9 @@ class TranslateAndLearnApp extends StatelessWidget {
                   Locale('ko', 'KR'),
                 ],
                 locale: initialLocale,
-                home: const LanguageSelectionPage(),
+                home: hasSeenWelcome
+                    ? const HomePage()
+                    : const LanguageSelectionPage(),
               ),
             ));
   }

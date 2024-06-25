@@ -5,6 +5,7 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/words_translate_cubit.dart';
 import 'package:localization/localization.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/widgets/quiz_button.dart';
 import 'package:translate_and_learn_app/widgets/return_button.dart';
 import 'package:translate_and_learn_app/widgets/search_text_field.dart';
@@ -12,7 +13,7 @@ import 'package:translate_and_learn_app/widgets/study_word_card.dart';
 
 class WordListScreen extends StatefulWidget {
   final String language;
-  final List<String> words;
+  final List<WordDetailsModel> words;
 
   const WordListScreen({
     super.key,
@@ -28,7 +29,7 @@ class _WordListScreenState extends State<WordListScreen>
     with SingleTickerProviderStateMixin {
   late List<bool> _isFlipped;
   late AnimationController _controller;
-  late List<String> reversedWords;
+  late List<WordDetailsModel> reversedWords;
   int? _currentlyFlippedIndex;
   String _searchQuery = "";
   bool _isSearching = false;
@@ -69,7 +70,7 @@ class _WordListScreenState extends State<WordListScreen>
         model: 'gemini-1.5-flash'); // Initialize with your API key
 
     final filteredWords = reversedWords.where((word) {
-      return word.toLowerCase().contains(_searchQuery.toLowerCase());
+      return word.word.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
 
     return BlocProvider(
@@ -141,11 +142,6 @@ class _WordListScreenState extends State<WordListScreen>
                           languageTo: "@@locale".i18n(),
                           onTap: () {
                             _flipCard(index);
-                            if (_isFlipped[index]) {
-                              BlocProvider.of<WordsTranslateCubit>(context)
-                                  .translateText(filteredWords[index],
-                                      widget.language, "@@locale".i18n());
-                            }
                           },
                         );
                       },

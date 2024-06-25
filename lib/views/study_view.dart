@@ -63,7 +63,7 @@ class _StudyScreenState extends State<StudyScreen> {
           Expanded(
             child: BlocBuilder<StudyWordsCubit, StudyWordsState>(
               builder: (context, state) {
-                final filteredWords = state.studyWords.entries.where((entry) {
+                final filteredWords = state.wordDetails.entries.where((entry) {
                   return entry.key.toLowerCase().contains(_searchQuery);
                 }).toList();
 

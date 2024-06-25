@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/widgets/flip_transition.dart';
 import 'package:translate_and_learn_app/widgets/study_back_card.dart';
 import 'package:translate_and_learn_app/widgets/study_front_card.dart';
@@ -18,8 +19,8 @@ class StudyWordCard extends StatelessWidget {
   final int index;
   final Color cardColor;
   final Function()? onTap;
-  final String filteredWord;
-  final String reversedWord;
+  final WordDetailsModel filteredWord;
+  final WordDetailsModel reversedWord;
   final String languageFrom, languageTo;
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class StudyWordCard extends StatelessWidget {
                     context: context,
                     index: index,
                     cardColor: cardColor,
-                    word: filteredWord,
+                    word: filteredWord.word,
                     languageFrom: languageFrom,
                     languageTo: languageTo,
                     isFlipped: isFlipped,
