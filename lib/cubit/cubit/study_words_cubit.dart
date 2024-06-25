@@ -9,19 +9,20 @@ part 'study_words_state.dart';
 class StudyWordsCubit extends Cubit<StudyWordsState> {
   StudyWordsCubit(this.model) : super(StudyWordsState());
   final GenerativeModel model;
+
   void updateLanguageTo(String language) {
     emit(state.copyWith(languageTo: language));
   }
 
   Future<void> addNewWords(String language, String text) async {
+    emit(state.copyWith(isLoading: true)); // Set loading state to true
+
     final updatedWords = Map<String, Set<String>>.from(state.studyWords);
     final updatedWordDetails =
         Map<String, List<WordDetailsModel>>.from(state.wordDetails);
 
-    // Get words from text based on language
     final words = await _getWords(language, text);
 
-    // Ensure the language entry exists in the state
     if (!updatedWords.containsKey(language)) {
       updatedWords[language] = <String>{};
     }
@@ -30,19 +31,14 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
       updatedWordDetails[language] = [];
     }
 
-    // List to store fetched word details
     final newWordDetails = <WordDetailsModel>[];
 
-    // Loop through each word
     for (var word in words) {
-      // Clean the word using the characters package
       final cleanedWord = _cleanWord(word);
 
-      // Add the cleaned word to the study words if it's not empty and doesn't already exist
       if (cleanedWord.isNotEmpty &&
           !updatedWords[language]!.contains(cleanedWord)) {
         try {
-          // Fetch word details and add to newWordDetails list
           final wordDetails =
               await _getWordDetails(cleanedWord, language, "@@locale".i18n());
 
@@ -54,10 +50,12 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
       }
     }
 
-    // Update state once after processing all words
     updatedWordDetails[language]!.addAll(newWordDetails);
     emit(state.copyWith(
-        studyWords: updatedWords, wordDetails: updatedWordDetails));
+      studyWords: updatedWords,
+      wordDetails: updatedWordDetails,
+      isLoading: false, // Set loading state to false after loading
+    ));
   }
 
   void deleteWord(String language, String word) {
@@ -78,7 +76,6 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
     }
   }
 
-  // Helper function to clean a word of unwanted characters
   String _cleanWord(String word) {
     final characters = Characters(word);
     final cleanedCharacters = characters.where((char) =>
@@ -86,7 +83,6 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
     return cleanedCharacters.isEmpty ? '' : cleanedCharacters.toString();
   }
 
-  // Helper function to get words based on language
   Future<List<String>> _getWords(String language, String text) async {
     String prompt =
         "split this $language text into individual $language words separated by space considering that it is $language language: ($text) ";
@@ -97,7 +93,6 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
     return words;
   }
 
-  // Helper function to get word details
   Future<WordDetailsModel> _getWordDetails(
       String word, String languageFrom, String languageTo) async {
     String prompt = """
@@ -117,7 +112,6 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
       throw Exception("Response text is null");
     }
 
-    // Clean the response by removing unwanted characters like ```json
     String cleanedResponse =
         response.text!.replaceAll(RegExp(r'^```json|```$'), '').trim();
 

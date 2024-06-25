@@ -67,22 +67,29 @@ class _LanguagecardState extends State<Languagecard> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                TranslatorCardicons(
-                  icon1: FontAwesomeIcons.star,
-                  icon2: FontAwesomeIcons.volumeHigh,
-                  icon3: FontAwesomeIcons.plus,
-                  onPressed3: () {
-                    // Add new words to the study words list
-                    BlocProvider.of<StudyWordsCubit>(context).addNewWords(
-                      BlocProvider.of<StudyWordsCubit>(context)
-                          .state
-                          .languageTo,
-                      widget.text,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Words added to study list')),
-                    );
+                BlocBuilder<StudyWordsCubit, StudyWordsState>(
+                  builder: (context, state) {
+                    return state.isLoading
+                        ? const CircularProgressIndicator()
+                        : TranslatorCardicons(
+                            icon1: FontAwesomeIcons.star,
+                            icon2: FontAwesomeIcons.volumeHigh,
+                            icon3: FontAwesomeIcons.plus,
+                            onPressed3: () {
+                              BlocProvider.of<StudyWordsCubit>(context)
+                                  .addNewWords(
+                                BlocProvider.of<StudyWordsCubit>(context)
+                                    .state
+                                    .languageTo,
+                                widget.text,
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('Wait for words to be added')),
+                              );
+                            },
+                          );
                   },
                 ),
               ]),
