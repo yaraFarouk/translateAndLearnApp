@@ -58,9 +58,7 @@ class CustomBottomAppBar extends StatelessWidget {
                   height: 28, // Adjust the height to your needs
                   width: 28, // Adjust the width to your needs
                 ),
-                onPressed: () {
-                  // Handle translate button press
-                },
+                onPressed: () => onItemTapped(2),
               ),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.star, color: Colors.white),

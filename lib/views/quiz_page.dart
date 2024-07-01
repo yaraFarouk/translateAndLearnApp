@@ -30,6 +30,7 @@ class _QuizPageState extends State<QuizPage> {
   String? _selectedAnswer;
   bool _answerSubmitted = false;
   int totalScore = 0;
+  bool _isLastWord = false;
 
   @override
   void initState() {
@@ -74,6 +75,10 @@ class _QuizPageState extends State<QuizPage> {
         _score++;
       }
       totalScore++;
+
+      if (_currentWordIndex == _shuffledWords.length - 1) {
+        _isLastWord = true;
+      }
     });
   }
 
@@ -254,17 +259,20 @@ class _QuizPageState extends State<QuizPage> {
                                     onPressed: _onFinishQuiz,
                                     child: Text('Finish'),
                                   ),
-                                  SizedBox(
-                                      width: 50.w), // Add space between buttons
-                                  ElevatedButton(
-                                    onPressed: _answerSubmitted
-                                        ? _onNextQuestion
-                                        : _selectedAnswer != null
-                                            ? _onSubmitAnswer
-                                            : null,
-                                    child: Text(
-                                        _answerSubmitted ? 'Next' : 'Submit'),
-                                  ),
+                                  if (!_isLastWord) ...[
+                                    SizedBox(
+                                        width:
+                                            50.w), // Add space between buttons
+                                    ElevatedButton(
+                                      onPressed: _answerSubmitted
+                                          ? _onNextQuestion
+                                          : _selectedAnswer != null
+                                              ? _onSubmitAnswer
+                                              : null,
+                                      child: Text(
+                                          _answerSubmitted ? 'Next' : 'Submit'),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),

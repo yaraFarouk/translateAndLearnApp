@@ -6,6 +6,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/cubit/dictionary_cubit.dart';
+import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:translate_and_learn_app/views/home_view.dart';
@@ -18,7 +19,7 @@ void main() async {
 
   final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   final imageModel = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
-  final dictionaryModel =
+  final geminiChatModel =
       GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
 
   final bool hasSeenWelcome = await checkWelcomeScreenSeen();
@@ -34,7 +35,7 @@ void main() async {
     imageModel: imageModel,
     hasSeenWelcome: hasSeenWelcome,
     initialLocale: initialLocale,
-    dictionaryModel: dictionaryModel,
+    geminiChatModel: geminiChatModel,
   ));
 }
 
@@ -50,12 +51,12 @@ class TranslateAndLearnApp extends StatelessWidget {
     required this.imageModel,
     required this.hasSeenWelcome,
     this.initialLocale,
-    required this.dictionaryModel,
+    required this.geminiChatModel,
   });
 
   final GenerativeModel model;
   final GenerativeModel imageModel;
-  final GenerativeModel dictionaryModel;
+  final GenerativeModel geminiChatModel;
   final bool hasSeenWelcome;
   final Locale? initialLocale;
   @override
@@ -75,9 +76,9 @@ class TranslateAndLearnApp extends StatelessWidget {
                 BlocProvider(
                   create: (context) => ImageToTextCubit(imageModel),
                 ),
-                Provider<GenerativeModel>.value(value: dictionaryModel),
+                Provider<GenerativeModel>.value(value: imageModel),
                 BlocProvider(
-                  create: (context) => DictionaryCubit(dictionaryModel),
+                  create: (context) => GeminiChatCubit(geminiChatModel),
                 ),
               ],
               child: MaterialApp(

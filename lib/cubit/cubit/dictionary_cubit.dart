@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:localization/localization.dart';
 import 'package:meta/meta.dart';
 
 part 'dictionary_state.dart';
