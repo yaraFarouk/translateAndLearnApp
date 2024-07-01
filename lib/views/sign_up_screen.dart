@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:translate_and_learn_app/views/sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -111,7 +112,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
             // already learner button
             Container(
               child: MaterialButton(
-                  onPressed: () {  },
+                  onPressed: ()
+                  {
+                    // go to SignInScreen
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignInScreen())
+                    );
+
+                  },
                   child: const Text(
                     'Already a learner? Sign in',
                     style: TextStyle(

@@ -83,7 +83,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(25.0)),
               ),
             ),
-            onChange: (index) {
+            onChange: (index)
+            {
               setState(() {
                 currentPageIndex = index;
               });
@@ -93,14 +94,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             top: 40.h,
             right: 20.w,
             child: TextButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.setBool('hasSeenWelcome', true);
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (_) => const SignUpScreen(),
-                  ),
-                );
+              onPressed: () async
+              {
+                // SharedPreferences prefs = await SharedPreferences.getInstance();
+                // await prefs.setBool('hasSeenWelcome', true);
+
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const SignUpScreen()),);
               },
               child: Text("Skip", style: TextStyle(fontSize: 18.sp)),
             ),
@@ -211,15 +210,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (isLastPage)
             Center(
               child: ElevatedButton(
-                onPressed: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  await prefs.setBool('hasSeenWelcome', true);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => const SignUpScreen(),
-                    ),
-                  );
+                onPressed: () async
+                {
+                  // SharedPreferences prefs =
+                  //     await SharedPreferences.getInstance();
+                  // await prefs.setBool('hasSeenWelcome', true);
+
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const SignUpScreen(),),);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kTranslatorcardColor,
