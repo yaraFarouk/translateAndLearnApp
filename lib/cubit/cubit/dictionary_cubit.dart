@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:localization/localization.dart';
 import 'package:meta/meta.dart';
+
 part 'dictionary_state.dart';
 
 class DictionaryCubit extends Cubit<DictionaryState> {
@@ -12,31 +14,29 @@ class DictionaryCubit extends Cubit<DictionaryState> {
     try {
       emit(DictionaryLoading());
 
-      String meaningPrompt =
-          "You are a dictionary. Provide a clear and concise meaning for the word '$word' in language '$language'. Ensure the meaning is in the context of its most common usage. The response should be in language(${"@@locale".i18n()}). Provide the response briefly and in normal font size.";
-      String definitionPrompt =
-          "You are a dictionary. Provide a clear and concise definition for the word '$word' in language '$language'. Ensure the definition is in the context of its most common usage. The response should be in language(${"@@locale".i18n()}). Provide the response briefly and in normal font size.";
-      String examplesPrompt =
-          "You are a dictionary. Provide examples of sentences using the word '$word' in language '$language'. Ensure the examples are in the context of its most common usage. Provide the response briefly and in an ordered format: each example should be followed by its translation in language(${"@@locale".i18n()}) below the example like that 1.i am student endl >i am student.";
+      String prompt =
+          "you are a dictionary that gives a definition and translation and meaning and example for a given word translate it from $language to English. Make the response json data because I want to access every string for definition and meaning and example like a map in my flutter app. Make the response contains only the json code without any additional data. The given word is '$word'";
+      final content = [Content.text(prompt)];
+      final response = await model.generateContent(content);
 
-      final meaningContent = [Content.text(meaningPrompt)];
-      final definitionContent = [Content.text(definitionPrompt)];
-      final examplesContent = [Content.text(examplesPrompt)];
+      if (response.text == null) {
+        throw Exception("Response text is null");
+      }
 
-      final meaningResponse = model.generateContent(meaningContent);
-      final definitionResponse = model.generateContent(definitionContent);
-      final examplesResponse = model.generateContent(examplesContent);
+      // Clean the response by removing unwanted characters like ```json
+      String cleanedResponse =
+          response.text!.replaceAll(RegExp(r'^```json|```$'), '').trim();
 
-      final results = await Future.wait(
-          [meaningResponse, definitionResponse, examplesResponse]);
+      print("Cleaned response: $cleanedResponse");
 
-      final meaning = results[0].text!;
-      final definition = results[1].text!;
-      final examples = results[2].text!;
+      // Parse the cleaned JSON response
+      final Map<String, dynamic> jsonResponse = jsonDecode(cleanedResponse);
 
-      emit(DictionarySuccess(meaning, definition, examples));
+      emit(DictionarySuccess(jsonResponse['meaning'],
+          jsonResponse['definition'], jsonResponse['example']));
     } catch (e) {
-      emit(DictionaryError("Error occurred during dictionary"));
+      print("Error: $e");
+      emit(DictionaryError("Error occurred during dictionary: $e"));
     }
   }
 }

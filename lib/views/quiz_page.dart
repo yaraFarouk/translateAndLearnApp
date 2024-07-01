@@ -6,11 +6,12 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/answers_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/quiz_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/proof_cubit.dart';
+import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/views/score_page.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart'; // Import the score page
 
 class QuizPage extends StatefulWidget {
-  final List<String> words;
+  final List<WordDetailsModel> words;
   final String language;
 
   const QuizPage({super.key, required this.words, required this.language});
@@ -24,11 +25,12 @@ class _QuizPageState extends State<QuizPage> {
   late AnswersCubit _answersCubit;
   late ProofCubit _proofCubit;
   int _currentWordIndex = 0;
-  late List<String> _shuffledWords;
+  late List<WordDetailsModel> _shuffledWords;
   int _score = 0;
   String? _selectedAnswer;
   bool _answerSubmitted = false;
   int totalScore = 0;
+  bool _isLastWord = false;
 
   @override
   void initState() {
@@ -49,14 +51,16 @@ class _QuizPageState extends State<QuizPage> {
   void _generateNextQuestion() {
     if (_currentWordIndex < _shuffledWords.length) {
       final word = _shuffledWords[_currentWordIndex];
-      _quizCubit.generateQuestion(widget.language, word);
-      _answersCubit.getAnswers(widget.language, word, word).then((answers) {
+      _quizCubit.generateQuestion(widget.language, word.word);
+      _answersCubit
+          .getAnswers(widget.language, word.word, word.word)
+          .then((answers) {
         setState(() {
           _selectedAnswer = null; // Reset selected answer for the new question
           _answerSubmitted = false;
         });
       });
-      _proofCubit.getAnswers(widget.language, word, word);
+      _proofCubit.getAnswers(widget.language, word.word, word.word);
     } else {
       _onFinishQuiz(); // Navigate to the score page if all words are done
     }
@@ -67,10 +71,14 @@ class _QuizPageState extends State<QuizPage> {
       _answerSubmitted = true;
       if (_selectedAnswer != null &&
           _selectedAnswer!.toLowerCase() ==
-              _shuffledWords[_currentWordIndex].toLowerCase()) {
+              _shuffledWords[_currentWordIndex].word.toLowerCase()) {
         _score++;
       }
       totalScore++;
+
+      if (_currentWordIndex == _shuffledWords.length - 1) {
+        _isLastWord = true;
+      }
     });
   }
 
@@ -170,7 +178,8 @@ class _QuizPageState extends State<QuizPage> {
                                       color: _answerSubmitted
                                           ? _selectedAnswer ==
                                                   _shuffledWords[
-                                                      _currentWordIndex]
+                                                          _currentWordIndex]
+                                                      .word
                                               ? Colors.green
                                               : Colors.red
                                           : kTranslationCardColor,
@@ -193,7 +202,8 @@ class _QuizPageState extends State<QuizPage> {
                                         activeColor: _answerSubmitted
                                             ? answer ==
                                                     _shuffledWords[
-                                                        _currentWordIndex]
+                                                            _currentWordIndex]
+                                                        .word
                                                 ? Colors.green
                                                 : answer == _selectedAnswer
                                                     ? Colors.red
@@ -224,7 +234,7 @@ class _QuizPageState extends State<QuizPage> {
                                     padding: const EdgeInsets.all(16.0),
                                     child: TextContainer(
                                       title:
-                                          "Correct Answer: ${_shuffledWords[_currentWordIndex]} ",
+                                          "Correct Answer: ${_shuffledWords[_currentWordIndex].word} ",
                                       content: Text(
                                         ' Proof: ${state.proof}',
                                         style: TextStyle(fontSize: 16.sp),
@@ -249,17 +259,20 @@ class _QuizPageState extends State<QuizPage> {
                                     onPressed: _onFinishQuiz,
                                     child: Text('Finish'),
                                   ),
-                                  SizedBox(
-                                      width: 50.w), // Add space between buttons
-                                  ElevatedButton(
-                                    onPressed: _answerSubmitted
-                                        ? _onNextQuestion
-                                        : _selectedAnswer != null
-                                            ? _onSubmitAnswer
-                                            : null,
-                                    child: Text(
-                                        _answerSubmitted ? 'Next' : 'Submit'),
-                                  ),
+                                  if (!_isLastWord) ...[
+                                    SizedBox(
+                                        width:
+                                            50.w), // Add space between buttons
+                                    ElevatedButton(
+                                      onPressed: _answerSubmitted
+                                          ? _onNextQuestion
+                                          : _selectedAnswer != null
+                                              ? _onSubmitAnswer
+                                              : null,
+                                      child: Text(
+                                          _answerSubmitted ? 'Next' : 'Submit'),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),

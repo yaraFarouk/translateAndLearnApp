@@ -26,13 +26,13 @@ class ScorePage extends StatelessWidget {
 
     Color getContainerColor() {
       if (percentage >= 85) {
-        return const Color.fromARGB(255, 61, 199, 66)!;
+        return const Color.fromARGB(255, 61, 199, 66);
       } else if (percentage >= 75) {
-        return const Color.fromARGB(255, 60, 133, 193)!;
+        return const Color.fromARGB(255, 60, 133, 193);
       } else if (percentage >= 65) {
-        return const Color.fromARGB(255, 205, 188, 41)!;
+        return const Color.fromARGB(255, 205, 188, 41);
       } else {
-        return const Color.fromARGB(255, 203, 83, 83)!;
+        return const Color.fromARGB(255, 203, 83, 83);
       }
     }
 

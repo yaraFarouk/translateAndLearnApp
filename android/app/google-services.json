@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "522271905345",
+    "project_id": "translateandlearnapp",
+    "storage_bucket": "translateandlearnapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522271905345:android:76f0d9fa7a036196b658c0",
+        "android_client_info": {
+          "package_name": "com.example.translate_and_learn_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtqOk964A4N08iU5Kjl5QQ_MF01reWwpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translate_and_learn_app/models/word_details_model.dart';
 
 class StudyFrontCard extends StatelessWidget {
   const StudyFrontCard(
@@ -10,7 +11,7 @@ class StudyFrontCard extends StatelessWidget {
   final BuildContext context;
   final int index;
   final Color cardColor;
-  final String filteredWord;
+  final WordDetailsModel filteredWord;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class StudyFrontCard extends StatelessWidget {
       color: cardColor,
       child: Center(
         child: Text(
-          filteredWord,
+          filteredWord.word,
           textAlign: TextAlign.center,
           style: const TextStyle(
               fontSize: 33, fontFamily: 'Roboto', fontWeight: FontWeight.bold),

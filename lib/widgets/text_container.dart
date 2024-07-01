@@ -30,6 +30,5 @@ class TextContainer extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }
