@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:translate_and_learn_app/cubit/cubit/dictionary_cubit.dart';
+// import 'package:translate_and_learn_app/cubit/cubit/dictionary_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';

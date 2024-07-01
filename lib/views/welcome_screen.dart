@@ -4,7 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/views/language_selection_screen.dart';
-import 'home_view.dart';
+import 'package:translate_and_learn_app/views/sign_up_screen.dart';
+
+// import 'package:translate_and_learn_app/views/sign_in_screen.dart';
+// import 'home_view.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -95,7 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 await prefs.setBool('hasSeenWelcome', true);
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (_) => const HomePage(),
+                    builder: (_) => const SignUpScreen(),
                   ),
                 );
               },
@@ -214,7 +217,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   await prefs.setBool('hasSeenWelcome', true);
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (_) => const HomePage(),
+                      builder: (_) => const SignUpScreen(),
                     ),
                   );
                 },
