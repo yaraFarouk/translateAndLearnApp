@@ -82,6 +82,7 @@ class TranslateAndLearnApp extends StatelessWidget {
                 ),
               ],
               child: MaterialApp(
+                debugShowCheckedModeBanner: false,
                 localizationsDelegates: [
                   // delegate from flutter_localization
                   GlobalMaterialLocalizations.delegate,
