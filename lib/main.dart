@@ -12,8 +12,12 @@ import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:translate_and_learn_app/views/language_selection_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() async {
+Future<void> main() async
+{
+
   WidgetsFlutterBinding.ensureInitialized();
   const apiKey = 'AIzaSyBcjYQMdIZpKvmLvCsPIc15kFRxqCA0KNQ';
 
@@ -29,6 +33,10 @@ void main() async {
   if (languageCode != null) {
     initialLocale = Locale(languageCode);
   }
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(TranslateAndLearnApp(
     model: model,
