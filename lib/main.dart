@@ -16,10 +16,12 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-Future<void> main() async
+void main() async
 {
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Gemini API
   const apiKey = 'AIzaSyBcjYQMdIZpKvmLvCsPIc15kFRxqCA0KNQ';
 
   final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
@@ -39,7 +41,8 @@ Future<void> main() async
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  /// Useless (From Documentation)
+  /// await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
 
   runApp(TranslateAndLearnApp(
     model: model,

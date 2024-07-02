@@ -20,6 +20,7 @@ class RegisterCubit extends Cubit<RegisterStates>
     required name,
     required email,
     required password,
+    required language
   })
   {
     emit(RegisterNewUserLoadingState());
@@ -35,7 +36,8 @@ class RegisterCubit extends Cubit<RegisterStates>
         name: name,
         email: email,
         UID: value.user!.uid ,
-        password: password
+        password: password,
+        language: language
       );
 
       // CacheHelper.saveValue(key: 'UID', value: value.user!.uid);
@@ -44,8 +46,6 @@ class RegisterCubit extends Cubit<RegisterStates>
 
     }).catchError((onError)
     {
-      print(onError.toString());
-
       print(onError.toString());
 
       emit(RegisterNewUserErrorState());
@@ -88,6 +88,7 @@ class RegisterCubit extends Cubit<RegisterStates>
     required String email,
     required String UID,
     required String password,
+    required String language
   })
   {
     FirebaseFirestore.instance.collection('users').doc(UID).set(
@@ -95,6 +96,7 @@ class RegisterCubit extends Cubit<RegisterStates>
           'name'     : name,
           'email'    : email,
           'password' : password,
+          'language' : language,
           'uid' : UID
         }).then((value)
     {

@@ -1,18 +1,59 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/register/Register_Cubit.dart';
 import 'package:translate_and_learn_app/cubit/register/Register_States.dart';
 import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:translate_and_learn_app/views/sign_in_screen.dart';
 
-class SignUpScreen extends StatelessWidget
+Future<String?> getSelectedLanguageString() async
+{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String? nativeLanguage = prefs.getString('nativeLanguage');
+  String? nativeLanguageCode = prefs.getString('nativeLanguageCode');
+
+  if (nativeLanguage != null && nativeLanguageCode != null)
+  {
+    return '$nativeLanguage ($nativeLanguageCode)';
+  }
+  else
+  {
+    return 'No language selected';
+  }
+}
+
+class SignUpScreen extends StatefulWidget
 {
   const SignUpScreen({super.key});
 
   @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  String? selectedLanguageString;
+
+  @override
+  void initState()
+  {
+    super.initState();
+    _loadSelectedLanguageString();
+  }
+
+  Future<void> _loadSelectedLanguageString() async
+  {
+    String? languageString = await getSelectedLanguageString();
+    setState(() {
+      selectedLanguageString = languageString;
+    });
+  }
+
+  @override
   Widget build(BuildContext context)
   {
+
     var formKey = GlobalKey<FormState>();
 
     var nameController = TextEditingController();
@@ -121,6 +162,13 @@ class SignUpScreen extends StatelessWidget
                         ),
 
                         // Sign up button
+                        state is RegisterNewUserLoadingState
+                            ?
+                        Container(
+                            margin: EdgeInsetsDirectional.all(30),
+                            child: CupertinoActivityIndicator()
+                        )
+                            :
                         Container(
                           margin: const EdgeInsets.all(20),
                           child: ElevatedButton(
@@ -132,13 +180,16 @@ class SignUpScreen extends StatelessWidget
                               ),
                             ),
                             onPressed: ()
-                            {
+                            async {
                               if(formKey.currentState!.validate())
                               {
+                                String? selectedLanguage = await getSelectedLanguageString();
+
                                 cubit.registerNewUser(
                                     name: nameController.text.trim().toString(),
                                     email: emailController.text.trim().toString(),
-                                    password: passwordController.text.trim().toString()
+                                    password: passwordController.text.trim().toString(),
+                                    language: selectedLanguage ?? "Not Defined"
                                 );
                               }
                             },
@@ -192,10 +243,13 @@ class SignUpScreen extends StatelessWidget
           );
         },
         listener: (BuildContext context, Object? state)
-        {
+        async {
           if(state is SaveDataSuccessState)
           {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('hasSeenWelcome', true);
+
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
           }
         },
       )

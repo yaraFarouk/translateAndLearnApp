@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/views/home_view.dart';
 
 import '../cubit/register/Register_Cubit.dart';
@@ -174,9 +175,13 @@ class SignInScreen extends StatelessWidget
           );
         },
         listener: (BuildContext context, Object? state)
+        async
         {
           if(state is LoginSuccessState)
           {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('hasSeenWelcome', true);
+
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
           }
         },

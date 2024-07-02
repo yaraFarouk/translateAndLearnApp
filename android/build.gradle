@@ -5,6 +5,13 @@ allprojects {
     }
 }
 
+//buildscript {
+//    dependencies {
+//        classpath 'com.google.gms:google-services:latest_version'
+//    }
+//}
+
+
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
