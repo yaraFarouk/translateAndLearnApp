@@ -3,23 +3,20 @@ name: Flutter CI
 on:
   push:
     branches:
-      - main  # Adjust the branch name as needed
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2  # Pulls the code from the repository
+      - uses: actions/checkout@v2
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2  # Uses a GitHub Action for Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
 
-    - name: Install dependencies
-      run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Run tests
-      run: flutter test  # Runs tests in your Flutter project
-
-    # Add more steps as needed, such as deploying to Firebase or other actions
-
+      - name: Run main app build test
+        run: flutter test test/main_test.dart
