@@ -4,10 +4,8 @@ import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart'; // import the DictionaryCubit
 
 class WordDetailsScreen extends StatelessWidget {
-  const WordDetailsScreen(
-      {super.key, required this.word, required this.language});
+  const WordDetailsScreen({super.key, required this.word});
   final WordDetailsModel word;
-  final String language;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,6 @@ class WordDetailsScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Expanded(
               child: WordDetailsView(
-                language: language,
                 word: word,
               ),
             ),
@@ -36,10 +33,8 @@ class WordDetailsScreen extends StatelessWidget {
 }
 
 class WordDetailsView extends StatelessWidget {
-  const WordDetailsView(
-      {super.key, required this.word, required this.language});
+  const WordDetailsView({super.key, required this.word});
   final WordDetailsModel word;
-  final String language;
 
   @override
   Widget build(BuildContext context) {

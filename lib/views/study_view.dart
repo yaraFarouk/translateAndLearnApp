@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
-import 'package:localization/localization.dart';
 import 'package:translate_and_learn_app/widgets/search_text_field.dart';
 
 class StudyScreen extends StatefulWidget {
@@ -17,6 +17,8 @@ class _StudyScreenState extends State<StudyScreen> {
   String _searchQuery = "";
   bool _isSearchBarVisible = false;
   final TextEditingController _searchController = TextEditingController();
+  late Future<String> _titleFuture;
+  late Future<String> _noWordsFuture;
 
   void _toggleSearchBar() {
     setState(() {
@@ -26,6 +28,16 @@ class _StudyScreenState extends State<StudyScreen> {
         _searchController.clear();
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    LocalizationService localizationService = LocalizationService();
+    _titleFuture = localizationService.fetchFromFirestore(
+        'study_words_title', 'Study Words');
+    _noWordsFuture =
+        localizationService.fetchFromFirestore('no_words_yet', 'No words yet');
   }
 
   @override
@@ -44,9 +56,20 @@ class _StudyScreenState extends State<StudyScreen> {
                   });
                 },
               )
-            : Text(
-                'study_words_title'.i18n(),
-                style: const TextStyle(fontFamily: 'CookieCrisp'),
+            : FutureBuilder<String>(
+                future: _titleFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return const Text('Error loading title');
+                  } else {
+                    return Text(
+                      snapshot.data!,
+                      style: const TextStyle(fontFamily: 'CookieCrisp'),
+                    );
+                  }
+                },
               ),
         actions: [
           IconButton(
@@ -68,11 +91,22 @@ class _StudyScreenState extends State<StudyScreen> {
                 }).toList();
 
                 if (filteredWords.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'no_words_yet'.i18n(),
-                      style: const TextStyle(fontFamily: 'CookieCrisp'),
-                    ),
+                  return FutureBuilder<String>(
+                    future: _noWordsFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return const Text('Error loading message');
+                      } else {
+                        return Center(
+                          child: Text(
+                            snapshot.data!,
+                            style: const TextStyle(fontFamily: 'CookieCrisp'),
+                          ),
+                        );
+                      }
+                    },
                   );
                 }
 

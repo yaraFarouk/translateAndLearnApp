@@ -2,13 +2,16 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:characters/characters.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:localization/localization.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
+
 part 'study_words_state.dart';
 
 class StudyWordsCubit extends Cubit<StudyWordsState> {
-  StudyWordsCubit(this.model) : super(StudyWordsState());
   final GenerativeModel model;
+  LocalizationService localizationService = LocalizationService();
+
+  StudyWordsCubit(this.model) : super(StudyWordsState());
 
   void updateLanguageTo(String language) {
     emit(state.copyWith(languageTo: language));
@@ -33,6 +36,9 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
 
     final newWordDetails = <WordDetailsModel>[];
 
+    String userLanguage =
+        await localizationService.fetchFromFirestore("locale", "en");
+
     for (var word in words) {
       final cleanedWord = _cleanWord(word);
 
@@ -40,7 +46,7 @@ class StudyWordsCubit extends Cubit<StudyWordsState> {
           !updatedWords[language]!.contains(cleanedWord)) {
         try {
           final wordDetails =
-              await _getWordDetails(cleanedWord, language, "@@locale".i18n());
+              await _getWordDetails(cleanedWord, language, userLanguage);
 
           updatedWords[language]!.add(cleanedWord);
           newWordDetails.add(wordDetails);

@@ -5,23 +5,22 @@ import 'package:translate_and_learn_app/widgets/study_back_card.dart';
 import 'package:translate_and_learn_app/widgets/study_front_card.dart';
 
 class StudyWordCard extends StatelessWidget {
-  const StudyWordCard(
-      {super.key,
-      required this.isFlipped,
-      required this.index,
-      required this.cardColor,
-      this.onTap,
-      required this.filteredWord,
-      required this.reversedWord,
-      required this.languageFrom,
-      required this.languageTo});
+  const StudyWordCard({
+    super.key,
+    required this.isFlipped,
+    required this.index,
+    required this.cardColor,
+    this.onTap,
+    required this.filteredWord,
+    required this.reversedWord,
+  });
   final bool isFlipped;
   final int index;
   final Color cardColor;
   final Function()? onTap;
   final WordDetailsModel filteredWord;
   final WordDetailsModel reversedWord;
-  final String languageFrom, languageTo;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -44,8 +43,6 @@ class StudyWordCard extends StatelessWidget {
                     index: index,
                     cardColor: cardColor,
                     word: filteredWord.word,
-                    languageFrom: languageFrom,
-                    languageTo: languageTo,
                     isFlipped: isFlipped,
                     reversedWord: reversedWord)
                 : StudyFrontCard(

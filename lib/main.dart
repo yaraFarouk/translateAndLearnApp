@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:translate_and_learn_app/cubit/cubit/dictionary_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
-import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:translate_and_learn_app/views/language_selection_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-void main() async
-{
-
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Gemini API
@@ -75,10 +68,8 @@ class TranslateAndLearnApp extends StatelessWidget {
   final Locale? initialLocale;
   @override
   Widget build(BuildContext context) {
-    LocalJsonLocalization.delegate.directories = ['lib/i18n'];
-
     return ScreenUtilInit(
-        designSize: Size(375, 812), // Adjust the design size as needed
+        designSize: const Size(375, 812), // Adjust the design size as needed
         minTextAdapt: true,
         builder: (context, child) => MultiProvider(
               providers: [
@@ -97,37 +88,7 @@ class TranslateAndLearnApp extends StatelessWidget {
               ],
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                localizationsDelegates: [
-                  // delegate from flutter_localization
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-
-                  // delegate from localization package.
-                  //json-file
-                  LocalJsonLocalization.delegate,
-                  //or map
-                  MapLocalization.delegate,
-                ],
-                supportedLocales: const [
-                  Locale('en', 'US'),
-                  Locale('es', 'ES'),
-                  Locale('fr', 'FR'),
-                  Locale('de', 'DE'),
-                  Locale('it', 'IT'),
-                  Locale('pt', 'BR'),
-                  Locale('zh', 'CN'),
-                  Locale('ja', 'JP'),
-                  Locale('pl', 'PL'),
-                  Locale('tr', 'TR'),
-                  Locale('ru', 'RU'),
-                  Locale('nl', 'NL'),
-                  Locale('ko', 'KR'),
-                ],
-                locale: initialLocale,
-                home: hasSeenWelcome
-                    ? const HomePage()
-                    : const LanguageSelectionPage(),
+                home: const LanguageSelectionPage(),
               ),
             ));
   }

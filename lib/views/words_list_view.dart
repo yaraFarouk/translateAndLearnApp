@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
-import 'package:translate_and_learn_app/cubit/cubit/words_translate_cubit.dart';
-import 'package:localization/localization.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/widgets/quiz_button.dart';
 import 'package:translate_and_learn_app/widgets/return_button.dart';
@@ -65,96 +61,89 @@ class _WordListScreenState extends State<WordListScreen>
 
   @override
   Widget build(BuildContext context) {
-    final model = GenerativeModel(
-        apiKey: kAPIKEY,
-        model: 'gemini-1.5-flash'); // Initialize with your API key
+    // Initialize with your API key
 
     final filteredWords = reversedWords.where((word) {
       return word.word.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
 
-    return BlocProvider(
-      create: (context) => WordsTranslateCubit(model),
-      child: Scaffold(
-          backgroundColor: kPrimaryColor,
-          body: Column(
-            children: [
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 50.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "assets/images/logo.png",
-                        height: 100.h,
-                      ),
-                      if (!_isSearching)
-                        IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () {
-                            setState(() {
-                              _isSearching = true;
-                            });
-                          },
-                        ),
-                      if (_isSearching)
-                        SearchTextField(
-                          searchController: _searchController,
-                          onChanged: (value) {
-                            setState(() {
-                              _searchQuery = value;
-                            });
-                          },
-                        ),
-                      if (_isSearching)
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            setState(() {
-                              _isSearching = false;
-                              _searchQuery = "";
-                              _searchController.clear();
-                            });
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Stack(
+    return Scaffold(
+        backgroundColor: kPrimaryColor,
+        body: Column(
+          children: [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 50.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ListView.builder(
-                      itemCount: filteredWords.length,
-                      itemBuilder: (context, index) {
-                        Color cardColor = index % 2 == 0
-                            ? kTranslationCardColor
-                            : kTranslatorcardColor;
-
-                        return StudyWordCard(
-                          isFlipped: _isFlipped[index],
-                          index: index,
-                          cardColor: cardColor,
-                          filteredWord: filteredWords[index],
-                          reversedWord: reversedWords[index],
-                          languageFrom: widget.language,
-                          languageTo: "@@locale".i18n(),
-                          onTap: () {
-                            _flipCard(index);
-                          },
-                        );
-                      },
+                    Image.asset(
+                      "assets/images/logo.png",
+                      height: 100.h,
                     ),
-                    const ReturnButton(),
+                    if (!_isSearching)
+                      IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          setState(() {
+                            _isSearching = true;
+                          });
+                        },
+                      ),
+                    if (_isSearching)
+                      SearchTextField(
+                        searchController: _searchController,
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                          });
+                        },
+                      ),
+                    if (_isSearching)
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            _isSearching = false;
+                            _searchQuery = "";
+                            _searchController.clear();
+                          });
+                        },
+                      ),
                   ],
                 ),
               ),
-            ],
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          floatingActionButton:
-              QuizButton(words: widget.words, language: widget.language)),
-    );
+            ),
+            Expanded(
+              child: Stack(
+                children: [
+                  ListView.builder(
+                    itemCount: filteredWords.length,
+                    itemBuilder: (context, index) {
+                      Color cardColor = index % 2 == 0
+                          ? kTranslationCardColor
+                          : kTranslatorcardColor;
+
+                      return StudyWordCard(
+                        isFlipped: _isFlipped[index],
+                        index: index,
+                        cardColor: cardColor,
+                        filteredWord: filteredWords[index],
+                        reversedWord: reversedWords[index],
+                        onTap: () {
+                          _flipCard(index);
+                        },
+                      );
+                    },
+                  ),
+                  const ReturnButton(),
+                ],
+              ),
+            ),
+          ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton:
+            QuizButton(words: widget.words, language: widget.language));
   }
 }
