@@ -11,8 +11,7 @@ class LanguageSelectionPage extends StatefulWidget {
   _LanguageSelectionPageState createState() => _LanguageSelectionPageState();
 }
 
-class _LanguageSelectionPageState extends State<LanguageSelectionPage>
-{
+class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
   String? selectedLanguage;
   final Map<String, String> languageCodes = {
     'English': 'en',
@@ -31,11 +30,9 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage>
   };
 
   @override
-  Widget build(BuildContext context)
-  {
-
-    Future<void> storeSelectedLanguage(String selectedLanguage, String languageCode) async
-    {
+  Widget build(BuildContext context) {
+    Future<void> storeSelectedLanguage(
+        String selectedLanguage, String languageCode) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('nativeLanguage', selectedLanguage);
       await prefs.setString('nativeLanguageCode', languageCode);
@@ -115,14 +112,13 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage>
             ),
             Center(
               child: ElevatedButton(
-                onPressed: () async
-                {
-                  if (selectedLanguage != null)
-                  {
-
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                onPressed: () async {
+                  if (selectedLanguage != null) {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
                     await prefs.setString('nativeLanguage', selectedLanguage!);
-                    await prefs.setString('nativeLanguageCode', languageCodes[selectedLanguage]!);
+                    await prefs.setString(
+                        'nativeLanguageCode', languageCodes[selectedLanguage]!);
 
                     // await prefs.setBool('hasSeenWelcome', true);
 
@@ -131,9 +127,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage>
                         builder: (_) => const OnboardingScreen(),
                       ),
                     );
-                  }
-                  else
-                  {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Please select a language'),

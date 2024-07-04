@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
-import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
+import 'package:translate_and_learn_app/models/word_details_model.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
-import 'package:localization/localization.dart';
 import 'package:translate_and_learn_app/widgets/search_text_field.dart';
 
 class StudyScreen extends StatefulWidget {
@@ -17,6 +18,9 @@ class _StudyScreenState extends State<StudyScreen> {
   String _searchQuery = "";
   bool _isSearchBarVisible = false;
   final TextEditingController _searchController = TextEditingController();
+  late Future<String> _titleFuture;
+  late Future<String> _noWordsFuture;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _wordsStream;
 
   void _toggleSearchBar() {
     setState(() {
@@ -26,6 +30,26 @@ class _StudyScreenState extends State<StudyScreen> {
         _searchController.clear();
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    LocalizationService localizationService = LocalizationService();
+    _titleFuture = localizationService.fetchFromFirestore(
+        'study_words_title', 'Study Words');
+    _noWordsFuture =
+        localizationService.fetchFromFirestore('no_words_yet', 'No words yet');
+    _wordsStream = _getWordsStream();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> _getWordsStream() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .collection('Languages')
+        .snapshots();
   }
 
   @override
@@ -44,9 +68,20 @@ class _StudyScreenState extends State<StudyScreen> {
                   });
                 },
               )
-            : Text(
-                'study_words_title'.i18n(),
-                style: const TextStyle(fontFamily: 'CookieCrisp'),
+            : FutureBuilder<String>(
+                future: _titleFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return const Text('Error loading title');
+                  } else {
+                    return Text(
+                      snapshot.data!,
+                      style: const TextStyle(fontFamily: 'CookieCrisp'),
+                    );
+                  }
+                },
               ),
         actions: [
           IconButton(
@@ -61,16 +96,43 @@ class _StudyScreenState extends State<StudyScreen> {
             const SizedBox(
                 height: 16.0), // Add spacing when search bar is hidden
           Expanded(
-            child: BlocBuilder<StudyWordsCubit, StudyWordsState>(
-              builder: (context, state) {
-                final filteredWords = state.wordDetails.entries.where((entry) {
-                  return entry.key.toLowerCase().contains(_searchQuery);
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: _wordsStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Text('Error loading words');
+                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return FutureBuilder<String>(
+                    future: _noWordsFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return const Text('Error loading message');
+                      } else {
+                        return Center(
+                          child: Text(
+                            snapshot.data!,
+                            style: const TextStyle(fontFamily: 'CookieCrisp'),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                }
+
+                final filteredWords = snapshot.data!.docs.where((doc) {
+                  return (doc['language'] as String)
+                      .toLowerCase()
+                      .contains(_searchQuery);
                 }).toList();
 
                 if (filteredWords.isEmpty) {
                   return Center(
                     child: Text(
-                      'no_words_yet'.i18n(),
+                      'No words found',
                       style: const TextStyle(fontFamily: 'CookieCrisp'),
                     ),
                   );
@@ -89,7 +151,7 @@ class _StudyScreenState extends State<StudyScreen> {
                       child: ListTile(
                         title: Center(
                           child: Text(
-                            entry.key,
+                            entry['language'],
                             style: const TextStyle(
                               fontFamily: 'CookieCrisp',
                               fontSize: 20,
@@ -103,8 +165,7 @@ class _StudyScreenState extends State<StudyScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => WordListScreen(
-                                language: entry.key,
-                                words: entry.value.toList(),
+                                language: entry['language'],
                               ),
                             ),
                           );

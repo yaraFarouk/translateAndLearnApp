@@ -1,29 +1,29 @@
 part of 'study_words_cubit.dart';
 
 class StudyWordsState {
-  final Map<String, Set<String>> studyWords;
-  final Map<String, List<WordDetailsModel>> wordDetails;
   final String languageTo;
   final bool isLoading;
+  final DocumentSnapshot? lastDocument;
+  final bool hasMore;
 
   StudyWordsState({
-    this.studyWords = const {},
-    this.wordDetails = const {},
     this.languageTo = 'English',
     this.isLoading = false,
+    this.lastDocument,
+    this.hasMore = true,
   });
 
   StudyWordsState copyWith({
-    Map<String, Set<String>>? studyWords,
-    Map<String, List<WordDetailsModel>>? wordDetails,
     String? languageTo,
     bool? isLoading,
+    DocumentSnapshot? lastDocument,
+    bool? hasMore,
   }) {
     return StudyWordsState(
-      studyWords: studyWords ?? this.studyWords,
-      wordDetails: wordDetails ?? this.wordDetails,
       languageTo: languageTo ?? this.languageTo,
       isLoading: isLoading ?? this.isLoading,
+      lastDocument: lastDocument ?? this.lastDocument,
+      hasMore: hasMore ?? this.hasMore,
     );
   }
 }

@@ -1,14 +1,16 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:localization/localization.dart';
 import 'package:meta/meta.dart';
+
 import 'dart:async';
+
+import 'package:translate_and_learn_app/services/localization_service.dart';
 
 part 'gemini_chat_state.dart';
 
 class GeminiChatCubit extends Cubit<GeminiChatState> {
   final GenerativeModel model;
+  LocalizationService localizationService = LocalizationService();
   String languageFrom = 'English';
   String languageTo = 'English';
   String lastText = '';
@@ -48,8 +50,10 @@ class GeminiChatCubit extends Cubit<GeminiChatState> {
 
         // Replace newlines and create the translation prompt
         text = text.replaceAll('\n', ' ');
+        String userLanguage =
+            await localizationService.fetchFromFirestore("locale", "en");
         String prompt =
-            "you are a chat bot in a language learning app the native language of the user is ${"@@locale".i18n()} and the language he wants to learn is $languageTo and his message is: $text";
+            "you are a chat bot in a language learning app the native language of the user is $userLanguage and the language he wants to learn is $languageTo and his message is: $text";
 
         final content = [Content.text(prompt)];
         final response = await model.generateContent(content);

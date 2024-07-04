@@ -5,23 +5,26 @@ import 'package:translate_and_learn_app/widgets/study_back_card.dart';
 import 'package:translate_and_learn_app/widgets/study_front_card.dart';
 
 class StudyWordCard extends StatelessWidget {
-  const StudyWordCard(
-      {super.key,
-      required this.isFlipped,
-      required this.index,
-      required this.cardColor,
-      this.onTap,
-      required this.filteredWord,
-      required this.reversedWord,
-      required this.languageFrom,
-      required this.languageTo});
+  const StudyWordCard({
+    super.key,
+    required this.isFlipped,
+    required this.index,
+    required this.cardColor,
+    this.onTap,
+    required this.filteredWord,
+    required this.reversedWord,
+    required this.wordID,
+    required this.language,
+  });
+  final String wordID;
   final bool isFlipped;
   final int index;
   final Color cardColor;
   final Function()? onTap;
   final WordDetailsModel filteredWord;
   final WordDetailsModel reversedWord;
-  final String languageFrom, languageTo;
+  final String language;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,19 +43,21 @@ class StudyWordCard extends StatelessWidget {
             },
             child: isFlipped
                 ? StudyBackCard(
+                    wordID: wordID, // Assuming reversedWord has an 'id' field
                     context: context,
                     index: index,
                     cardColor: cardColor,
-                    word: filteredWord.word,
-                    languageFrom: languageFrom,
-                    languageTo: languageTo,
+                    word: reversedWord.word,
                     isFlipped: isFlipped,
-                    reversedWord: reversedWord)
+                    reversedWord: reversedWord,
+                    language: language,
+                  )
                 : StudyFrontCard(
                     context: context,
                     index: index,
                     cardColor: cardColor,
-                    filteredWord: filteredWord),
+                    filteredWord: filteredWord,
+                  ),
           ),
         ),
       ),
