@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
+import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:translate_and_learn_app/views/language_selection_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -88,7 +89,9 @@ class TranslateAndLearnApp extends StatelessWidget {
               ],
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                home: const LanguageSelectionPage(),
+                home: hasSeenWelcome
+                    ? const HomePage()
+                    : const LanguageSelectionPage(),
               ),
             ));
   }

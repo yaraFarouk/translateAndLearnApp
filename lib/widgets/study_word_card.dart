@@ -13,13 +13,17 @@ class StudyWordCard extends StatelessWidget {
     this.onTap,
     required this.filteredWord,
     required this.reversedWord,
+    required this.wordID,
+    required this.language,
   });
+  final String wordID;
   final bool isFlipped;
   final int index;
   final Color cardColor;
   final Function()? onTap;
   final WordDetailsModel filteredWord;
   final WordDetailsModel reversedWord;
+  final String language;
 
   @override
   Widget build(BuildContext context) {
@@ -39,17 +43,21 @@ class StudyWordCard extends StatelessWidget {
             },
             child: isFlipped
                 ? StudyBackCard(
+                    wordID: wordID, // Assuming reversedWord has an 'id' field
                     context: context,
                     index: index,
                     cardColor: cardColor,
-                    word: filteredWord.word,
+                    word: reversedWord.word,
                     isFlipped: isFlipped,
-                    reversedWord: reversedWord)
+                    reversedWord: reversedWord,
+                    language: language,
+                  )
                 : StudyFrontCard(
                     context: context,
                     index: index,
                     cardColor: cardColor,
-                    filteredWord: filteredWord),
+                    filteredWord: filteredWord,
+                  ),
           ),
         ),
       ),
