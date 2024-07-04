@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:translate_and_learn_app/constants.dart';
-import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
 import 'package:translate_and_learn_app/widgets/search_text_field.dart';
@@ -130,10 +129,10 @@ class _StudyScreenState extends State<StudyScreen> {
                 }).toList();
 
                 if (filteredWords.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       'No words found',
-                      style: const TextStyle(fontFamily: kFont),
+                      style: TextStyle(fontFamily: kFont),
                     ),
                   );
                 }

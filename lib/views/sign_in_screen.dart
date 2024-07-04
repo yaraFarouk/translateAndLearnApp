@@ -7,16 +7,14 @@ import 'package:translate_and_learn_app/views/home_view.dart';
 import '../cubit/register/Register_Cubit.dart';
 import '../cubit/register/Register_States.dart';
 
-class SignInScreen extends StatelessWidget
-{
+class SignInScreen extends StatelessWidget {
+  const SignInScreen({super.key});
 
   @override
-  Widget build(BuildContext context)
-  {
-
+  Widget build(BuildContext context) {
     var formKey = GlobalKey<FormState>();
 
-    var emailController    = TextEditingController();
+    var emailController = TextEditingController();
     var passwordController = TextEditingController();
 
     var passHidden = true;
@@ -24,9 +22,7 @@ class SignInScreen extends StatelessWidget
     return BlocProvider(
       create: (context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
-        builder: (context, state)
-        {
-
+        builder: (context, state) {
           var cubit = RegisterCubit.get(context);
 
           return Scaffold(
@@ -38,105 +34,89 @@ class SignInScreen extends StatelessWidget
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children:
-                      [
-
+                      children: [
                         Container(
-                          margin: EdgeInsetsDirectional.all(20),
-                          child: Text(
+                          margin: const EdgeInsetsDirectional.all(20),
+                          child: const Text(
                             'Already a learner? let\'s find out!',
                             style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.w800
-                            ),
+                                fontSize: 30, fontWeight: FontWeight.w800),
                           ),
                         ),
 
                         Container(
-                          margin: EdgeInsetsDirectional.all(20),
+                          margin: const EdgeInsetsDirectional.all(20),
                           child: TextFormField(
-                            validator: (value)
-                            {
-                              if(value!.isEmpty) return 'Enter a valid email';
+                            validator: (value) {
+                              if (value!.isEmpty) return 'Enter a valid email';
                             },
                             controller: emailController,
                             decoration: InputDecoration(
-                                label: Text('Email'),
-                                prefixIcon: Icon(Icons.email_outlined),
+                                label: const Text('Email'),
+                                prefixIcon: const Icon(Icons.email_outlined),
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15)
-                                )
-                            ),
+                                    borderRadius: BorderRadius.circular(15))),
                           ),
                         ),
 
                         Container(
-                          margin: EdgeInsetsDirectional.all(20),
+                          margin: const EdgeInsetsDirectional.all(20),
                           child: TextFormField(
                             controller: passwordController,
-                            validator: (value)
-                            {
-                              if(value!.isEmpty) return 'Password is empty';
+                            validator: (value) {
+                              if (value!.isEmpty) return 'Password is empty';
                             },
-
                             obscureText: passHidden,
-
                             keyboardType: TextInputType.visiblePassword,
-
                             decoration: InputDecoration(
-                                label: Text('Password'),
-                                prefixIcon: Icon(Icons.lock_outline_rounded),
+                                label: const Text('Password'),
+                                prefixIcon:
+                                    const Icon(Icons.lock_outline_rounded),
                                 suffixIcon: IconButton(
-                                    onPressed: ()
-                                    {
+                                    onPressed: () {
                                       passHidden = !passHidden;
                                       cubit.changeVisibility();
                                     },
-                                    icon : Icon(Icons.remove_red_eye_outlined)
-                                ),
+                                    icon: const Icon(
+                                        Icons.remove_red_eye_outlined)),
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15)
-                                )
-                            ),
+                                    borderRadius: BorderRadius.circular(15))),
                           ),
                         ),
 
                         state is LoginLoadingState
-                            ?
-                        Container(
-                            margin: EdgeInsetsDirectional.all(30),
-                            child: CupertinoActivityIndicator()
-                        )
-                            :
-                        Container(
-                          margin: const EdgeInsets.all(20),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF8C00FF),
-                              padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 20),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                            ? Container(
+                                margin: const EdgeInsetsDirectional.all(30),
+                                child: const CupertinoActivityIndicator())
+                            : Container(
+                                margin: const EdgeInsets.all(20),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF8C00FF),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 80, vertical: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate()) {
+                                      cubit.loginUser(
+                                          email: emailController.text
+                                              .trim()
+                                              .toString(),
+                                          password: passwordController.text
+                                              .trim()
+                                              .toString());
+                                    }
+                                  },
+                                  child: const Text(
+                                    'Sign In',
+                                    style: TextStyle(
+                                        fontSize: 18, color: Colors.white),
+                                  ),
+                                ),
                               ),
-                            ),
-                            onPressed: ()
-                            {
-                              if(formKey.currentState!.validate())
-                              {
-                                cubit.loginUser(
-                                    email: emailController.text.trim().toString(),
-                                    password: passwordController.text.trim().toString()
-                                );
-                              }
-                            },
-                            child: const Text(
-                              'Sign In',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white
-                              ),
-                            ),
-                          ),
-                        ),
 
                         // line
                         Container(
@@ -151,20 +131,17 @@ class SignInScreen extends StatelessWidget
                         // already learner button
                         Container(
                           child: MaterialButton(
-                              onPressed: ()
-                              {
+                              onPressed: () {
                                 // go to SignInScreen
 
                                 Navigator.pop(context);
-
                               },
                               child: const Text(
                                 'Not a learner? Sign up',
                                 style: TextStyle(
                                   color: Color(0xFF8C00FF),
                                 ),
-                              )
-                          ),
+                              )),
                         )
                       ],
                     ),
@@ -174,18 +151,15 @@ class SignInScreen extends StatelessWidget
             ),
           );
         },
-        listener: (BuildContext context, Object? state)
-        async
-        {
-          if(state is LoginSuccessState)
-          {
+        listener: (BuildContext context, Object? state) async {
+          if (state is LoginSuccessState) {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setBool('hasSeenWelcome', true);
 
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const HomePage()));
           }
         },
-
       ),
     );
   }

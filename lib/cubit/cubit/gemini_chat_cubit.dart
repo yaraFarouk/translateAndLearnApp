@@ -74,7 +74,7 @@ class GeminiChatCubit extends Cubit<GeminiChatState> {
   Future<void> resetTranslation() async {
     try {
       // Notify the model about the reset without updating the state
-      final prompt = "The user has reset the chat.";
+      const prompt = "The user has reset the chat.";
       final content = [Content.text(prompt)];
       await model.generateContent(content);
     } catch (e) {

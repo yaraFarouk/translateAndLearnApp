@@ -10,15 +10,15 @@ abstract class GeminiChatState {
 }
 
 class GeminiChatInitial extends GeminiChatState {
-  const GeminiChatInitial(List<Message> messages) : super(messages);
+  const GeminiChatInitial(super.messages);
 }
 
 class GeminiChatLoading extends GeminiChatState {
-  const GeminiChatLoading(List<Message> messages) : super(messages);
+  const GeminiChatLoading(super.messages);
 }
 
 class GeminiChatSuccess extends GeminiChatState {
-  const GeminiChatSuccess(List<Message> messages) : super(messages);
+  const GeminiChatSuccess(super.messages);
 }
 
 class GeminiChatError extends GeminiChatState {

@@ -31,12 +31,12 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> storeSelectedLanguage(
-        String selectedLanguage, String languageCode) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('nativeLanguage', selectedLanguage);
-      await prefs.setString('nativeLanguageCode', languageCode);
-    }
+    // Future<void> storeSelectedLanguage(
+    //     String selectedLanguage, String languageCode) async {
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   await prefs.setString('nativeLanguage', selectedLanguage);
+    //   await prefs.setString('nativeLanguageCode', languageCode);
+    // }
 
     return Scaffold(
       backgroundColor: kPrimaryColor,

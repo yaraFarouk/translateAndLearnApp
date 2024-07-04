@@ -99,7 +99,7 @@ class _WordListScreenState extends State<WordListScreen>
     return Scaffold(
       backgroundColor: kPrimaryColor,
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 Center(
@@ -114,7 +114,7 @@ class _WordListScreenState extends State<WordListScreen>
                         ),
                         if (!_isSearching)
                           IconButton(
-                            icon: Icon(Icons.search),
+                            icon: const Icon(Icons.search),
                             onPressed: () {
                               setState(() {
                                 _isSearching = true;

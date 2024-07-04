@@ -53,11 +53,11 @@ class _WordDetailsScreenState extends State<WordDetailsScreen> {
         future: _wordDetails,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return Center(child: Text('Word not found'));
+            return const Center(child: Text('Word not found'));
           } else {
             final word = snapshot.data!;
             return Padding(
