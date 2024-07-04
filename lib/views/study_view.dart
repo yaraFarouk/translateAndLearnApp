@@ -78,7 +78,7 @@ class _StudyScreenState extends State<StudyScreen> {
                   } else {
                     return Text(
                       snapshot.data!,
-                      style: const TextStyle(fontFamily: 'CookieCrisp'),
+                      style: const TextStyle(fontFamily: kFont),
                     );
                   }
                 },
@@ -115,7 +115,7 @@ class _StudyScreenState extends State<StudyScreen> {
                         return Center(
                           child: Text(
                             snapshot.data!,
-                            style: const TextStyle(fontFamily: 'CookieCrisp'),
+                            style: const TextStyle(fontFamily: kFont),
                           ),
                         );
                       }
@@ -133,7 +133,7 @@ class _StudyScreenState extends State<StudyScreen> {
                   return Center(
                     child: Text(
                       'No words found',
-                      style: const TextStyle(fontFamily: 'CookieCrisp'),
+                      style: const TextStyle(fontFamily: kFont),
                     ),
                   );
                 }
@@ -153,7 +153,7 @@ class _StudyScreenState extends State<StudyScreen> {
                           child: Text(
                             entry['language'],
                             style: const TextStyle(
-                              fontFamily: 'CookieCrisp',
+                              fontFamily: kFont,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: kAppBarColor,

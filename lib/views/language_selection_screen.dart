@@ -58,7 +58,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
             Center(
               child: Text(
                 'Please select your native language:',
-                style: TextStyle(fontSize: 18.sp, fontFamily: 'CookieCrisp'),
+                style: TextStyle(fontSize: 18.sp, fontFamily: kFont),
               ),
             ),
             SizedBox(
@@ -152,7 +152,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                   'Get Started',
                   style: TextStyle(
                     color: kAppBarColor,
-                    fontFamily: 'CookieCrisp',
+                    fontFamily: kFont,
                   ),
                 ),
               ),
