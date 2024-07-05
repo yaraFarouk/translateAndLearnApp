@@ -56,6 +56,7 @@ class _StudyScreenState extends State<StudyScreen> {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: kPrimaryColor,
         centerTitle: true,
         title: _isSearchBarVisible
