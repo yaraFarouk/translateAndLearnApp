@@ -57,7 +57,7 @@ class _StartChatScreenState extends State<StartChatScreen> {
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 width: 200,
                 height: 60,
@@ -104,9 +104,9 @@ class _StartChatScreenState extends State<StartChatScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               isLoading
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : OutlinedButton(
                       onPressed: () {
                         if (selectedLanguage != null) {
@@ -124,12 +124,12 @@ class _StartChatScreenState extends State<StartChatScreen> {
                       },
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        side: BorderSide(color: kGeminiColor, width: 2),
+                        side: const BorderSide(color: kGeminiColor, width: 2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40),
                         ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
                       ),
                       child: const Text(
                         'Start Chat with Gemini',

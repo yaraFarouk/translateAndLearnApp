@@ -31,9 +31,9 @@ class TranslatorcardsView extends StatelessWidget {
         ]),
         builder: (context, AsyncSnapshot<List<String>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading localizations'));
+            return const Center(child: Text('Error loading localizations'));
           } else {
             List<String> localizedTexts = snapshot.data!;
             return ListView(

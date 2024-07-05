@@ -100,7 +100,7 @@ class ScorePage extends StatelessWidget {
                 },
                 label: const Text(
                   'RETURN',
-                  style: TextStyle(fontFamily: 'CookieCrisp'),
+                  style: TextStyle(fontFamily: kFont),
                 ),
                 icon: const Icon(Icons.arrow_back),
                 heroTag: 'returnBtn',

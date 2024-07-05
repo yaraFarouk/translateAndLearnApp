@@ -31,12 +31,12 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> storeSelectedLanguage(
-        String selectedLanguage, String languageCode) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('nativeLanguage', selectedLanguage);
-      await prefs.setString('nativeLanguageCode', languageCode);
-    }
+    // Future<void> storeSelectedLanguage(
+    //     String selectedLanguage, String languageCode) async {
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   await prefs.setString('nativeLanguage', selectedLanguage);
+    //   await prefs.setString('nativeLanguageCode', languageCode);
+    // }
 
     return Scaffold(
       backgroundColor: kPrimaryColor,
@@ -58,7 +58,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
             Center(
               child: Text(
                 'Please select your native language:',
-                style: TextStyle(fontSize: 18.sp, fontFamily: 'CookieCrisp'),
+                style: TextStyle(fontSize: 18.sp, fontFamily: kFont),
               ),
             ),
             SizedBox(
@@ -152,7 +152,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                   'Get Started',
                   style: TextStyle(
                     color: kAppBarColor,
-                    fontFamily: 'CookieCrisp',
+                    fontFamily: kFont,
                   ),
                 ),
               ),

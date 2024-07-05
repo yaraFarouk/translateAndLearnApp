@@ -7,9 +7,9 @@ abstract class QuizState {}
 class QuizInitial extends QuizState {}
 
 class QuizQuestionGenerated extends QuizState {
-  final String question;
+  final QuizModel quizModel;
 
-  QuizQuestionGenerated(this.question);
+  QuizQuestionGenerated(this.quizModel);
 }
 
 class QuizFinished extends QuizState {
