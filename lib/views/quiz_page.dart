@@ -3,12 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:translate_and_learn_app/constants.dart';
-import 'package:translate_and_learn_app/cubit/cubit/answers_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/quiz_cubit.dart';
-import 'package:translate_and_learn_app/cubit/cubit/proof_cubit.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/views/score_page.dart';
-import 'package:translate_and_learn_app/widgets/text_container.dart'; // Import the score page
+import 'package:translate_and_learn_app/widgets/text_container.dart';
 
 class QuizPage extends StatefulWidget {
   final List<WordDetailsModel> words;
@@ -22,8 +20,6 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   late QuizCubit _quizCubit;
-  late AnswersCubit _answersCubit;
-  late ProofCubit _proofCubit;
   int _currentWordIndex = 0;
   late List<WordDetailsModel> _shuffledWords;
   int _score = 0;
@@ -39,12 +35,6 @@ class _QuizPageState extends State<QuizPage> {
     _quizCubit = QuizCubit(
       GenerativeModel(apiKey: kAPIKEY, model: 'gemini-1.5-flash'),
     );
-    _answersCubit = AnswersCubit(
-      GenerativeModel(apiKey: kAPIKEY, model: 'gemini-1.5-flash'),
-    );
-    _proofCubit = ProofCubit(
-      GenerativeModel(apiKey: kAPIKEY, model: 'gemini-1.5-flash'),
-    );
     _generateNextQuestion();
   }
 
@@ -52,17 +42,8 @@ class _QuizPageState extends State<QuizPage> {
     if (_currentWordIndex < _shuffledWords.length) {
       final word = _shuffledWords[_currentWordIndex];
       _quizCubit.generateQuestion(widget.language, word.word);
-      _answersCubit
-          .getAnswers(widget.language, word.word, word.word)
-          .then((answers) {
-        setState(() {
-          _selectedAnswer = null; // Reset selected answer for the new question
-          _answerSubmitted = false;
-        });
-      });
-      _proofCubit.getAnswers(widget.language, word.word, word.word);
     } else {
-      _onFinishQuiz(); // Navigate to the score page if all words are done
+      _onFinishQuiz();
     }
   }
 
@@ -85,6 +66,8 @@ class _QuizPageState extends State<QuizPage> {
   void _onNextQuestion() {
     setState(() {
       _currentWordIndex++;
+      _answerSubmitted = false; // Reset the answer submission state
+      _selectedAnswer = null; // Reset the selected answer
       _generateNextQuestion();
     });
   }
@@ -100,12 +83,8 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => _quizCubit),
-        BlocProvider(create: (context) => _answersCubit),
-        BlocProvider(create: (context) => _proofCubit),
-      ],
+    return BlocProvider(
+      create: (context) => _quizCubit,
       child: Scaffold(
         body: Stack(
           children: [
@@ -139,114 +118,163 @@ class _QuizPageState extends State<QuizPage> {
                               ));
                             } else if (state is QuizQuestionGenerated) {
                               return Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: TextContainer(
-                                    title: "Question",
-                                    content: Center(
-                                      child: Text(
-                                        state.question,
-                                        style: TextStyle(fontSize: 24.sp),
-                                        textAlign: TextAlign.center,
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    TextContainer(
+                                      title: "Question",
+                                      content: Center(
+                                        child: Text(
+                                          state.quizModel.question,
+                                          style: TextStyle(fontSize: 24.sp),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
-                                  ));
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.all(16.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(16.r),
+                                        border: Border.all(
+                                          color: _answerSubmitted
+                                              ? _selectedAnswer ==
+                                                      _shuffledWords[
+                                                              _currentWordIndex]
+                                                          .word
+                                                  ? Colors.green
+                                                  : Colors.red
+                                              : kTranslationCardColor,
+                                          width: 3,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          RadioListTile<String>(
+                                            title:
+                                                Text(state.quizModel.choice1),
+                                            value: state.quizModel.choice1,
+                                            groupValue: _selectedAnswer,
+                                            onChanged: _answerSubmitted
+                                                ? null
+                                                : (value) {
+                                                    setState(() {
+                                                      _selectedAnswer = value;
+                                                    });
+                                                  },
+                                            activeColor: _answerSubmitted
+                                                ? state.quizModel.choice1 ==
+                                                        _shuffledWords[
+                                                                _currentWordIndex]
+                                                            .word
+                                                    ? Colors.green
+                                                    : state.quizModel.choice1 ==
+                                                            _selectedAnswer
+                                                        ? Colors.red
+                                                        : Colors.grey
+                                                : Colors.grey,
+                                          ),
+                                          RadioListTile<String>(
+                                            title:
+                                                Text(state.quizModel.choice2),
+                                            value: state.quizModel.choice2,
+                                            groupValue: _selectedAnswer,
+                                            onChanged: _answerSubmitted
+                                                ? null
+                                                : (value) {
+                                                    setState(() {
+                                                      _selectedAnswer = value;
+                                                    });
+                                                  },
+                                            activeColor: _answerSubmitted
+                                                ? state.quizModel.choice2 ==
+                                                        _shuffledWords[
+                                                                _currentWordIndex]
+                                                            .word
+                                                    ? Colors.green
+                                                    : state.quizModel.choice2 ==
+                                                            _selectedAnswer
+                                                        ? Colors.red
+                                                        : Colors.grey
+                                                : Colors.grey,
+                                          ),
+                                          RadioListTile<String>(
+                                            title:
+                                                Text(state.quizModel.choice3),
+                                            value: state.quizModel.choice3,
+                                            groupValue: _selectedAnswer,
+                                            onChanged: _answerSubmitted
+                                                ? null
+                                                : (value) {
+                                                    setState(() {
+                                                      _selectedAnswer = value;
+                                                    });
+                                                  },
+                                            activeColor: _answerSubmitted
+                                                ? state.quizModel.choice3 ==
+                                                        _shuffledWords[
+                                                                _currentWordIndex]
+                                                            .word
+                                                    ? Colors.green
+                                                    : state.quizModel.choice3 ==
+                                                            _selectedAnswer
+                                                        ? Colors.red
+                                                        : Colors.grey
+                                                : Colors.grey,
+                                          ),
+                                          RadioListTile<String>(
+                                            title:
+                                                Text(state.quizModel.choice4),
+                                            value: state.quizModel.choice4,
+                                            groupValue: _selectedAnswer,
+                                            onChanged: _answerSubmitted
+                                                ? null
+                                                : (value) {
+                                                    setState(() {
+                                                      _selectedAnswer = value;
+                                                    });
+                                                  },
+                                            activeColor: _answerSubmitted
+                                                ? state.quizModel.choice4 ==
+                                                        _shuffledWords[
+                                                                _currentWordIndex]
+                                                            .word
+                                                    ? Colors.green
+                                                    : state.quizModel.choice4 ==
+                                                            _selectedAnswer
+                                                        ? Colors.red
+                                                        : Colors.grey
+                                                : Colors.grey,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (_answerSubmitted)
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: TextContainer(
+                                          title:
+                                              "Correct Answer: ${_shuffledWords[_currentWordIndex].word}",
+                                          content: Text(
+                                            'Proof: ${state.quizModel.proof}',
+                                            style: TextStyle(fontSize: 16.sp),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              );
                             } else if (state is QuizError) {
                               return Center(child: Text(state.message));
                             }
                             return Container();
                           },
                         ),
-                        BlocBuilder<AnswersCubit, AnswersState>(
-                          builder: (context, state) {
-                            if (state is AnswersInitial) {
-                              return const Center(
-                                  child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: CircularProgressIndicator(),
-                              ));
-                            } else if (state is AnswersGenerated) {
-                              // Display only four choices from the list of answers
-                              final choices = state.answers.take(4).toList();
-                              return Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Container(
-                                  padding: const EdgeInsets.all(16.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(16.0),
-                                    border: Border.all(
-                                      color: _answerSubmitted
-                                          ? _selectedAnswer ==
-                                                  _shuffledWords[
-                                                          _currentWordIndex]
-                                                      .word
-                                              ? Colors.green
-                                              : Colors.red
-                                          : kTranslationCardColor,
-                                      width: 3,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: choices.map((answer) {
-                                      return RadioListTile<String>(
-                                        title: Text(answer),
-                                        value: answer,
-                                        groupValue: _selectedAnswer,
-                                        onChanged: _answerSubmitted
-                                            ? null
-                                            : (value) {
-                                                setState(() {
-                                                  _selectedAnswer = value;
-                                                });
-                                              },
-                                        activeColor: _answerSubmitted
-                                            ? answer ==
-                                                    _shuffledWords[
-                                                            _currentWordIndex]
-                                                        .word
-                                                ? Colors.green
-                                                : answer == _selectedAnswer
-                                                    ? Colors.red
-                                                    : Colors.grey
-                                            : Colors.grey,
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              );
-                            } else if (state is AnswersError) {
-                              return Center(child: Text(state.message));
-                            }
-                            return Container();
-                          },
-                        ),
-                        if (_answerSubmitted)
-                          BlocBuilder<ProofCubit, ProofState>(
-                            builder: (context, state) {
-                              if (state is ProofInitial) {
-                                return const Center(
-                                    child: Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: CircularProgressIndicator(),
-                                ));
-                              } else if (state is ProofGenerated) {
-                                return Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: TextContainer(
-                                      title:
-                                          "Correct Answer: ${_shuffledWords[_currentWordIndex].word} ",
-                                      content: Text(
-                                        ' Proof: ${state.proof}',
-                                        style: TextStyle(fontSize: 16.sp),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ));
-                              } else if (state is ProofError) {
-                                return Center(child: Text(state.message));
-                              }
-                              return Container();
-                            },
-                          ),
                         if (_currentWordIndex >= 0 &&
                             _currentWordIndex < _shuffledWords.length)
                           Center(
