@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 
 class FloatingButton extends StatelessWidget {
@@ -14,12 +15,12 @@ class FloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 80,
-      height: 80,
+      width: 80.w,
+      height: 80.h,
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: kAppBarColor, width: 2.0),
-          borderRadius: BorderRadius.circular(40.0),
+          border: Border.all(color: kAppBarColor, width: 2.w),
+          borderRadius: BorderRadius.circular(40.r),
           color: color,
         ),
         child: Material(
@@ -31,7 +32,7 @@ class FloatingButton extends StatelessWidget {
             icon: Icon(
               icon,
               color: kAppBarColor,
-              size: 30,
+              size: 30.sp,
             ),
             onPressed: onPressed,
           ),

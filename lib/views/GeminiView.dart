@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
 import 'package:translate_and_learn_app/views/chat_screen.dart';
@@ -48,7 +49,7 @@ class _StartChatScreenState extends State<StartChatScreen> {
       },
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -57,26 +58,26 @@ class _StartChatScreenState extends State<StartChatScreen> {
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Container(
-                width: 200,
-                height: 60,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                width: 200.w,
+                height: 60.h,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 decoration: BoxDecoration(
                   color: kGeminiColor,
-                  borderRadius: BorderRadius.circular(40),
+                  borderRadius: BorderRadius.circular(40.r),
                   border: Border.all(
                     color: kGeminiColor,
-                    width: 2,
+                    width: 2.w,
                   ),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                     dropdownColor: kGeminiColor,
                     icon:
                         const Icon(Icons.arrow_drop_down, color: Colors.white),
-                    iconSize: 30,
+                    iconSize: 30.w,
                     elevation: 16,
                     style: const TextStyle(color: Colors.white, fontSize: 18),
                     isExpanded: true,
@@ -104,7 +105,7 @@ class _StartChatScreenState extends State<StartChatScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               isLoading
                   ? const CircularProgressIndicator()
                   : OutlinedButton(
@@ -124,16 +125,16 @@ class _StartChatScreenState extends State<StartChatScreen> {
                       },
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        side: const BorderSide(color: kGeminiColor, width: 2),
+                        side: BorderSide(color: kGeminiColor, width: 2.w),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40),
+                          borderRadius: BorderRadius.circular(40.r),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 24.w, vertical: 12.h),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Start Chat with Gemini',
-                        style: TextStyle(color: kGeminiColor),
+                        style: TextStyle(color: kGeminiColor, fontSize: 18.sp),
                       ),
                     ),
             ],

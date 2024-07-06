@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
@@ -78,14 +79,15 @@ class _StudyScreenState extends State<StudyScreen> {
                   } else {
                     return Text(
                       snapshot.data!,
-                      style: const TextStyle(fontFamily: kFont),
+                      style: TextStyle(fontFamily: kFont, fontSize: 20.sp),
                     );
                   }
                 },
               ),
         actions: [
           IconButton(
-            icon: Icon(_isSearchBarVisible ? Icons.close : Icons.search),
+            icon: Icon(_isSearchBarVisible ? Icons.close : Icons.search,
+                size: 24.sp),
             onPressed: _toggleSearchBar,
           ),
         ],
@@ -93,8 +95,7 @@ class _StudyScreenState extends State<StudyScreen> {
       body: Column(
         children: [
           if (!_isSearchBarVisible)
-            const SizedBox(
-                height: 16.0), // Add spacing when search bar is hidden
+            SizedBox(height: 16.h), // Add spacing when search bar is hidden
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: _wordsStream,
@@ -115,7 +116,8 @@ class _StudyScreenState extends State<StudyScreen> {
                         return Center(
                           child: Text(
                             snapshot.data!,
-                            style: const TextStyle(fontFamily: kFont),
+                            style:
+                                TextStyle(fontFamily: kFont, fontSize: 16.sp),
                           ),
                         );
                       }
@@ -130,10 +132,10 @@ class _StudyScreenState extends State<StudyScreen> {
                 }).toList();
 
                 if (filteredWords.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
                       'No words found',
-                      style: TextStyle(fontFamily: kFont),
+                      style: TextStyle(fontFamily: kFont, fontSize: 16.sp),
                     ),
                   );
                 }
@@ -147,14 +149,14 @@ class _StudyScreenState extends State<StudyScreen> {
                         : kTranslatorcardColor;
                     return Card(
                       color: cardColor,
-                      margin: const EdgeInsets.all(8.0),
+                      margin: EdgeInsets.all(8.r),
                       child: ListTile(
                         title: Center(
                           child: Text(
                             entry['language'],
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: kFont,
-                              fontSize: 20,
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.bold,
                               color: kAppBarColor,
                             ),

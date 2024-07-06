@@ -62,9 +62,7 @@ class CustomBottomAppBar extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.star, color: Colors.white),
-                onPressed: () {
-                  // Handle settings button press
-                },
+                onPressed: () => onItemTapped(3),
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/views/home_view.dart';
 
@@ -36,7 +37,7 @@ class SignInScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          margin: const EdgeInsetsDirectional.all(20),
+                          margin: EdgeInsetsDirectional.all(20.w),
                           child: const Text(
                             'Already a learner? let\'s find out!',
                             style: TextStyle(
@@ -45,7 +46,7 @@ class SignInScreen extends StatelessWidget {
                         ),
 
                         Container(
-                          margin: const EdgeInsetsDirectional.all(20),
+                          margin: EdgeInsetsDirectional.all(20.w),
                           child: TextFormField(
                             validator: (value) {
                               if (value!.isEmpty) return 'Enter a valid email';
@@ -55,12 +56,12 @@ class SignInScreen extends StatelessWidget {
                                 label: const Text('Email'),
                                 prefixIcon: const Icon(Icons.email_outlined),
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15))),
+                                    borderRadius: BorderRadius.circular(15.r))),
                           ),
                         ),
 
                         Container(
-                          margin: const EdgeInsetsDirectional.all(20),
+                          margin: EdgeInsetsDirectional.all(20.w),
                           child: TextFormField(
                             controller: passwordController,
                             validator: (value) {
@@ -80,23 +81,23 @@ class SignInScreen extends StatelessWidget {
                                     icon: const Icon(
                                         Icons.remove_red_eye_outlined)),
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15))),
+                                    borderRadius: BorderRadius.circular(15.r))),
                           ),
                         ),
 
                         state is LoginLoadingState
                             ? Container(
-                                margin: const EdgeInsetsDirectional.all(30),
+                                margin: EdgeInsetsDirectional.all(30.w),
                                 child: const CupertinoActivityIndicator())
                             : Container(
-                                margin: const EdgeInsets.all(20),
+                                margin: EdgeInsets.all(20.w),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF8C00FF),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 80, vertical: 20),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 80.w, vertical: 20.h),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(20.r),
                                     ),
                                   ),
                                   onPressed: () {
@@ -120,7 +121,7 @@ class SignInScreen extends StatelessWidget {
 
                         // line
                         Container(
-                          margin: const EdgeInsets.only(right: 60, left: 60),
+                          margin: EdgeInsets.symmetric(horizontal: 60.w),
                           child: const Expanded(
                             child: Divider(
                               color: Color(0x208C00FF),

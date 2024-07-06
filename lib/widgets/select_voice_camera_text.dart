@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
@@ -25,7 +26,7 @@ class ThreeFloatingButtons extends StatelessWidget {
         }
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 18),
+          padding: EdgeInsets.only(bottom: 18.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -36,7 +37,7 @@ class ThreeFloatingButtons extends StatelessWidget {
                   context.read<TranslatorCardCubit>().changeToText();
                 },
               ),
-              const SizedBox(width: 30),
+              SizedBox(width: 30.w),
               FloatingButton(
                 color: microphoneButtonColor,
                 icon: FontAwesomeIcons.microphoneLines,
@@ -44,7 +45,7 @@ class ThreeFloatingButtons extends StatelessWidget {
                   context.read<TranslatorCardCubit>().changeToMicrophone();
                 },
               ),
-              const SizedBox(width: 30),
+              SizedBox(width: 30.w),
               FloatingButton(
                 color: cameraButtonColor,
                 icon: FontAwesomeIcons.camera,

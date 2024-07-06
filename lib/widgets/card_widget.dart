@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
@@ -22,14 +24,26 @@ class Languagecard extends StatefulWidget {
 }
 
 class _LanguagecardState extends State<Languagecard> {
+  bool isFavorite = false;
+
+  @override
+  void didUpdateWidget(covariant Languagecard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text) {
+      setState(() {
+        isFavorite = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
         color: widget.color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        margin: const EdgeInsets.symmetric(vertical: 6),
+        margin: EdgeInsets.symmetric(vertical: 6.h),
         child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.w),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(
@@ -53,26 +67,28 @@ class _LanguagecardState extends State<Languagecard> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
+              SizedBox(
+                height: 10.h,
               ),
               Row(children: [
                 Expanded(
                   child: Text(
                     widget.text,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 16.sp,
                       color: Colors.black,
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 BlocBuilder<StudyWordsCubit, StudyWordsState>(
                   builder: (context, state) {
                     return state.isLoading
                         ? const CircularProgressIndicator()
                         : TranslatorCardicons(
-                            icon1: FontAwesomeIcons.star,
+                            icon1: isFavorite
+                                ? FontAwesomeIcons.solidStar
+                                : FontAwesomeIcons.star,
                             icon2: FontAwesomeIcons.volumeHigh,
                             icon3: FontAwesomeIcons.plus,
                             onPressed3: () {
@@ -87,6 +103,19 @@ class _LanguagecardState extends State<Languagecard> {
                                 const SnackBar(
                                     content:
                                         Text('Wait for words to be added')),
+                              );
+                            },
+                            onPressed1: () {
+                              setState(() {
+                                isFavorite = !isFavorite;
+                              });
+                              BlocProvider.of<FavoritesCubit>(context)
+                                  .addFavoriteTranslation(widget.text);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(isFavorite
+                                        ? 'Added to favorites'
+                                        : 'Removed from favorites')),
                               );
                             },
                           );
