@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
 import 'package:translate_and_learn_app/views/GeminiView.dart';
+import 'package:translate_and_learn_app/views/favorites_screen.dart';
 import 'package:translate_and_learn_app/views/study_view.dart';
 import 'package:translate_and_learn_app/views/translator_cards_view.dart';
 import 'package:translate_and_learn_app/widgets/bottom_app_bar.dart';
@@ -32,11 +34,14 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(
           create: (context) => StudyWordsCubit(splittingModel),
         ),
+        BlocProvider(
+          create: (context) => FavoritesCubit(),
+        ),
       ],
       child: Scaffold(
         backgroundColor: kPrimaryColor,
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Column(
             children: [
               Center(
@@ -55,6 +60,7 @@ class _HomePageState extends State<HomePage> {
                     TranslatorcardsView(),
                     StudyScreen(),
                     StartChatScreen(),
+                    FavoritesScreen()
                   ],
                 ),
               ),

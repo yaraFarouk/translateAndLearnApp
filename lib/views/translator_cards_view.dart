@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
@@ -74,7 +75,7 @@ class TranslatorcardsView extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: 20.h),
                 const ThreeFloatingButtons(),
               ],
             );

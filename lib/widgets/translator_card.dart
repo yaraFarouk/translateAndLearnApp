@@ -6,6 +6,7 @@ import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
 
 class TranslatorCard extends StatefulWidget {
   final Color color;
+  final String hint;
 
   const TranslatorCard({
     super.key,
@@ -13,14 +14,13 @@ class TranslatorCard extends StatefulWidget {
     required this.hint,
   });
 
-  final String hint;
-
   @override
   State<TranslatorCard> createState() => _TranslatorCardState();
 }
 
 class _TranslatorCardState extends State<TranslatorCard> {
-  String selectedValue = 'English';
+  final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -37,13 +37,20 @@ class _TranslatorCardState extends State<TranslatorCard> {
             ),
             Row(children: [
               Expanded(
-                child: CustomTextField(hint: widget.hint),
+                child: CustomTextField(
+                  hint: widget.hint,
+                  controller: _controller,
+                ),
               ),
               const SizedBox(width: 10),
-              const TranslatorCardicons(
+              TranslatorCardicons(
                 icon1: FontAwesomeIcons.trash,
-                icon2: FontAwesomeIcons.star,
                 icon3: FontAwesomeIcons.volumeHigh,
+                onPressed1: () {
+                  setState(() {
+                    _controller.clear();
+                  });
+                },
               ),
             ])
           ],

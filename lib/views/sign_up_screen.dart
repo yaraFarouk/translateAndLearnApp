@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/register/Register_Cubit.dart';
 import 'package:translate_and_learn_app/cubit/register/Register_States.dart';
@@ -71,7 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         children: [
                           // Sign up text
                           Container(
-                            margin: const EdgeInsetsDirectional.all(20),
+                            margin: EdgeInsetsDirectional.all(20.w),
                             child: const Text(
                               'Let\'s sign you up!',
                               style: TextStyle(
@@ -81,7 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           // name input
                           Container(
-                            margin: const EdgeInsetsDirectional.all(20),
+                            margin: EdgeInsetsDirectional.all(20.w),
                             child: TextFormField(
                               validator: (value) {
                                 if (value!.isEmpty) return 'Enter your name';
@@ -93,13 +94,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   prefixIcon:
                                       const Icon(Icons.person_outline_rounded),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15))),
+                                      borderRadius:
+                                          BorderRadius.circular(15.r))),
                             ),
                           ),
 
                           // Email input
                           Container(
-                            margin: const EdgeInsetsDirectional.all(20),
+                            margin: EdgeInsetsDirectional.all(20.w),
                             child: TextFormField(
                               validator: (value) {
                                 if (value!.isEmpty) {
@@ -112,13 +114,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   label: const Text('Email'),
                                   prefixIcon: const Icon(Icons.email_outlined),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15))),
+                                      borderRadius:
+                                          BorderRadius.circular(15.r))),
                             ),
                           ),
 
                           // password input
                           Container(
-                            margin: const EdgeInsetsDirectional.all(20),
+                            margin: EdgeInsetsDirectional.all(20.w),
                             child: TextFormField(
                               controller: passwordController,
                               validator: (value) {
@@ -138,22 +141,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       icon: const Icon(
                                           Icons.remove_red_eye_outlined)),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15))),
+                                      borderRadius:
+                                          BorderRadius.circular(15.r))),
                             ),
                           ),
 
                           // Sign up button
                           state is RegisterNewUserLoadingState
                               ? Container(
-                                  margin: const EdgeInsetsDirectional.all(30),
+                                  margin: EdgeInsetsDirectional.all(30.w),
                                   child: const CupertinoActivityIndicator())
                               : Container(
-                                  margin: const EdgeInsets.all(20),
+                                  margin: EdgeInsets.all(20.w),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF8C00FF),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 80, vertical: 20),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 80.w, vertical: 20.h),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),
                                       ),
@@ -187,7 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           // line
                           Container(
-                            margin: const EdgeInsets.only(right: 60, left: 60),
+                            margin: EdgeInsets.symmetric(horizontal: 60.w),
                             child: const Expanded(
                               child: Divider(
                                 color: Color(0x208C00FF),

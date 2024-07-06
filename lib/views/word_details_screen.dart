@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart';
@@ -61,15 +62,15 @@ class _WordDetailsScreenState extends State<WordDetailsScreen> {
           } else {
             final word = snapshot.data!;
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: Column(
                 children: [
-                  const SizedBox(height: 70),
+                  SizedBox(height: 70.h),
                   CustomAppTopBar(
                     title: word.word,
                     icon: Icons.search,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Expanded(
                     child: WordDetailsView(
                       word: word,
@@ -92,7 +93,7 @@ class WordDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.r),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -100,21 +101,21 @@ class WordDetailsView extends StatelessWidget {
               title: "Meaning",
               content: Text.rich(
                 parseFormattedText(word.meaning),
-                style: const TextStyle(fontSize: 18.0),
+                style: TextStyle(fontSize: 18.sp),
               )),
-          const SizedBox(height: 16.0),
+          SizedBox(height: 16.h),
           TextContainer(
               title: "Definition",
               content: Text.rich(
                 parseFormattedText(word.definition),
-                style: const TextStyle(fontSize: 18.0),
+                style: TextStyle(fontSize: 18.sp),
               )),
-          const SizedBox(height: 16.0),
+          SizedBox(height: 16.h),
           TextContainer(
               title: "Examples",
               content: Text.rich(
                 parseFormattedText(word.examples),
-                style: const TextStyle(fontSize: 18.0),
+                style: TextStyle(fontSize: 18.sp),
               )),
         ],
       ),
