@@ -46,11 +46,9 @@ class CustomBottomAppBar extends StatelessWidget {
                 onPressed: () => onItemTapped(1),
               ),
               IconButton(
-                icon: const Icon(FontAwesomeIcons.chartSimple,
-                    color: Colors.white),
-                onPressed: () {
-                  // Handle translate button press
-                },
+                icon: Icon(FontAwesomeIcons.chartSimple,
+                    color: currentIndex == 2 ? kPurpil : kPrimaryColor),
+                onPressed: () => onItemTapped(2),
               ),
               IconButton(
                 icon: Image.asset(
@@ -58,11 +56,11 @@ class CustomBottomAppBar extends StatelessWidget {
                   height: 28, // Adjust the height to your needs
                   width: 28, // Adjust the width to your needs
                 ),
-                onPressed: () => onItemTapped(2),
+                onPressed: () => onItemTapped(3),
               ),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.star, color: Colors.white),
-                onPressed: () => onItemTapped(3),
+                onPressed: () => onItemTapped(4),
               ),
             ],
           ),
