@@ -52,6 +52,11 @@ class QuizCubit extends Cubit<QuizState> {
           .doc(uid)
           .collection(language);
 
+      final allWordsRef = FirebaseFirestore.instance
+          .collection('all_words')
+          .doc(uid)
+          .collection(language);
+
       final now = DateTime.now();
       final date = '${now.year}-${now.month}-${now.day}';
 
@@ -85,6 +90,11 @@ class QuizCubit extends Cubit<QuizState> {
             'answeredWords': {word: isCorrect}
           });
         }
+
+        // Update the all words collection
+        final allWordsDocRef = allWordsRef.doc(word);
+        await allWordsDocRef.set({'isCorrect': isCorrect, 'lastUpdated': now},
+            SetOptions(merge: true));
       } catch (e) {
         emit(QuizError(e.toString()));
       }

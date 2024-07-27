@@ -7,6 +7,8 @@ import 'dart:math';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/views/words_list_view.dart';
+// Import your WordListScreen
 
 class TrackProgressPage extends StatefulWidget {
   const TrackProgressPage({Key? key}) : super(key: key);
@@ -23,7 +25,6 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
   @override
   void initState() {
     super.initState();
-    _fetchProgressData();
   }
 
   List<FlSpot> downsample(List<FlSpot> data, int threshold) {
@@ -32,7 +33,7 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
     return [for (int i = 0; i < data.length; i += step) data[i]];
   }
 
-  Future<void> _fetchProgressData() async {
+  Stream<QuerySnapshot> _fetchProgressData() {
     final user = FirebaseAuth.instance.currentUser;
     final uid = user?.uid;
 
@@ -42,58 +43,35 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
           .doc(uid)
           .collection(_selectedLanguage);
 
-      final querySnapshot = await trackProgressRef.get();
-      print(
-          'Fetched ${querySnapshot.docs.length} documents'); // Log the number of documents
-
-      final data = querySnapshot.docs.map((doc) {
-        final dateParts = doc.id.split('-');
-        final dateTime = DateTime(
-          int.parse(dateParts[0]),
-          int.parse(dateParts[1]),
-          int.parse(dateParts[2]),
-        );
-        final score = doc.data()?['score'] as int;
-        return {
-          'total':
-              (doc.data()?['answeredWords'] as Map<String, dynamic>?)?.length ??
-                  0,
-          'dateTime': dateTime,
-          'score': score,
-          'spot': FlSpot(
-            dateTime.millisecondsSinceEpoch.toDouble(),
-            score.toDouble(),
-          ),
-        };
-      }).toList();
-
-      final downsampledData = downsample(
-          data.map((e) => e['spot'] as FlSpot).toList(),
-          100); // Downsample to max 100 points
-
-      setState(() {
-        _progressData = downsampledData;
-        _progressList = data
-          ..sort((a, b) =>
-              (b['dateTime'] as DateTime).compareTo(a['dateTime'] as DateTime));
-      });
+      return trackProgressRef.snapshots();
+    } else {
+      return Stream.empty();
     }
   }
 
-  Future<void> _storeProgressData(DateTime dateTime, double score) async {
-    final user = FirebaseAuth.instance.currentUser;
-    final uid = user?.uid;
+  List<Map<String, dynamic>> _processData(QuerySnapshot snapshot) {
+    final data = snapshot.docs.map((doc) {
+      final docData = doc.data() as Map<String, dynamic>;
+      final dateParts = doc.id.split('-');
+      final dateTime = DateTime(
+        int.parse(dateParts[0]),
+        int.parse(dateParts[1]),
+        int.parse(dateParts[2]),
+      );
+      final score = docData['score'] as int;
+      return {
+        'total':
+            (docData['answeredWords'] as Map<String, dynamic>?)?.length ?? 0,
+        'dateTime': dateTime,
+        'score': score,
+        'spot': FlSpot(
+          dateTime.millisecondsSinceEpoch.toDouble(),
+          score.toDouble(),
+        ),
+      };
+    }).toList();
 
-    if (uid != null) {
-      final trackProgressRef = FirebaseFirestore.instance
-          .collection('track_progress')
-          .doc(uid)
-          .collection(_selectedLanguage)
-          .doc('${dateTime.year}-${dateTime.month}-${dateTime.day}');
-
-      await trackProgressRef.set({'score': score});
-      await _fetchProgressData(); // Refresh data after storing
-    }
+    return data;
   }
 
   List<Color> gradientColors = [
@@ -163,7 +141,7 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
       lineBarsData: [
         LineChartBarData(
           spots: _progressData,
-          isCurved: true,
+          isCurved: false, // Set to false for linear graph
           color: kAppBarColor,
           barWidth: 3,
           isStrokeCapRound: true,
@@ -214,7 +192,6 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
                           onChanged: (String? newValue) {
                             setState(() {
                               _selectedLanguage = newValue!;
-                              _fetchProgressData(); // Refresh data on language change
                             });
                           },
                           items: <String>[
@@ -246,60 +223,124 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
               const SizedBox(
                 height: 20,
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 204, 198, 255),
-                  borderRadius: BorderRadius.circular(
-                      16.0), // Adjust the radius as needed
-                ),
-                height: 200.h, // Reduced height for the chart
-                width: double.infinity,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
-                  child: LineChart(
-                    mainData(),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ..._progressList.map((entry) {
-                final score = entry['score'] as int;
-                final totalWords = entry['total']
-                    as int; // Assuming 100 is the total number of words
-                final incorrectAnswers = totalWords - score;
-                final color = _progressList.indexOf(entry) % 2 == 0
-                    ? kTranslationCardColor
-                    : kTranslatorcardColor;
+              StreamBuilder<QuerySnapshot>(
+                stream: _fetchProgressData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
 
-                return Card(
-                  color: color,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: ListTile(
-                    title: Text(
-                      '${entry['dateTime'].year}-${entry['dateTime'].month}-${entry['dateTime'].day}',
-                      style: const TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                    trailing: CircularPercentIndicator(
-                      radius: 20.0,
-                      lineWidth: 8.0,
-                      percent: incorrectAnswers / totalWords,
-                      center: Text(
-                        '$score',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Center(
+                      child: Column(
+                        children: [
+                          Text("No Progress Yet"),
+                          SizedBox(height: 20),
+                          Card(
+                            color: Color.fromARGB(255, 204, 198, 255),
+                            margin: EdgeInsets.all(8.r),
+                            child: ListTile(
+                              title: Center(
+                                child: Text(
+                                  "Start Studying",
+                                  style: TextStyle(
+                                    fontFamily: kFont,
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: kAppBarColor,
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WordListScreen(
+                                      language: _selectedLanguage,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  final data = _processData(snapshot.data!);
+
+                  final downsampledData = downsample(
+                      data.map((e) => e['spot'] as FlSpot).toList(),
+                      100); // Downsample to max 100 points
+
+                  _progressData = downsampledData;
+                  _progressList = data
+                    ..sort((a, b) => (b['dateTime'] as DateTime)
+                        .compareTo(a['dateTime'] as DateTime));
+
+                  return Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 204, 198, 255),
+                          borderRadius: BorderRadius.circular(
+                              16.0), // Adjust the radius as needed
+                        ),
+                        height: 200.h, // Reduced height for the chart
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 16),
+                          child: LineChart(
+                            mainData(),
+                          ),
                         ),
                       ),
-                      progressColor: const Color.fromARGB(255, 245, 136, 128),
-                      backgroundColor: const Color.fromARGB(255, 154, 255, 158),
-                    ),
-                  ),
-                );
-              }).toList(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ..._progressList.map((entry) {
+                        final score = entry['score'] as int;
+                        final totalWords = entry['total'] as int;
+                        final incorrectAnswers = totalWords - score;
+                        final color = _progressList.indexOf(entry) % 2 == 0
+                            ? kTranslationCardColor
+                            : kTranslatorcardColor;
+
+                        return Card(
+                          color: color,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          child: ListTile(
+                            title: Text(
+                              '${entry['dateTime'].year}-${entry['dateTime'].month}-${entry['dateTime'].day}',
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 18),
+                            ),
+                            trailing: CircularPercentIndicator(
+                              radius: 20.0,
+                              lineWidth: 8.0,
+                              percent: incorrectAnswers / totalWords,
+                              center: Text(
+                                '$score',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              progressColor:
+                                  const Color.fromARGB(255, 245, 136, 128),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 154, 255, 158),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),

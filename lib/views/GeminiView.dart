@@ -76,15 +76,15 @@ class _StartChatScreenState extends State<StartChatScreen> {
                     borderRadius: BorderRadius.circular(8.r),
                     dropdownColor: kGeminiColor,
                     icon:
-                        const Icon(Icons.arrow_drop_down, color: Colors.white),
+                        const Icon(Icons.arrow_drop_down, color: kAppBarColor),
                     iconSize: 30.w,
                     elevation: 16,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    style: const TextStyle(color: kAppBarColor, fontSize: 18),
                     isExpanded: true,
                     value: selectedLanguage,
                     hint: const Text(
                       'Select Language',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: kAppBarColor),
                     ),
                     items: languageCodes.keys.map((String value) {
                       return DropdownMenuItem<String>(
@@ -134,7 +134,7 @@ class _StartChatScreenState extends State<StartChatScreen> {
                       ),
                       child: Text(
                         'Start Chat with Gemini',
-                        style: TextStyle(color: kGeminiColor, fontSize: 18.sp),
+                        style: TextStyle(color: kAppBarColor, fontSize: 18.sp),
                       ),
                     ),
             ],
