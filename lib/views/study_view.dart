@@ -6,6 +6,7 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
 import 'package:translate_and_learn_app/widgets/search_text_field.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StudyScreen extends StatefulWidget {
   const StudyScreen({super.key});
@@ -50,6 +51,29 @@ class _StudyScreenState extends State<StudyScreen> {
         .doc(user!.uid)
         .collection('Languages')
         .snapshots();
+  }
+
+  Stream<int> _learnedWordsCountStream(String language) {
+    User? user = FirebaseAuth.instance.currentUser;
+    return FirebaseFirestore.instance
+        .collection('all_words')
+        .doc(user!.uid)
+        .collection(language)
+        .where('isCorrect', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) => snapshot.size);
+  }
+
+  Stream<int> _totalWordsCountStream(String language) {
+    User? user = FirebaseAuth.instance.currentUser;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .collection('Languages')
+        .doc(language)
+        .collection('words')
+        .snapshots()
+        .map((snapshot) => snapshot.size);
   }
 
   @override
@@ -147,32 +171,82 @@ class _StudyScreenState extends State<StudyScreen> {
                     final cardColor = index % 2 == 0
                         ? kTranslationCardColor
                         : kTranslatorcardColor;
-                    return Card(
-                      color: cardColor,
-                      margin: EdgeInsets.all(8.r),
-                      child: ListTile(
-                        title: Center(
-                          child: Text(
-                            entry['language'],
-                            style: TextStyle(
-                              fontFamily: kFont,
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.bold,
-                              color: kAppBarColor,
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WordListScreen(
-                                language: entry['language'],
-                              ),
-                            ),
+
+                    return StreamBuilder<int>(
+                      stream: _learnedWordsCountStream(entry['language']),
+                      builder: (context, learnedWordsSnapshot) {
+                        if (learnedWordsSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (learnedWordsSnapshot.hasError) {
+                          return const Text('Error loading progress');
+                        } else {
+                          final learnedWordsCount = learnedWordsSnapshot.data!;
+                          return StreamBuilder<int>(
+                            stream: _totalWordsCountStream(entry['language']),
+                            builder: (context, totalWordsSnapshot) {
+                              if (totalWordsSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (totalWordsSnapshot.hasError) {
+                                return const Text('Error loading total words');
+                              } else {
+                                final totalWords = totalWordsSnapshot.data!;
+                                final progress = learnedWordsCount / totalWords;
+
+                                return Card(
+                                  color: cardColor,
+                                  margin: EdgeInsets.all(10.r),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: ListTile(
+                                    title: Center(
+                                      child: Text(
+                                        entry['language'],
+                                        style: TextStyle(
+                                          fontFamily: kFont,
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: kAppBarColor,
+                                        ),
+                                      ),
+                                    ),
+                                    subtitle: Padding(
+                                      padding: EdgeInsets.only(top: 8.0),
+                                      child: LinearPercentIndicator(
+                                        lineHeight: 14.0,
+                                        percent: progress > 1 ? 1 : progress,
+                                        center: Text(
+                                          '$learnedWordsCount/$totalWords',
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: kAppBarColor,
+                                          ),
+                                        ),
+                                        barRadius: Radius.circular(7.0),
+                                        backgroundColor:
+                                            Color.fromARGB(255, 253, 242, 255),
+                                        progressColor: kPurpil,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => WordListScreen(
+                                            language: entry['language'],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                            },
                           );
-                        },
-                      ),
+                        }
+                      },
                     );
                   },
                 );

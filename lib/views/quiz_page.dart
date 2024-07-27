@@ -47,20 +47,31 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-  void _onSubmitAnswer() {
+  Future<void> _onSubmitAnswer() async {
     setState(() {
       _answerSubmitted = true;
-      if (_selectedAnswer != null &&
-          _selectedAnswer!.toLowerCase() ==
-              _shuffledWords[_currentWordIndex].word.toLowerCase()) {
-        _score++;
-      }
-      totalScore++;
-
-      if (_currentWordIndex == _shuffledWords.length - 1) {
-        _isLastWord = true;
-      }
     });
+
+    bool isCorrect = _selectedAnswer != null &&
+        _selectedAnswer!.toLowerCase() ==
+            _shuffledWords[_currentWordIndex].word.toLowerCase();
+
+    if (isCorrect) {
+      _score++;
+      await _quizCubit.updateProgress(
+          widget.language, _shuffledWords[_currentWordIndex].word, true);
+    } else {
+      await _quizCubit.updateProgress(
+          widget.language, _shuffledWords[_currentWordIndex].word, false);
+    }
+
+    totalScore++;
+
+    if (_currentWordIndex == _shuffledWords.length - 1) {
+      setState(() {
+        _isLastWord = true;
+      });
+    }
   }
 
   void _onNextQuestion() {

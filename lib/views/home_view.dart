@@ -9,6 +9,7 @@ import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
 import 'package:translate_and_learn_app/views/GeminiView.dart';
 import 'package:translate_and_learn_app/views/favorites_screen.dart';
 import 'package:translate_and_learn_app/views/study_view.dart';
+import 'package:translate_and_learn_app/views/track_progress_screen.dart';
 import 'package:translate_and_learn_app/views/translator_cards_view.dart';
 import 'package:translate_and_learn_app/widgets/bottom_app_bar.dart';
 
@@ -59,8 +60,9 @@ class _HomePageState extends State<HomePage> {
                   children: const [
                     TranslatorcardsView(),
                     StudyScreen(),
+                    TrackProgressPage(),
                     StartChatScreen(),
-                    FavoritesScreen()
+                    FavoritesScreen(),
                   ],
                 ),
               ),
