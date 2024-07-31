@@ -31,10 +31,10 @@ class ChatScreen extends StatelessWidget {
               children: [
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.only(top: 10.h),
+                    padding: EdgeInsets.only(top: 15.h),
                     child: Image.asset(
                       "assets/images/logo.png",
-                      height: 100.h,
+                      height: 80.h,
                     ),
                   ),
                 ),
@@ -55,8 +55,11 @@ class ChatScreen extends StatelessWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               color: message.isUserMessage
-                                  ? kTranslatorcardColor
-                                  : kTranslationCardColor,
+                                  ? kGeminiColor
+                                  : Colors.white,
+                              border: Border.all(
+                                color: kGeminiColor,
+                              ),
                               borderRadius: BorderRadius.only(
                                 topLeft: const Radius.circular(12),
                                 topRight: const Radius.circular(12),
@@ -78,6 +81,7 @@ class ChatScreen extends StatelessWidget {
                             child: Text(
                               message.text.replaceAll('*', ''),
                               style: TextStyle(
+                                color: kAppBarColor,
                                 fontWeight: message.isUserMessage
                                     ? FontWeight.normal
                                     : FontWeight.bold,

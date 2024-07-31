@@ -195,11 +195,16 @@ class _StudyScreenState extends State<StudyScreen> {
                                 final progress = learnedWordsCount / totalWords;
 
                                 return Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    side: BorderSide(
+                                      color:
+                                          kGeminiColor, // Set the border color
+                                      width: 1.5,
+                                    ),
+                                  ),
                                   color: cardColor,
                                   margin: EdgeInsets.all(10.r),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
                                   child: ListTile(
                                     title: Center(
                                       child: Text(

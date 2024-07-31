@@ -183,7 +183,8 @@ class _QuizPageState extends State<QuizPage> {
                                                                 _currentWordIndex]
                                                             .word
                                                     ? Colors.green
-                                                    : state.quizModel.choice1 ==
+                                                    : state.quizModel.choice1
+                                                                .toLowerCase() ==
                                                             _selectedAnswer
                                                         ? Colors.red
                                                         : Colors.grey

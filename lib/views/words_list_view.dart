@@ -110,7 +110,7 @@ class _WordListScreenState extends State<WordListScreen>
                       children: [
                         Image.asset(
                           "assets/images/logo.png",
-                          height: 100.h,
+                          height: 80.h,
                         ),
                         if (!_isSearching)
                           IconButton(

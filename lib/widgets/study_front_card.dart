@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
 
 class StudyFrontCard extends StatelessWidget {
@@ -18,6 +19,13 @@ class StudyFrontCard extends StatelessWidget {
     return Card(
       key: const ValueKey(false),
       color: cardColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: BorderSide(
+          color: kGeminiColor, // Set the border color
+          width: 1.5,
+        ),
+      ),
       child: Center(
         child: Text(
           filteredWord.word,
