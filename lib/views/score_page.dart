@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:translate_and_learn_app/constants.dart';
 
 class ScorePage extends StatelessWidget {
@@ -36,7 +38,55 @@ class ScorePage extends StatelessWidget {
       }
     }
 
+    Future<int> getUserRank() async {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        return -1;
+      }
+
+      String userId = user.uid;
+      String language =
+          'English'; // Use the actual selected language in your app
+
+      final usersCollection = FirebaseFirestore.instance.collection('users');
+      final usersSnapshot = await usersCollection.get();
+
+      List<Map<String, dynamic>> usersData = [];
+
+      for (var userDoc in usersSnapshot.docs) {
+        final userId = userDoc.id;
+        final userName = userDoc['name'];
+
+        final correctWordsSnapshot = await FirebaseFirestore.instance
+            .collection('all_words')
+            .doc(userId)
+            .collection(language)
+            .where('isCorrect', isEqualTo: true)
+            .get();
+
+        int correctWordsCount = correctWordsSnapshot.size;
+
+        usersData.add({
+          'userId': userId,
+          'userName': userName,
+          'correctWordsCount': correctWordsCount,
+        });
+      }
+
+      usersData.sort(
+          (a, b) => b['correctWordsCount'].compareTo(a['correctWordsCount']));
+
+      for (int i = 0; i < usersData.length; i++) {
+        if (usersData[i]['userId'] == userId) {
+          return i + 1; // Rank is 1-based
+        }
+      }
+
+      return -1; // User not found
+    }
+
     return Scaffold(
+      backgroundColor: kPrimaryColor,
       body: Column(
         children: [
           Center(
@@ -81,6 +131,38 @@ class ScorePage extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 20.sp, color: getContainerColor()),
                       textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 16.h),
+                    FutureBuilder<int>(
+                      future: getUserRank(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text(
+                            'Error: ${snapshot.error}',
+                            style:
+                                TextStyle(fontSize: 16.sp, color: Colors.red),
+                          );
+                        } else if (!snapshot.hasData || snapshot.data == -1) {
+                          return Text(
+                            'Rank not available',
+                            style:
+                                TextStyle(fontSize: 16.sp, color: Colors.grey),
+                          );
+                        } else {
+                          return Text(
+                            'Your New Rank: ${snapshot.data}',
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                              color: kGeminiColor,
+                            ),
+                            textAlign: TextAlign.center,
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),

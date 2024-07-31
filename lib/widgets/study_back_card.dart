@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/views/word_details_screen.dart';
 
@@ -27,6 +28,13 @@ class StudyBackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: BorderSide(
+          color: kGeminiColor, // Set the border color
+          width: 1.5,
+        ),
+      ),
       key: const ValueKey(true),
       color: cardColor,
       child: Center(

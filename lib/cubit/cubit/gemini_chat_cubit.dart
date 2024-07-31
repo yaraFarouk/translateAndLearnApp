@@ -77,10 +77,8 @@ class GeminiChatCubit extends Cubit<GeminiChatState> {
       const prompt = "The user has reset the chat.";
       final content = [Content.text(prompt)];
       await model.generateContent(content);
-    } catch (e) {
-      // Handle any errors during the reset notification
-    }
-    // Clear the chat state
+    } catch (e) {}
+
     emit(const GeminiChatInitial([]));
   }
 

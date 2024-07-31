@@ -1,14 +1,18 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:math';
-import 'package:percent_indicator/percent_indicator.dart';
-
+import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/gemini_feedback_cubit.dart';
+import 'package:translate_and_learn_app/views/word_details_screen.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
-// Import your WordListScreen
+import 'package:translate_and_learn_app/widgets/text_container.dart'; // Import flutter_bloc for BlocProvider and BlocBuilder
 
 class TrackProgressPage extends StatefulWidget {
   const TrackProgressPage({Key? key}) : super(key: key);
@@ -21,6 +25,8 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
   List<FlSpot> _progressData = [];
   String _selectedLanguage = 'English'; // Default language
   List<Map<String, dynamic>> _progressList = [];
+  final GeminiFeedbackCubit _feedbackCubit = GeminiFeedbackCubit(
+      GenerativeModel(model: 'gemini-1.5-flash', apiKey: kAPIKEY));
 
   @override
   void initState() {
@@ -98,7 +104,7 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
         : minX + 4 * 24 * 60 * 60 * 1000;
 
     final double maxY = _progressData.isNotEmpty
-        ? max(5, _progressData.map((e) => e.y).reduce(max)).ceilToDouble()
+        ? max(5, _progressData.map((e) => e.y + 3).reduce(max)).ceilToDouble()
         : 5;
 
     final double yInterval = maxY / 5;
@@ -116,9 +122,7 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
           sideTitles: SideTitles(showTitles: false),
         ),
         bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: false, // Hide x-axis labels
-          ),
+          sideTitles: SideTitles(showTitles: false), // Hide x-axis labels
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
@@ -157,191 +161,236 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: [
-                  Container(
-                    width: 150.w,
-                    height: 40.h,
-                    padding: const EdgeInsets.only(left: 16),
-                    decoration: BoxDecoration(
-                      color: kAppBarColor,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Row(
-                      children: [
-                        DropdownButton<String>(
-                          borderRadius: BorderRadius.circular(8),
-                          dropdownColor: kAppBarColor,
-                          value: _selectedLanguage,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 18),
-                          underline: Container(
-                            height: 2,
-                            color: kAppBarColor, // No underline
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedLanguage = newValue!;
-                            });
-                          },
-                          items: <String>[
-                            'English',
-                            'Spanish',
-                            'French',
-                            'German',
-                            'Italian',
-                            'Portuguese',
-                            'Chinese',
-                            'Japanese',
-                            'Polish',
-                            'Turkish',
-                            'Russian',
-                            'Dutch',
-                            'Korean'
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              StreamBuilder<QuerySnapshot>(
-                stream: _fetchProgressData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Center(
-                      child: Column(
+    return BlocProvider(
+      create: (context) => _feedbackCubit,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: [
+                    Container(
+                      width: 150.w,
+                      height: 40.h,
+                      padding: const EdgeInsets.only(left: 16),
+                      decoration: BoxDecoration(
+                        color: kAppBarColor,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Row(
                         children: [
-                          Text("No Progress Yet"),
-                          SizedBox(height: 20),
-                          Card(
-                            color: Color.fromARGB(255, 204, 198, 255),
-                            margin: EdgeInsets.all(8.r),
-                            child: ListTile(
-                              title: Center(
-                                child: Text(
-                                  "Start Studying",
-                                  style: TextStyle(
-                                    fontFamily: kFont,
-                                    fontSize: 20.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: kAppBarColor,
-                                  ),
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => WordListScreen(
-                                      language: _selectedLanguage,
-                                    ),
-                                  ),
-                                );
-                              },
+                          DropdownButton<String>(
+                            borderRadius: BorderRadius.circular(8),
+                            dropdownColor: kAppBarColor,
+                            value: _selectedLanguage,
+                            icon: const Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 18),
+                            underline: Container(
+                              height: 2,
+                              color: kAppBarColor, // No underline
                             ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedLanguage = newValue!;
+                              });
+                            },
+                            items: <String>[
+                              'English',
+                              'Spanish',
+                              'French',
+                              'German',
+                              'Italian',
+                              'Portuguese',
+                              'Chinese',
+                              'Japanese',
+                              'Polish',
+                              'Turkish',
+                              'Russian',
+                              'Dutch',
+                              'Korean'
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                           ),
                         ],
                       ),
-                    );
-                  }
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                StreamBuilder<QuerySnapshot>(
+                  stream: _fetchProgressData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
 
-                  final data = _processData(snapshot.data!);
-
-                  final downsampledData = downsample(
-                      data.map((e) => e['spot'] as FlSpot).toList(),
-                      100); // Downsample to max 100 points
-
-                  _progressData = downsampledData;
-                  _progressList = data
-                    ..sort((a, b) => (b['dateTime'] as DateTime)
-                        .compareTo(a['dateTime'] as DateTime));
-
-                  return Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 204, 198, 255),
-                          borderRadius: BorderRadius.circular(
-                              16.0), // Adjust the radius as needed
-                        ),
-                        height: 200.h, // Reduced height for the chart
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 16),
-                          child: LineChart(
-                            mainData(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ..._progressList.map((entry) {
-                        final score = entry['score'] as int;
-                        final totalWords = entry['total'] as int;
-                        final incorrectAnswers = totalWords - score;
-                        final color = _progressList.indexOf(entry) % 2 == 0
-                            ? kTranslationCardColor
-                            : kTranslatorcardColor;
-
-                        return Card(
-                          color: color,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          child: ListTile(
-                            title: Text(
-                              '${entry['dateTime'].year}-${entry['dateTime'].month}-${entry['dateTime'].day}',
-                              style: const TextStyle(
-                                  color: Colors.black, fontSize: 18),
-                            ),
-                            trailing: CircularPercentIndicator(
-                              radius: 20.0,
-                              lineWidth: 8.0,
-                              percent: incorrectAnswers / totalWords,
-                              center: Text(
-                                '$score',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Center(
+                        child: Column(
+                          children: [
+                            Text("No Progress Yet"),
+                            SizedBox(height: 20),
+                            Card(
+                              color: Color.fromARGB(255, 204, 198, 255),
+                              margin: EdgeInsets.all(8.r),
+                              child: ListTile(
+                                title: Center(
+                                  child: Text(
+                                    "Start Studying",
+                                    style: TextStyle(
+                                      fontFamily: kFont,
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: kAppBarColor,
+                                    ),
+                                  ),
                                 ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => WordListScreen(
+                                        language: _selectedLanguage,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                              progressColor:
-                                  const Color.fromARGB(255, 245, 136, 128),
-                              backgroundColor:
-                                  const Color.fromARGB(255, 154, 255, 158),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    final data = _processData(snapshot.data!);
+
+                    final downsampledData = downsample(
+                        data.map((e) => e['spot'] as FlSpot).toList(),
+                        100); // Downsample to max 100 points
+
+                    _progressData = downsampledData;
+                    _progressList = data
+                      ..sort((a, b) => (b['dateTime'] as DateTime)
+                          .compareTo(a['dateTime'] as DateTime));
+
+                    // Fetch feedback when data is processed
+                    _feedbackCubit.getFeedback(
+                        _selectedLanguage, _progressList);
+
+                    return Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 204, 198, 255),
+                            borderRadius: BorderRadius.circular(
+                                16.0), // Adjust the radius as needed
+                          ),
+                          height: 200.h, // Reduced height for the chart
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 16),
+                            child: LineChart(
+                              mainData(),
                             ),
                           ),
-                        );
-                      }).toList(),
-                    ],
-                  );
-                },
-              ),
-            ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        BlocBuilder<GeminiFeedbackCubit, GeminiFeedbackState>(
+                          builder: (context, state) {
+                            if (state is GeminiFeedbackLoading) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (state is GeminiFeedbackSuccess) {
+                              return TextContainer(
+                                  title: "Gemini Feedback",
+                                  content: Text.rich(
+                                    parseFormattedText(state.response),
+                                    style: TextStyle(fontSize: 18.sp),
+                                  ));
+                            } else if (state is GeminiFeedbackError) {
+                              return Card(
+                                color: Colors.red[100],
+                                margin: const EdgeInsets.all(8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    state.error,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ..._progressList.map((entry) {
+                          final score = entry['score'] as int;
+                          final totalWords = entry['total'] as int;
+                          final incorrectAnswers = totalWords - score;
+                          final color = _progressList.indexOf(entry) % 2 == 0
+                              ? kTranslationCardColor
+                              : kTranslatorcardColor;
+
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              side: BorderSide(
+                                color: kGeminiColor, // Set the border color
+                                width: 1.5,
+                              ),
+                            ),
+                            color: color,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            child: ListTile(
+                              title: Text(
+                                '${entry['dateTime'].year}-${entry['dateTime'].month}-${entry['dateTime'].day}',
+                                style: const TextStyle(
+                                    color: Colors.black, fontSize: 18),
+                              ),
+                              trailing: CircularPercentIndicator(
+                                radius: 20.0,
+                                lineWidth: 8.0,
+                                percent: incorrectAnswers / totalWords,
+                                center: Text(
+                                  '$score',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                progressColor:
+                                    const Color.fromARGB(255, 245, 136, 128),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 154, 255, 158),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

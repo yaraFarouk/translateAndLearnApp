@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/custom_text_field.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
@@ -24,8 +25,14 @@ class _TranslatorCardState extends State<TranslatorCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: widget.color,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      color: kTranslatorcardColor, // Set background color to white
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: BorderSide(
+          color: kGeminiColor, // Set the border color
+          width: 1.5,
+        ),
+      ),
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
