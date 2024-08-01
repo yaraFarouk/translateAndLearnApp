@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,7 +7,6 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/quiz_cubit.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
-import 'package:translate_and_learn_app/views/score_page.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart';
 
 class QuizPage extends StatefulWidget {
@@ -84,11 +85,166 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _onFinishQuiz() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ScorePage(score: _score, totalScore: totalScore),
-      ),
+    _showScoreDialog();
+  }
+
+  void _showScoreDialog() {
+    double percentage = (_score / totalScore) * 100;
+
+    String getMessage() {
+      if (percentage >= 85) {
+        return 'Excellent, keep going!';
+      } else if (percentage >= 75) {
+        return 'Very good, the next time will be better!';
+      } else if (percentage >= 65) {
+        return 'Good, but need more practice.';
+      } else {
+        return 'Hmm.., you need more practice.';
+      }
+    }
+
+    Color getContainerColor() {
+      if (percentage >= 85) {
+        return const Color.fromARGB(255, 61, 199, 66);
+      } else if (percentage >= 75) {
+        return const Color.fromARGB(255, 60, 133, 193);
+      } else if (percentage >= 65) {
+        return const Color.fromARGB(255, 205, 188, 41);
+      } else {
+        return const Color.fromARGB(255, 203, 83, 83);
+      }
+    }
+
+    Future<int> getUserRank() async {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        return -1;
+      }
+
+      String userId = user.uid;
+      String language =
+          'English'; // Use the actual selected language in your app
+
+      final usersCollection = FirebaseFirestore.instance.collection('users');
+      final usersSnapshot = await usersCollection.get();
+
+      List<Map<String, dynamic>> usersData = [];
+
+      for (var userDoc in usersSnapshot.docs) {
+        final userId = userDoc.id;
+        final userName = userDoc['name'];
+
+        final correctWordsSnapshot = await FirebaseFirestore.instance
+            .collection('all_words')
+            .doc(userId)
+            .collection(language)
+            .where('isCorrect', isEqualTo: true)
+            .get();
+
+        int correctWordsCount = correctWordsSnapshot.size;
+
+        usersData.add({
+          'userId': userId,
+          'userName': userName,
+          'correctWordsCount': correctWordsCount,
+        });
+      }
+
+      usersData.sort(
+          (a, b) => b['correctWordsCount'].compareTo(a['correctWordsCount']));
+
+      for (int i = 0; i < usersData.length; i++) {
+        if (usersData[i]['userId'] == userId) {
+          return i + 1; // Rank is 1-based
+        }
+      }
+
+      return -1; // User not found
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: kPrimaryColor,
+          contentPadding: EdgeInsets.all(16.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+            side: BorderSide(
+              color: kTranslationCardColor,
+              width: 3,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Your Score: $_score/$totalScore',
+                style: TextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
+                  color: const Color.fromARGB(255, 175, 55, 196),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                getMessage(),
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  color: getContainerColor(),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16.h),
+              FutureBuilder<int>(
+                future: getUserRank(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text(
+                      'Error: ${snapshot.error}',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: Colors.red,
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data == -1) {
+                    return Text(
+                      'Rank not available',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: Colors.grey,
+                      ),
+                    );
+                  } else {
+                    return Text(
+                      'Your New Rank: ${snapshot.data}',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: kGeminiColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context)
+                    .pop(); // Navigate back to the words list screen
+              },
+              child: const Text('RETURN'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -97,6 +253,7 @@ class _QuizPageState extends State<QuizPage> {
     return BlocProvider(
       create: (context) => _quizCubit,
       child: Scaffold(
+        backgroundColor: kPrimaryColor,
         body: Stack(
           children: [
             _currentWordIndex == -1
