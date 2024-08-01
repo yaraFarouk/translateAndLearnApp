@@ -8,12 +8,13 @@ import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/cubit/translator_card_cubit.dart';
 import 'package:translate_and_learn_app/views/GeminiView.dart';
+import 'package:translate_and_learn_app/views/account_settings_screen.dart';
 import 'package:translate_and_learn_app/views/favorites_screen.dart';
 import 'package:translate_and_learn_app/views/study_view.dart';
 import 'package:translate_and_learn_app/views/track_progress_screen.dart';
 import 'package:translate_and_learn_app/views/translator_cards_view.dart';
 import 'package:translate_and_learn_app/widgets/bottom_app_bar.dart';
-import 'package:translate_and_learn_app/views/standing_screen.dart'; // Import StandingScreen
+import 'package:translate_and_learn_app/views/standing_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -53,7 +54,15 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                     icon: Icon(FontAwesomeIcons.circleUser,
                         color: kGeminiColor), // Set icon color to purple
-                    onPressed: () {},
+                    onPressed: ()
+                    {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AccountSettingsScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const Spacer(),
                   Center(

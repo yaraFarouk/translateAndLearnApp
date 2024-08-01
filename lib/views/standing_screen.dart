@@ -10,13 +10,15 @@ class UserRankingsScreen extends StatefulWidget {
   _UserRankingsScreenState createState() => _UserRankingsScreenState();
 }
 
-class _UserRankingsScreenState extends State<UserRankingsScreen> {
+class _UserRankingsScreenState extends State<UserRankingsScreen>
+{
   String _selectedLanguage = 'English';
   ScrollController _scrollController = ScrollController();
   bool _hasScrolled = false;
 
   @override
-  void dispose() {
+  void dispose()
+  {
     _scrollController.dispose();
     super.dispose();
   }
@@ -172,7 +174,8 @@ class _UserRankingsScreenState extends State<UserRankingsScreen> {
                     controller: _scrollController,
                     physics: AlwaysScrollableScrollPhysics(),
                     itemCount: usersData.length,
-                    itemBuilder: (context, index) {
+                    itemBuilder: (context, index)
+                    {
                       final user1 = usersData[index];
                       bool isCurrentUser = user1['userId'] == user?.uid;
 

@@ -46,8 +46,9 @@ class SignInScreen extends StatelessWidget {
                         ),
 
                         Container(
-                          margin: EdgeInsetsDirectional.all(20.w),
+                          margin: EdgeInsetsDirectional.only(start: 20,end: 20,bottom: 20,top: 20),
                           child: TextFormField(
+                            keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value!.isEmpty) return 'Enter a valid email';
                             },
@@ -61,7 +62,7 @@ class SignInScreen extends StatelessWidget {
                         ),
 
                         Container(
-                          margin: EdgeInsetsDirectional.all(20.w),
+                          margin: EdgeInsetsDirectional.only(start: 20,end: 20,bottom: 20),
                           child: TextFormField(
                             controller: passwordController,
                             validator: (value) {
@@ -107,7 +108,6 @@ class SignInScreen extends StatelessWidget {
                                               .trim()
                                               .toString(),
                                           password: passwordController.text
-                                              .trim()
                                               .toString());
                                     }
                                   },
@@ -157,8 +157,10 @@ class SignInScreen extends StatelessWidget {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setBool('hasSeenWelcome', true);
 
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomePage()));
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+                    (Route<dynamic> route) => false);
           }
         },
       ),

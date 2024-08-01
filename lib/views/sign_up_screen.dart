@@ -70,6 +70,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          // App Logo
+                          Image.asset(
+                            'assets/images/logo.png',
+                            scale: 3,
+                          ),
+
                           // Sign up text
                           Container(
                             margin: EdgeInsetsDirectional.all(20.w),
@@ -82,7 +88,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           // name input
                           Container(
-                            margin: EdgeInsetsDirectional.all(20.w),
+                            margin: EdgeInsetsDirectional.only(
+                                start: 20, end: 20, bottom: 20, top: 20),
                             child: TextFormField(
                               validator: (value) {
                                 if (value!.isEmpty) return 'Enter your name';
@@ -101,7 +108,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           // Email input
                           Container(
-                            margin: EdgeInsetsDirectional.all(20.w),
+                            margin: EdgeInsetsDirectional.only(
+                                start: 20, end: 20, bottom: 20),
                             child: TextFormField(
                               validator: (value) {
                                 if (value!.isEmpty) {
@@ -121,7 +129,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           // password input
                           Container(
-                            margin: EdgeInsetsDirectional.all(20.w),
+                            margin: EdgeInsetsDirectional.only(
+                                start: 20, end: 20, bottom: 20),
                             child: TextFormField(
                               controller: passwordController,
                               validator: (value) {
@@ -175,7 +184,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 .trim()
                                                 .toString(),
                                             password: passwordController.text
-                                                .trim()
                                                 .toString(),
                                             language: selectedLanguage ??
                                                 "Not Defined");
@@ -231,8 +239,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.setBool('hasSeenWelcome', true);
 
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const HomePage()));
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                  (Route<dynamic> route) => false);
             }
           },
         ));

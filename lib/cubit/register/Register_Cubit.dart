@@ -5,6 +5,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'Register_States.dart';
 
+class UserData
+{
+  String? name;
+  String? email;
+  String? password;
+  String? image;
+  String? uid;
+
+  UserData({
+    required this.name,
+    required this.email,
+    required this.password,
+    required this.image,
+    required this.uid,
+  });
+
+  UserData.fromFire(Map<String, dynamic> fire) {
+    name = fire['name'];
+    email = fire['email'];
+    password = fire['password'];
+    image = fire['image'];
+    uid = fire['uid'];
+  }
+}
+
 class RegisterCubit extends Cubit<RegisterStates> {
   RegisterCubit() : super(RegisterInitialState());
 
@@ -12,6 +37,16 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
   void changeVisibility() {
     emit(UpdatePassVisibility());
+  }
+
+  UserData? userModel;
+
+  void getUserData(String UID) async
+  {
+    FirebaseFirestore.instance.collection('users').doc(UID).get().then((onValue)
+    {
+      userModel = UserData.fromFire(onValue.data()!);
+    });
   }
 
   void registerNewUser(
