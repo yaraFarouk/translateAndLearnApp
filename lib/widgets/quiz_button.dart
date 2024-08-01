@@ -7,6 +7,27 @@ class QuizButton extends StatelessWidget {
   const QuizButton({super.key, required this.words, required this.language});
   final List<WordDetailsModel> words;
   final String language;
+
+  void _showNoWordsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('No Words Available'),
+          content: Text('There are no words to quiz on yet.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -21,15 +42,19 @@ class QuizButton extends StatelessWidget {
         child: FloatingActionButton(
           shape: const CircleBorder(),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => QuizPage(
-                  words: words,
-                  language: language,
+            if (words.isEmpty) {
+              _showNoWordsDialog(context);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QuizPage(
+                    words: words,
+                    language: language,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           },
           child: const Material(
             color: kPrimaryColor,
