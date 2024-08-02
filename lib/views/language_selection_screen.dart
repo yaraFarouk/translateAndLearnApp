@@ -140,6 +140,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
                   textStyle: TextStyle(fontSize: 20.sp),
+                  side: BorderSide(color: kGeminiColor, width: 2.w),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.r),
                     side: BorderSide(
