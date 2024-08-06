@@ -16,14 +16,16 @@ import 'package:translate_and_learn_app/views/translator_cards_view.dart';
 import 'package:translate_and_learn_app/widgets/bottom_app_bar.dart';
 import 'package:translate_and_learn_app/views/standing_screen.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatefulWidget
+{
   const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+{
   int _currentIndex = 0;
   final splittingModel =
       GenerativeModel(model: 'gemini-1.5-flash', apiKey: kAPIKEY);
