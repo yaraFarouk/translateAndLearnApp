@@ -112,13 +112,13 @@ class _UserRankingsScreenState extends State<UserRankingsScreen> {
         children: [
           Container(
             height: 60.h,
-            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: languages.map((language) {
+                children: languages.map((language)
+                {
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: EdgeInsets.symmetric(horizontal: 5.0),
                     child: ChoiceChip(
                       label: Text(language),
                       selected: _selectedLanguage == language,
@@ -161,7 +161,7 @@ class _UserRankingsScreenState extends State<UserRankingsScreen> {
 
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (user != null) {
-                        _scrollToUser(user.uid, usersData);
+                        // _scrollToUser(user.uid, usersData);
                       }
                     });
 
@@ -169,7 +169,8 @@ class _UserRankingsScreenState extends State<UserRankingsScreen> {
                       controller: _scrollController,
                       physics: BouncingScrollPhysics(),
                       itemCount: usersData.length,
-                      itemBuilder: (context, index) {
+                      itemBuilder: (context, index)
+                      {
                         final user1 = usersData[index];
                         bool isCurrentUser = user1['userId'] == user?.uid;
 
