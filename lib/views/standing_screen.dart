@@ -159,7 +159,7 @@ class _UserRankingsScreenState extends State<UserRankingsScreen> {
                   } else {
                     List<Map<String, dynamic>> usersData = snapshot.data!;
 
-                    WidgetsBinding.instance!.addPostFrameCallback((_) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (user != null) {
                         _scrollToUser(user.uid, usersData);
                       }
