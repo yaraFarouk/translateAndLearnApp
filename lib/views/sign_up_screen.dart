@@ -73,7 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           // App Logo
                           Image.asset(
                             'assets/images/logo.png',
-                            scale: 3,
+                            scale: 4,
                           ),
 
                           // Sign up text

@@ -50,6 +50,7 @@ dependencies:
   cloud_firestore: ^5.0.2
   fl_chart: ^0.68.0
   percent_indicator: ^4.2.3
+  firebase_messaging: ^15.0.4
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/constants.dart';
@@ -12,7 +13,23 @@ class LanguageSelectionPage extends StatefulWidget {
 }
 
 class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
-  String? selectedLanguage;
+  int selectedLanguageIndex = 0;
+  final List<String> languages = [
+    'English',
+    'Spanish',
+    'French',
+    'German',
+    'Italian',
+    'Portuguese',
+    'Chinese',
+    'Japanese',
+    'Polish',
+    'Turkish',
+    'Russian',
+    'Dutch',
+    'Korean',
+  ];
+
   final Map<String, String> languageCodes = {
     'English': 'en',
     'Spanish': 'es',
@@ -31,114 +48,70 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Future<void> storeSelectedLanguage(
-    //     String selectedLanguage, String languageCode) async {
-    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   await prefs.setString('nativeLanguage', selectedLanguage);
-    //   await prefs.setString('nativeLanguageCode', languageCode);
-    // }
-
     return Scaffold(
       backgroundColor: kPrimaryColor,
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: 50.h),
-                child: Image.asset(
-                  "assets/images/logo.png",
-                  height: 100.h,
-                ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/logo.png",
+                height: 200.h,
               ),
-            ),
-            const Spacer(),
-            Center(
-              child: Text(
+              Text(
                 'Please select your native language:',
                 style: TextStyle(fontSize: 18.sp, fontFamily: kFont),
+                textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(
-              height: 30.h,
-            ),
-            Center(
-              child: Container(
+              Container(
+                margin: EdgeInsets.all(40),
                 width: 200.w,
-                height: 60.h,
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                height: 150.h,
                 decoration: BoxDecoration(
-                  color: kAppBarColor,
+                  color: kPrimaryColor,
                   borderRadius: BorderRadius.circular(40.r),
                   border: Border.all(
-                    color: kAppBarColor,
+                    color: kPrimaryColor,
                     width: 2.w,
                   ),
                 ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    borderRadius: BorderRadius.circular(8.r),
-                    dropdownColor: kAppBarColor,
-                    icon:
-                        const Icon(Icons.arrow_drop_down, color: Colors.white),
-                    iconSize: 30.sp,
-                    elevation: 16,
-                    style: TextStyle(color: Colors.white, fontSize: 18.sp),
-                    isExpanded: true,
-                    value: selectedLanguage,
-                    hint: const Text(
-                      'Select Language',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    items: languageCodes.keys.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedLanguage = newValue;
-                      });
-                    },
-                  ),
+                child: CupertinoPicker(
+                  backgroundColor: kPrimaryColor,
+                  itemExtent: 32.0,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      selectedLanguageIndex = index;
+                    });
+                  },
+                  children: languages.map((String language) {
+                    return Center(
+                      child: Text(
+                        language,
+                        style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
-            ),
-            const Spacer(
-              flex: 1,
-            ),
-            Center(
-              child: ElevatedButton(
+              ElevatedButton(
                 onPressed: () async {
-                  if (selectedLanguage != null) {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    await prefs.setString('nativeLanguage', selectedLanguage!);
-                    await prefs.setString(
-                        'nativeLanguageCode', languageCodes[selectedLanguage]!);
-
-                    // await prefs.setBool('hasSeenWelcome', true);
-
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (_) => const OnboardingScreen(),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select a language'),
-                      ),
-                    );
-                  }
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  String selectedLanguage = languages[selectedLanguageIndex];
+                  await prefs.setString('nativeLanguage', selectedLanguage);
+                  await prefs.setString('nativeLanguageCode', languageCodes[selectedLanguage]!);
+        
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (_) => const OnboardingScreen(),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kTranslatorcardColor,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
+                  padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
                   textStyle: TextStyle(fontSize: 20.sp),
                   side: BorderSide(color: kGeminiColor, width: 2.w),
                   shape: RoundedRectangleBorder(
@@ -157,15 +130,15 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(right: 18.w),
-              child: Image.asset(
-                "assets/images/select.png",
-                height: 350.h,
+              Container(
+                margin: EdgeInsets.only(top: 40.h),
+                child: Image.asset(
+                  "assets/images/select.png",
+                  height: 200.h,
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
