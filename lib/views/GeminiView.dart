@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
 import 'package:translate_and_learn_app/views/chat_screen.dart';
+import 'package:flutter/cupertino.dart';
 
 class StartChatScreen extends StatefulWidget {
   const StartChatScreen({super.key});
@@ -13,8 +14,14 @@ class StartChatScreen extends StatefulWidget {
 }
 
 class _StartChatScreenState extends State<StartChatScreen> {
-  String? selectedLanguage;
+  int? selectedLanguageIndex;
   bool isLoading = false;
+
+  final List<String> languages = [
+    'English', 'Spanish', 'French', 'German', 'Italian',
+    'Portuguese', 'Chinese', 'Japanese', 'Polish', 'Turkish',
+    'Russian', 'Dutch', 'Korean'
+  ];
 
   final Map<String, String> languageCodes = {
     'English': 'en',
@@ -37,7 +44,8 @@ class _StartChatScreenState extends State<StartChatScreen> {
     return BlocListener<GeminiChatCubit, GeminiChatState>(
       listener: (context, state) {
         if (state is GeminiChatInitial) {
-          setState(() {
+          setState(()
+          {
             isLoading = false;
           });
           Navigator.of(context).push(
@@ -59,84 +67,80 @@ class _StartChatScreenState extends State<StartChatScreen> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20.h),
+
               Container(
+                margin: EdgeInsets.all(40),
                 width: 200.w,
-                height: 60.h,
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                height: 150.h,
                 decoration: BoxDecoration(
-                  color: kGeminiColor,
+                  color: kPrimaryColor,
                   borderRadius: BorderRadius.circular(40.r),
                   border: Border.all(
-                    color: kGeminiColor,
+                    color: kPrimaryColor,
                     width: 2.w,
                   ),
                 ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    borderRadius: BorderRadius.circular(8.r),
-                    dropdownColor: kGeminiColor,
-                    icon:
-                        const Icon(Icons.arrow_drop_down, color: kAppBarColor),
-                    iconSize: 30.w,
-                    elevation: 16,
-                    style: const TextStyle(color: kAppBarColor, fontSize: 18),
-                    isExpanded: true,
-                    value: selectedLanguage,
-                    hint: const Text(
-                      'Select Language',
-                      style: TextStyle(color: kAppBarColor),
-                    ),
-                    items: languageCodes.keys.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedLanguage = newValue;
-                      });
-                      if (newValue != null) {
-                        context
-                            .read<GeminiChatCubit>()
-                            .updateLanguageTo(languageCodes[newValue]!);
-                      }
-                    },
-                  ),
+                child: CupertinoPicker(
+                  backgroundColor: kPrimaryColor,
+                  itemExtent: 32.0,
+                  onSelectedItemChanged: (int index)
+                  {
+                    setState(()
+                    {
+                      selectedLanguageIndex = index;
+                    });
+                    if (index != null) {
+                      context.read<GeminiChatCubit>().updateLanguageTo(languageCodes[languages[index]]!);
+                    }
+                  },
+                  children: languages.map((String language)
+                  {
+                    return Center(
+                      child: Text(
+                        language,
+                        style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
+
               SizedBox(height: 20.h),
               isLoading
                   ? const CircularProgressIndicator()
                   : OutlinedButton(
-                      onPressed: () {
-                        if (selectedLanguage != null) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          context.read<GeminiChatCubit>().resetTranslation();
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Please select a language first.'),
-                            ),
-                          );
-                        }
-                      },
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: kGeminiColor, width: 2.w),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.r),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 24.w, vertical: 12.h),
+                onPressed: () {
+                  if (selectedLanguageIndex != null)
+                  {
+                    setState(()
+                    {
+                      isLoading = true;
+                    });
+                    context.read<GeminiChatCubit>().resetTranslation();
+                  }
+                  else
+                  {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select a language first.'),
                       ),
-                      child: Text(
-                        'Start Chat with Gemini',
-                        style: TextStyle(color: kAppBarColor, fontSize: 18.sp),
-                      ),
-                    ),
+                    );
+                  }
+                },
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  side: BorderSide(color: kGeminiColor, width: 2.w),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40.r),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 24.w, vertical: 12.h),
+                ),
+                child: Text(
+                  'Start Chat with Gemini',
+                  style: TextStyle(color: kAppBarColor, fontSize: 18.sp),
+                ),
+              ),
             ],
           ),
         ),

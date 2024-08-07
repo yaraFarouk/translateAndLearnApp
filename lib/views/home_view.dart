@@ -46,49 +46,56 @@ class _HomePageState extends State<HomePage>
       ],
       child: Scaffold(
         backgroundColor: kPrimaryColor,
+        appBar: AppBar(
+          backgroundColor: kPrimaryColor,
+          leading: IconButton(
+            icon: Icon(FontAwesomeIcons.circleUser,
+                color: kGeminiColor), // Set icon color to purple
+            onPressed: ()
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AccountSettingsScreen(),
+                ),
+              );
+            },
+          ),
+          title: Image.asset(
+            "assets/images/logo.png",
+            height: 80.h,
+          ),
+          centerTitle: true,
+          actions:
+          [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                icon: Icon(FontAwesomeIcons.rankingStar,
+                    color: kGeminiColor), // Set icon color to purple
+                onPressed: ()
+                {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserRankingsScreen(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Column(
-            children: [
+            children:
+            [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: Icon(FontAwesomeIcons.circleUser,
-                        color: kGeminiColor), // Set icon color to purple
-                    onPressed: ()
-                    {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AccountSettingsScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const Spacer(),
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 30.h),
-                      child: Image.asset(
-                        "assets/images/logo.png",
-                        height: 80.h,
-                      ),
-                    ),
-                  ),
-                  const Spacer(), // Pushes the icon to the far right
-                  IconButton(
-                    icon: Icon(FontAwesomeIcons.rankingStar,
-                        color: kGeminiColor), // Set icon color to purple
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UserRankingsScreen(),
-                        ),
-                      );
-                    },
-                  ),
+                children:
+                [
+
                 ],
               ),
               Expanded(
@@ -108,8 +115,10 @@ class _HomePageState extends State<HomePage>
         ),
         bottomNavigationBar: CustomBottomAppBar(
           currentIndex: _currentIndex,
-          onItemTapped: (index) {
-            setState(() {
+          onItemTapped: (index)
+          {
+            setState(()
+            {
               _currentIndex = index;
             });
           },

@@ -1,14 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:meta/meta.dart';
-
 import 'dart:async';
-
 import 'package:translate_and_learn_app/services/localization_service.dart';
-
 part 'gemini_chat_state.dart';
 
-class GeminiChatCubit extends Cubit<GeminiChatState> {
+class GeminiChatCubit extends Cubit<GeminiChatState>
+{
   final GenerativeModel model;
   LocalizationService localizationService = LocalizationService();
   String languageFrom = 'English';
@@ -27,6 +25,8 @@ class GeminiChatCubit extends Cubit<GeminiChatState> {
       }); // Trigger translation after debounce
     }
   }
+
+
 
   void updateLanguageTo(String language) {
     languageTo = language;

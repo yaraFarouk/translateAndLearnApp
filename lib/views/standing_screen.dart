@@ -4,12 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 
-class UserRankingsScreen extends StatefulWidget {
+class UserRankingsScreen extends StatefulWidget
+{
   @override
   _UserRankingsScreenState createState() => _UserRankingsScreenState();
 }
 
-class _UserRankingsScreenState extends State<UserRankingsScreen> {
+class _UserRankingsScreenState extends State<UserRankingsScreen>
+{
   String _selectedLanguage = 'English';
   ScrollController _scrollController = ScrollController();
   bool _hasScrolled = false;
