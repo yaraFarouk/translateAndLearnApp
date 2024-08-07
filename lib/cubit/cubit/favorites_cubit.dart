@@ -14,6 +14,10 @@ class FavoritesCubit extends Cubit<FavoritesState> {
 
   String languageFrom = 'English', languageTo = 'English', text = '';
 
+  String getLanguageFrom() {
+    return languageFrom;
+  }
+
   void updateLanguageFrom(String language) {
     languageFrom = language;
   }

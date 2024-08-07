@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/custom_text_field.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
@@ -21,6 +24,16 @@ class TranslatorCard extends StatefulWidget {
 
 class _TranslatorCardState extends State<TranslatorCard> {
   final TextEditingController _controller = TextEditingController();
+  final FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage(
+      languageCodes[context.read<FavoritesCubit>().getLanguageFrom()] ??
+          'en_EN',
+    );
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +65,14 @@ class _TranslatorCardState extends State<TranslatorCard> {
               const SizedBox(width: 10),
               TranslatorCardicons(
                 icon1: FontAwesomeIcons.trash,
-                icon3: FontAwesomeIcons.volumeHigh,
                 onPressed1: () {
                   setState(() {
                     _controller.clear();
                   });
+                },
+                icon3: FontAwesomeIcons.volumeHigh,
+                onPressed3: () {
+                  _speak(_controller.text);
                 },
               ),
             ])
