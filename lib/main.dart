@@ -12,12 +12,16 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Gemini API
   const apiKey = 'AIzaSyBcjYQMdIZpKvmLvCsPIc15kFRxqCA0KNQ';
-
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   final imageModel = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   final geminiChatModel =
@@ -31,10 +35,6 @@ void main() async {
     initialLocale = Locale(languageCode);
   }
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   /// Useless (From Documentation)
   /// await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
 
@@ -44,6 +44,7 @@ void main() async {
     hasSeenWelcome: hasSeenWelcome,
     initialLocale: initialLocale,
     geminiChatModel: geminiChatModel,
+    routeObserver: routeObserver,
   ));
 }
 
@@ -60,8 +61,9 @@ class TranslateAndLearnApp extends StatelessWidget {
     required this.hasSeenWelcome,
     this.initialLocale,
     required this.geminiChatModel,
+    required this.routeObserver,
   });
-
+  final RouteObserver<ModalRoute> routeObserver;
   final GenerativeModel model;
   final GenerativeModel imageModel;
   final GenerativeModel geminiChatModel;
@@ -82,7 +84,7 @@ class TranslateAndLearnApp extends StatelessWidget {
                 BlocProvider(
                   create: (context) => ImageToTextCubit(imageModel),
                 ),
-                Provider<GenerativeModel>.value(value: imageModel),
+                Provider<GenerativeModel>.value(value: geminiChatModel),
                 BlocProvider(
                   create: (context) => GeminiChatCubit(geminiChatModel),
                 ),

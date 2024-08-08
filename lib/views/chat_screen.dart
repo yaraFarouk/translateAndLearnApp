@@ -6,16 +6,14 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
 // import 'package:translate_and_learn_app/models/message.dart';
 
-class ChatScreen extends StatefulWidget
-{
+class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen>
-{
+class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<Message> _messages = [];
@@ -62,7 +60,8 @@ class _ChatScreenState extends State<ChatScreen>
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_rounded),
               onPressed: () {
-                Navigator.of(context).pop();
+                context.read<GeminiChatCubit>().translateText('');
+                Navigator.pop(context);
               },
             ),
           ),
@@ -157,9 +156,12 @@ class _ChatScreenState extends State<ChatScreen>
                       ),
                       onPressed: () {
                         final message = _controller.text;
+
                         if (message.trim().isNotEmpty) {
                           _controller.clear();
-                          context.read<GeminiChatCubit>().translateText(message);
+                          context
+                              .read<GeminiChatCubit>()
+                              .translateText(message);
                         }
                       },
                     ),

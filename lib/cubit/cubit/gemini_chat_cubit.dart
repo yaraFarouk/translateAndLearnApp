@@ -5,37 +5,18 @@ import 'dart:async';
 import 'package:translate_and_learn_app/services/localization_service.dart';
 part 'gemini_chat_state.dart';
 
-class GeminiChatCubit extends Cubit<GeminiChatState>
-{
+class GeminiChatCubit extends Cubit<GeminiChatState> {
   final GenerativeModel model;
   LocalizationService localizationService = LocalizationService();
   String languageFrom = 'English';
   String languageTo = 'English';
-  String lastText = '';
+
   Timer? _debounce; // Debounce timer
 
   GeminiChatCubit(this.model) : super(const GeminiChatInitial([]));
 
-  void updateLanguageFrom(String language) {
-    languageFrom = language;
-    if (lastText.isNotEmpty) {
-      _debounce?.cancel(); // Cancel any ongoing debounce timer
-      _debounce = Timer(const Duration(milliseconds: 500), () {
-        translateText(lastText);
-      }); // Trigger translation after debounce
-    }
-  }
-
-
-
   void updateLanguageTo(String language) {
     languageTo = language;
-    if (lastText.isNotEmpty) {
-      _debounce?.cancel(); // Cancel any ongoing debounce timer
-      _debounce = Timer(const Duration(milliseconds: 500), () {
-        translateText(lastText);
-      }); // Trigger translation after debounce
-    }
   }
 
   Future<void> translateText(String text) async {
@@ -46,7 +27,6 @@ class GeminiChatCubit extends Cubit<GeminiChatState>
         final updatedMessages = List<Message>.from(state.messages)
           ..add(Message(text: text, isUserMessage: true));
         emit(GeminiChatLoading(updatedMessages));
-        lastText = text;
 
         // Replace newlines and create the translation prompt
         text = text.replaceAll('\n', ' ');
@@ -85,6 +65,7 @@ class GeminiChatCubit extends Cubit<GeminiChatState>
   void deleteMessage(int index) {
     final updatedMessages = List<Message>.from(state.messages)..removeAt(index);
     emit(GeminiChatSuccess(updatedMessages));
+    emit(const GeminiChatInitial([]));
   }
 
   void editMessage(int index, String newText) {

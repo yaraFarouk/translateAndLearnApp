@@ -18,9 +18,19 @@ class _StartChatScreenState extends State<StartChatScreen> {
   bool isLoading = false;
 
   final List<String> languages = [
-    'English', 'Spanish', 'French', 'German', 'Italian',
-    'Portuguese', 'Chinese', 'Japanese', 'Polish', 'Turkish',
-    'Russian', 'Dutch', 'Korean'
+    'English',
+    'Spanish',
+    'French',
+    'German',
+    'Italian',
+    'Portuguese',
+    'Chinese',
+    'Japanese',
+    'Polish',
+    'Turkish',
+    'Russian',
+    'Dutch',
+    'Korean'
   ];
 
   final Map<String, String> languageCodes = {
@@ -44,15 +54,25 @@ class _StartChatScreenState extends State<StartChatScreen> {
     return BlocListener<GeminiChatCubit, GeminiChatState>(
       listener: (context, state) {
         if (state is GeminiChatInitial) {
-          setState(()
-          {
+          setState(() {
             isLoading = false;
           });
-          Navigator.of(context).push(
+          Navigator.of(context)
+              .push(
             MaterialPageRoute(
               builder: (context) => ChatScreen(),
             ),
-          );
+          )
+              .then((_) {
+            // Ensure that loading state is reset when coming back from ChatScreen
+            setState(() {
+              isLoading = false;
+            });
+          });
+        } else if (state is GeminiChatError) {
+          setState(() {
+            isLoading = false; // Stop loading on error
+          });
         }
       },
       child: Center(
@@ -67,7 +87,6 @@ class _StartChatScreenState extends State<StartChatScreen> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20.h),
-
               Container(
                 margin: EdgeInsets.all(40),
                 width: 200.w,
@@ -83,18 +102,17 @@ class _StartChatScreenState extends State<StartChatScreen> {
                 child: CupertinoPicker(
                   backgroundColor: kPrimaryColor,
                   itemExtent: 32.0,
-                  onSelectedItemChanged: (int index)
-                  {
-                    setState(()
-                    {
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
                       selectedLanguageIndex = index;
                     });
                     if (index != null) {
-                      context.read<GeminiChatCubit>().updateLanguageTo(languageCodes[languages[index]]!);
+                      context
+                          .read<GeminiChatCubit>()
+                          .updateLanguageTo(languageCodes[languages[index]]!);
                     }
                   },
-                  children: languages.map((String language)
-                  {
+                  children: languages.map((String language) {
                     return Center(
                       child: Text(
                         language,
@@ -104,43 +122,38 @@ class _StartChatScreenState extends State<StartChatScreen> {
                   }).toList(),
                 ),
               ),
-
               SizedBox(height: 20.h),
               isLoading
                   ? const CircularProgressIndicator()
                   : OutlinedButton(
-                onPressed: () {
-                  if (selectedLanguageIndex != null)
-                  {
-                    setState(()
-                    {
-                      isLoading = true;
-                    });
-                    context.read<GeminiChatCubit>().resetTranslation();
-                  }
-                  else
-                  {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select a language first.'),
+                      onPressed: () {
+                        if (selectedLanguageIndex != null) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          context.read<GeminiChatCubit>().resetTranslation();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please select a language first.'),
+                            ),
+                          );
+                        }
+                      },
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        side: BorderSide(color: kGeminiColor, width: 2.w),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.r),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 24.w, vertical: 12.h),
                       ),
-                    );
-                  }
-                },
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  side: BorderSide(color: kGeminiColor, width: 2.w),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40.r),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 24.w, vertical: 12.h),
-                ),
-                child: Text(
-                  'Start Chat with Gemini',
-                  style: TextStyle(color: kAppBarColor, fontSize: 18.sp),
-                ),
-              ),
+                      child: Text(
+                        'Start Chat with Gemini',
+                        style: TextStyle(color: kAppBarColor, fontSize: 18.sp),
+                      ),
+                    ),
             ],
           ),
         ),
