@@ -92,31 +92,50 @@ class _LanguagecardState extends State<Languagecard> {
                             icon2: FontAwesomeIcons.volumeHigh,
                             icon3: FontAwesomeIcons.plus,
                             onPressed3: () {
-                              BlocProvider.of<StudyWordsCubit>(context)
-                                  .addNewWords(
+                              if (widget.text.isNotEmpty) {
                                 BlocProvider.of<StudyWordsCubit>(context)
-                                    .state
-                                    .languageTo,
-                                widget.text,
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text('Wait for words to be added')),
-                              );
+                                    .addNewWords(
+                                  BlocProvider.of<StudyWordsCubit>(context)
+                                      .state
+                                      .languageTo,
+                                  widget.text,
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Wait for words to be added'),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Cannot add an empty translation to study words'),
+                                  ),
+                                );
+                              }
                             },
                             onPressed1: () {
-                              setState(() {
-                                isFavorite = !isFavorite;
-                              });
-                              BlocProvider.of<FavoritesCubit>(context)
-                                  .addFavoriteTranslation(widget.text);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                              if (widget.text.isNotEmpty) {
+                                setState(() {
+                                  isFavorite = !isFavorite;
+                                });
+                                BlocProvider.of<FavoritesCubit>(context)
+                                    .addFavoriteTranslation(widget.text);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
                                     content: Text(isFavorite
                                         ? 'Added to favorites'
-                                        : 'Removed from favorites')),
-                              );
+                                        : 'Removed from favorites'),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Cannot add an empty translation to favorites'),
+                                  ),
+                                );
+                              }
                             },
                           );
                   },
