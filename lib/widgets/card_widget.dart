@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
@@ -25,6 +26,15 @@ class Languagecard extends StatefulWidget {
 
 class _LanguagecardState extends State<Languagecard> {
   bool isFavorite = false;
+  final FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage(
+        languageCodes[context.read<StudyWordsCubit>().state.languageTo] ??
+            'en_EN');
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(text);
+  }
 
   @override
   void didUpdateWidget(covariant Languagecard oldWidget) {
@@ -136,6 +146,9 @@ class _LanguagecardState extends State<Languagecard> {
                                   ),
                                 );
                               }
+                            },
+                            onPressed2: () {
+                              _speak(widget.text);
                             },
                           );
                   },
