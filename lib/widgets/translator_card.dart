@@ -4,6 +4,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
+import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/custom_text_field.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
@@ -33,6 +34,16 @@ class _TranslatorCardState extends State<TranslatorCard> {
     );
     await flutterTts.setPitch(1.0);
     await flutterTts.speak(text);
+  }
+
+  void _clearText() {
+    _controller.clear();
+    context
+        .read<GeminiApiCubit>()
+        .resetTranslation(); // Reset the translation state
+    context
+        .read<FavoritesCubit>()
+        .updateText(''); // Ensure any dependent state is also reset
   }
 
   @override
@@ -65,11 +76,7 @@ class _TranslatorCardState extends State<TranslatorCard> {
               const SizedBox(width: 10),
               TranslatorCardicons(
                 icon1: FontAwesomeIcons.trash,
-                onPressed1: () {
-                  setState(() {
-                    _controller.clear();
-                  });
-                },
+                onPressed1: _clearText, // Clear text and reset states
                 icon3: FontAwesomeIcons.volumeHigh,
                 onPressed3: () {
                   _speak(_controller.text);

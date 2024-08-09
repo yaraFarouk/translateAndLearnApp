@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translate_and_learn_app/constants.dart';
 
 class TranslatorCardicons extends StatelessWidget {
   const TranslatorCardicons(
@@ -19,16 +20,16 @@ class TranslatorCardicons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
-          icon: Icon(icon1, color: Colors.black),
+          icon: Icon(icon1, color: kAppBarColor),
           onPressed: onPressed1,
         ),
         if (icon2 != null)
           IconButton(
-            icon: Icon(icon2, color: Colors.black),
+            icon: Icon(icon2, color: kAppBarColor),
             onPressed: onPressed2,
           ),
         IconButton(
-          icon: Icon(icon3, color: Colors.black),
+          icon: Icon(icon3, color: kAppBarColor),
           onPressed: onPressed3,
         ),
       ],

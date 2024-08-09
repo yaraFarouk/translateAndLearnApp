@@ -16,16 +16,14 @@ import 'package:translate_and_learn_app/views/translator_cards_view.dart';
 import 'package:translate_and_learn_app/widgets/bottom_app_bar.dart';
 import 'package:translate_and_learn_app/views/standing_screen.dart';
 
-class HomePage extends StatefulWidget
-{
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-{
+class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final splittingModel =
       GenerativeModel(model: 'gemini-1.5-flash', apiKey: kAPIKEY);
@@ -50,9 +48,8 @@ class _HomePageState extends State<HomePage>
           backgroundColor: kPrimaryColor,
           leading: IconButton(
             icon: Icon(FontAwesomeIcons.circleUser,
-                color: kGeminiColor), // Set icon color to purple
-            onPressed: ()
-            {
+                color: kPurpil), // Set icon color to purple
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -66,15 +63,13 @@ class _HomePageState extends State<HomePage>
             height: 80.h,
           ),
           centerTitle: true,
-          actions:
-          [
+          actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
                 icon: Icon(FontAwesomeIcons.rankingStar,
-                    color: kGeminiColor), // Set icon color to purple
-                onPressed: ()
-                {
+                    color: kPurpil), // Set icon color to purple
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -89,14 +84,10 @@ class _HomePageState extends State<HomePage>
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Column(
-            children:
-            [
+            children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children:
-                [
-
-                ],
+                children: [],
               ),
               Expanded(
                 child: IndexedStack(
@@ -115,10 +106,8 @@ class _HomePageState extends State<HomePage>
         ),
         bottomNavigationBar: CustomBottomAppBar(
           currentIndex: _currentIndex,
-          onItemTapped: (index)
-          {
-            setState(()
-            {
+          onItemTapped: (index) {
+            setState(() {
               _currentIndex = index;
             });
           },

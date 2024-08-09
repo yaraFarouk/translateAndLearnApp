@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
+
+  void _removeFavorite(BuildContext context, String docId) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final favoritesRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser!.uid)
+        .collection('favorites');
+
+    await favoritesRef.doc(docId).delete();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Favorite removed!')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +54,7 @@ class FavoritesScreen extends StatelessWidget {
             itemCount: favoriteDocs.length,
             itemBuilder: (context, index) {
               final favorite = favoriteDocs[index];
+
               return Card(
                 color: kTranslationCardColor,
                 shape: RoundedRectangleBorder(
@@ -51,13 +66,24 @@ class FavoritesScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'From: ${favorite['languageFrom']}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'From: ${favorite['languageFrom']}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(FontAwesomeIcons.solidStar,
+                                color: kAppBarColor),
+                            onPressed: () =>
+                                _removeFavorite(context, favorite.id),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       Text(

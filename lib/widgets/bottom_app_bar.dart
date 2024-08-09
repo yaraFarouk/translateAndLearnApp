@@ -59,7 +59,8 @@ class CustomBottomAppBar extends StatelessWidget {
                 onPressed: () => onItemTapped(3),
               ),
               IconButton(
-                icon: const Icon(FontAwesomeIcons.star, color: Colors.white),
+                icon: Icon(FontAwesomeIcons.star,
+                    color: currentIndex == 4 ? kPurpil : kPrimaryColor),
                 onPressed: () => onItemTapped(4),
               ),
             ],

@@ -24,9 +24,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return TextField(
       controller: widget.controller,
       onChanged: (value) {
-        // Update both the GeminiApiCubit and FavoritesCubit
-        context.read<GeminiApiCubit>().translateText(value);
-        context.read<FavoritesCubit>().updateText(value);
+        value = value.trim(); // Remove leading and trailing spaces
+
+        if (value.isEmpty) {
+          // If input is empty, reset the translation
+          context.read<GeminiApiCubit>().resetTranslation();
+          context.read<FavoritesCubit>().updateText('');
+        } else {
+          // If there is text, translate and update favorites
+          context.read<GeminiApiCubit>().translateText(value);
+          context.read<FavoritesCubit>().updateText(value);
+        }
       },
       maxLines: null,
       cursorColor: Colors.black,

@@ -231,7 +231,7 @@ class _StudyScreenState extends State<StudyScreen> {
                                         ),
                                         barRadius: Radius.circular(7.0),
                                         backgroundColor:
-                                            Color.fromARGB(255, 253, 242, 255),
+                                            Color.fromARGB(255, 254, 249, 255),
                                         progressColor: kPurpil,
                                       ),
                                     ),

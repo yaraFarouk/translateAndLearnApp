@@ -15,8 +15,8 @@ class FloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 80.w,
-      height: 80.h,
+      width: 60.w,
+      height: 60.h,
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: kAppBarColor, width: 2.w),
@@ -32,7 +32,7 @@ class FloatingButton extends StatelessWidget {
             icon: Icon(
               icon,
               color: kAppBarColor,
-              size: 30.sp,
+              size: 25.sp,
             ),
             onPressed: onPressed,
           ),

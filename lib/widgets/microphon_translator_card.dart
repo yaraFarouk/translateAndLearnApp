@@ -103,6 +103,13 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
     }
   }
 
+  void _clearText() {
+    setState(() {
+      _text = '';
+    });
+    context.read<GeminiApiCubit>().resetTranslation(); // Reset the translation
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -111,6 +118,10 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
         color: widget.color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
+          side: BorderSide(
+            color: kGeminiColor, // Set the border color
+            width: 1.5,
+          ),
         ),
         margin: const EdgeInsets.symmetric(vertical: 6),
         child: Padding(
@@ -123,10 +134,8 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
                 children: [
                   const CustomDropDownButton(translation: 1),
                   IconButton(
-                    icon: const Icon(FontAwesomeIcons.star),
-                    onPressed: () {
-                      // Add your onPressed logic here
-                    },
+                    icon: const Icon(FontAwesomeIcons.volumeHigh),
+                    onPressed: _clearText,
                   ),
                 ],
               ),

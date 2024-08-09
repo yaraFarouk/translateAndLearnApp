@@ -13,6 +13,20 @@ import 'package:translate_and_learn_app/cubit/cubit/gemini_feedback_cubit.dart';
 import 'package:translate_and_learn_app/views/word_details_screen.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart'; // Import flutter_bloc for BlocProvider and BlocBuilder
+import 'package:flutter/gestures.dart';
+
+TextSpan parseFormattedText(String text) {
+  // Example implementation: Simply returns a TextSpan with the provided text
+  // You can add more complex parsing and styling logic here if needed
+  return TextSpan(
+    text: text,
+    style: TextStyle(
+      fontSize: 16.0,
+      color: Colors.black,
+      height: 1.5, // Adjust line height if needed
+    ),
+  );
+}
 
 class TrackProgressPage extends StatefulWidget {
   const TrackProgressPage({Key? key}) : super(key: key);
@@ -84,8 +98,69 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
     const Color(0xff23b6e6),
     const Color(0xff02d39a),
   ];
-
+  bool _isExpanded = false;
   Widget leftTitleWidgets(double value, TitleMeta meta) {
+    // Inside the _TrackProgressPageState class
+    Widget _buildFeedbackBox(GeminiFeedbackState state) {
+      String? feedbackContent;
+      if (state is GeminiFeedbackSuccess) {
+        feedbackContent = state.response;
+      } else if (state is GeminiFeedbackError) {
+        feedbackContent = state.error;
+      }
+
+      return GestureDetector(
+        onTap: () {
+          setState(() {
+            _isExpanded = !_isExpanded;
+          });
+        },
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          child: Container(
+            decoration: BoxDecoration(
+              color: kGeminiColor,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.black54),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Gemini Feedback",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                if (feedbackContent != null)
+                  RichText(
+                    text: parseFormattedText(feedbackContent),
+                    maxLines: _isExpanded ? null : 2,
+                    overflow: _isExpanded
+                        ? TextOverflow.visible
+                        : TextOverflow.ellipsis,
+                  ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    _isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    size: 24,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     const style = TextStyle(
       color: Color(0xff67727d),
       fontWeight: FontWeight.bold,
@@ -161,70 +236,62 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> languages = [
+      'English',
+      'Spanish',
+      'French',
+      'German',
+      'Italian',
+      'Portuguese',
+      'Chinese',
+      'Japanese',
+      'Polish',
+      'Turkish',
+      'Russian',
+      'Dutch',
+      'Korean'
+    ];
     return BlocProvider(
       create: (context) => _feedbackCubit,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: kPrimaryColor,
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  children: [
-                    Container(
-                      width: 150.w,
-                      height: 40.h,
-                      padding: const EdgeInsets.only(left: 16),
-                      decoration: BoxDecoration(
-                        color: kAppBarColor,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Row(
-                        children: [
-                          DropdownButton<String>(
-                            borderRadius: BorderRadius.circular(8),
-                            dropdownColor: kAppBarColor,
-                            value: _selectedLanguage,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 24,
-                            elevation: 16,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 18),
-                            underline: Container(
-                              height: 2,
-                              color: kAppBarColor, // No underline
-                            ),
-                            onChanged: (String? newValue) {
+                Container(
+                  height: 60.h,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: languages.map((language) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: ChoiceChip(
+                            label: Text(language),
+                            selected: _selectedLanguage == language,
+                            onSelected: (selected) {
                               setState(() {
-                                _selectedLanguage = newValue!;
+                                _selectedLanguage = language;
                               });
                             },
-                            items: <String>[
-                              'English',
-                              'Spanish',
-                              'French',
-                              'German',
-                              'Italian',
-                              'Portuguese',
-                              'Chinese',
-                              'Japanese',
-                              'Polish',
-                              'Turkish',
-                              'Russian',
-                              'Dutch',
-                              'Korean'
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                            checkmarkColor: Colors.white,
+                            selectedColor: kAppBarColor,
+                            backgroundColor: Colors.grey[300],
+                            labelStyle: TextStyle(
+                              color: _selectedLanguage == language
+                                  ? Colors.white
+                                  : Colors.black87,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
                           ),
-                        ],
-                      ),
+                        );
+                      }).toList(),
                     ),
-                  ],
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -243,7 +310,7 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
                             Text("No Progress Yet"),
                             SizedBox(height: 20),
                             Card(
-                              color: Color.fromARGB(255, 204, 198, 255),
+                              color: kGeminiColor,
                               margin: EdgeInsets.all(8.r),
                               child: ListTile(
                                 title: Center(
@@ -293,7 +360,7 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 204, 198, 255),
+                            color: kGeminiColor,
                             borderRadius: BorderRadius.circular(
                                 16.0), // Adjust the radius as needed
                           ),
