@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/widgets/custom_app_top_bar.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart';
@@ -50,6 +53,16 @@ class _WordDetailsScreenState extends State<WordDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kGeminiColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded),
+          onPressed: () {
+            context.read<GeminiChatCubit>().translateText('');
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: FutureBuilder<WordDetailsModel>(
         future: _wordDetails,
         builder: (context, snapshot) {
@@ -65,7 +78,7 @@ class _WordDetailsScreenState extends State<WordDetailsScreen> {
               padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: Column(
                 children: [
-                  SizedBox(height: 70.h),
+                  SizedBox(height: 10.h),
                   CustomAppTopBar(
                     title: word.word,
                     icon: Icons.search,

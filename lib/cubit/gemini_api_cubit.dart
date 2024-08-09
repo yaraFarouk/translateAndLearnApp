@@ -35,8 +35,9 @@ class GeminiApiCubit extends Cubit<GeminiApiState> {
   }
 
   Future<void> translateText(String text) async {
-    if (text.isEmpty) {
-      lastText = '';
+    if (text.trim().isEmpty) {
+      // Check if the text is empty or just spaces
+      lastText = ''; // Clear lastText when input is empty or spaces
       emit(GeminiApiInitial());
       return;
     }
@@ -55,9 +56,15 @@ class GeminiApiCubit extends Cubit<GeminiApiState> {
 
         final content = [Content.text(prompt)];
         final response = await model.generateContent(content);
-        final translatedText = response.text!;
+        final translatedText = response.text ?? '';
 
-        emit(GeminiApiSuccess(translatedText));
+        // Check if the translation is empty and handle accordingly
+        if (translatedText.isEmpty) {
+          lastText = ''; // Clear lastText if no translation is returned
+          emit(GeminiApiInitial());
+        } else {
+          emit(GeminiApiSuccess(translatedText));
+        }
       } catch (e) {
         emit(GeminiApiError("Error occurred during translation"));
       }
@@ -65,6 +72,7 @@ class GeminiApiCubit extends Cubit<GeminiApiState> {
   }
 
   void resetTranslation() {
+    lastText = ''; // Clear lastText on reset
     emit(GeminiApiInitial());
   }
 

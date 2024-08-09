@@ -48,6 +48,7 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
       _image = null;
       _text = 'Text will appear here';
     });
+    context.read<GeminiApiCubit>().resetTranslation(); // Reset the translation
   }
 
   @override
@@ -71,6 +72,10 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
           color: widget.color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
+            side: BorderSide(
+              color: kGeminiColor,
+              width: 1.5,
+            ),
           ),
           margin: const EdgeInsets.symmetric(vertical: 6),
           child: Padding(
@@ -83,7 +88,7 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
                   children: [
                     const CustomDropDownButton(translation: 1),
                     IconButton(
-                      icon: const Icon(FontAwesomeIcons.star),
+                      icon: const Icon(FontAwesomeIcons.volumeHigh),
                       onPressed: () {
                         // Add your onPressed logic here
                       },
@@ -113,7 +118,7 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
                         FontAwesomeIcons.trash,
                         color: kAppBarColor,
                       ),
-                      onPressed: _clearImage,
+                      onPressed: _clearImage, // Clear image and text
                     ),
                   ],
                 ),

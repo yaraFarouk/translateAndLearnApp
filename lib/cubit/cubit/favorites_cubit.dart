@@ -61,4 +61,25 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       emit(FavoritesError("Error occurred during adding to favorites"));
     }
   }
+
+  Future<void> removeFavoriteTranslation(String translationText) async {
+    User? user = _auth.currentUser;
+
+    try {
+      final snapshot = await firestore
+          .collection('users')
+          .doc(user!.uid)
+          .collection('favorites')
+          .where('translation', isEqualTo: translationText)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      emit(FavoritesSuccess());
+    } catch (e) {
+      emit(FavoritesError("Error occurred during removing from favorites"));
+    }
+  }
 }
