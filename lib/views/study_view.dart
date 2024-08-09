@@ -224,7 +224,7 @@ class _StudyScreenState extends State<StudyScreen> {
                                         percent: progress > 1 ? 1 : progress,
                                         center: Text(
                                           '$learnedWordsCount/$totalWords',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 12.0,
                                             color: kAppBarColor,
                                           ),

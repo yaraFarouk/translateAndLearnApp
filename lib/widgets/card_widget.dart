@@ -10,12 +10,14 @@ import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
 
 class Languagecard extends StatefulWidget {
-  final String text;
+  final String translatedText;
+  final String hintText;
   final Color color;
 
   const Languagecard({
     super.key,
-    required this.text,
+    required this.translatedText,
+    required this.hintText,
     required this.color,
   });
 
@@ -29,7 +31,7 @@ class _LanguagecardState extends State<Languagecard> {
   @override
   void didUpdateWidget(covariant Languagecard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.text != widget.text) {
+    if (oldWidget.translatedText != widget.translatedText) {
       setState(() {
         isFavorite = false;
       });
@@ -38,89 +40,91 @@ class _LanguagecardState extends State<Languagecard> {
 
   @override
   Widget build(BuildContext context) {
+    String displayedText =
+        widget.translatedText.isEmpty ? widget.hintText : widget.translatedText;
+
+    bool isTextEmpty = widget.translatedText.isEmpty;
+
     return Card(
-        color: widget.color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        margin: EdgeInsets.symmetric(vertical: 6.h),
-        child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const CustomDropDownButton(
-                    translation: 0,
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      FontAwesomeIcons.copy,
-                      color: kAppBarColor,
-                    ),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.text));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Text copied to clipboard')),
-                      );
-                    },
-                  ),
-                ],
+      color: widget.color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      margin: EdgeInsets.symmetric(vertical: 6.h),
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const CustomDropDownButton(
+                translation: 0,
               ),
-              SizedBox(
-                height: 10.h,
-              ),
-              Row(children: [
-                Expanded(
-                  child: Text(
-                    widget.text,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Colors.black,
-                    ),
-                  ),
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.copy,
+                  color: isTextEmpty ? Colors.grey : kAppBarColor,
                 ),
-                SizedBox(width: 10.w),
-                BlocBuilder<StudyWordsCubit, StudyWordsState>(
-                  builder: (context, state) {
-                    return state.isLoading
-                        ? const CircularProgressIndicator()
-                        : TranslatorCardicons(
-                            icon1: isFavorite
-                                ? FontAwesomeIcons.solidStar
-                                : FontAwesomeIcons.star,
-                            icon2: FontAwesomeIcons.volumeHigh,
-                            icon3: FontAwesomeIcons.plus,
-                            onPressed3: () {
-                              if (widget.text.isNotEmpty) {
+                onPressed: isTextEmpty
+                    ? null
+                    : () {
+                        Clipboard.setData(
+                            ClipboardData(text: widget.translatedText));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Text copied to clipboard')),
+                        );
+                      },
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Row(children: [
+            Expanded(
+              child: Text(
+                displayedText,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            SizedBox(width: 10.w),
+            BlocBuilder<StudyWordsCubit, StudyWordsState>(
+              builder: (context, state) {
+                return state.isLoading
+                    ? const CircularProgressIndicator()
+                    : TranslatorCardicons(
+                        icon1: isFavorite
+                            ? FontAwesomeIcons.solidStar
+                            : FontAwesomeIcons.star,
+                        icon2: FontAwesomeIcons.volumeHigh,
+                        icon3: FontAwesomeIcons.plus,
+                        onPressed3: isTextEmpty
+                            ? null
+                            : () {
                                 BlocProvider.of<StudyWordsCubit>(context)
                                     .addNewWords(
                                   BlocProvider.of<StudyWordsCubit>(context)
                                       .state
                                       .languageTo,
-                                  widget.text,
+                                  widget.translatedText,
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Wait for words to be added'),
                                   ),
                                 );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Cannot add an empty translation to study words'),
-                                  ),
-                                );
-                              }
-                            },
-                            onPressed1: () {
-                              if (widget.text.isNotEmpty) {
+                              },
+                        onPressed1: isTextEmpty
+                            ? null
+                            : () {
                                 setState(() {
                                   isFavorite = !isFavorite;
                                 });
                                 BlocProvider.of<FavoritesCubit>(context)
-                                    .addFavoriteTranslation(widget.text);
+                                    .addFavoriteTranslation(
+                                        widget.translatedText);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(isFavorite
@@ -128,19 +132,13 @@ class _LanguagecardState extends State<Languagecard> {
                                         : 'Removed from favorites'),
                                   ),
                                 );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Cannot add an empty translation to favorites'),
-                                  ),
-                                );
-                              }
-                            },
-                          );
-                  },
-                ),
-              ]),
-            ])));
+                              },
+                      );
+              },
+            ),
+          ]),
+        ]),
+      ),
+    );
   }
 }

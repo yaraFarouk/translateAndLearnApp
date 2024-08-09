@@ -50,6 +50,8 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
     });
   }
 
+  bool get _isTextAvailable => _text != 'Text will appear here';
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ImageToTextCubit, ImageToTextState>(
@@ -68,10 +70,14 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
       child: SizedBox(
         width: double.infinity,
         child: Card(
-          color: widget.color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
+            side: BorderSide(
+              color: kGeminiColor, // Set the border color
+              width: 1.5,
+            ),
           ),
+          color: widget.color,
           margin: const EdgeInsets.symmetric(vertical: 6),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -83,10 +89,13 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
                   children: [
                     const CustomDropDownButton(translation: 1),
                     IconButton(
-                      icon: const Icon(FontAwesomeIcons.star),
-                      onPressed: () {
-                        // Add your onPressed logic here
-                      },
+                      icon: const Icon(FontAwesomeIcons.volumeHigh),
+                      onPressed: _isTextAvailable
+                          ? () {
+                              // Your high-volume icon logic here
+                            }
+                          : null,
+                      color: _isTextAvailable ? kAppBarColor : Colors.grey,
                     ),
                   ],
                 ),
@@ -101,15 +110,18 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
                         onGalleryPressed: () => _pickImage(ImageSource.gallery),
                       )
                     else
-                      SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: Image.file(File(_image!.path)),
+                      ClipOval(
+                        child: Image.file(
+                          File(_image!.path),
+                          height: 75, // Smaller size for image
+                          width: 75,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     const Spacer(flex: 1),
                     const SizedBox(width: 22),
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         FontAwesomeIcons.trash,
                         color: kAppBarColor,
                       ),
@@ -150,12 +162,18 @@ class FloatingImageButton extends StatelessWidget {
           color: kPrimaryColor,
           icon: FontAwesomeIcons.camera,
           onPressed: onCameraPressed,
+          width: 50,
+          hight: 50,
+          iconSize: 20, // Adjusted size for buttons
         ),
         const SizedBox(width: 16),
         FloatingButton(
           color: kPrimaryColor,
           icon: FontAwesomeIcons.image,
           onPressed: onGalleryPressed,
+          width: 50,
+          hight: 50,
+          iconSize: 20, // Adjusted size for buttons
         ),
       ],
     );

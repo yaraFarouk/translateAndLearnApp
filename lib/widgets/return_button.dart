@@ -53,7 +53,7 @@ class _ReturnButtonState extends State<ReturnButton> {
                 elevation: 4,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40.0),
-                  side: const BorderSide(color: kAppBarColor, width: 2.0),
+                  side: BorderSide(color: kAppBarColor, width: 2.0),
                 ),
               ),
             ),

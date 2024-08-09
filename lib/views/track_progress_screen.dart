@@ -293,7 +293,7 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 204, 198, 255),
+                            color: kTranslationCardColor,
                             borderRadius: BorderRadius.circular(
                                 16.0), // Adjust the radius as needed
                           ),

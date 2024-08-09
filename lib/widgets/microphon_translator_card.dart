@@ -29,10 +29,14 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
     return SizedBox(
       width: double.infinity,
       child: Card(
-        color: widget.color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
+          side: BorderSide(
+            color: kGeminiColor, // Set the border color
+            width: 1.5,
+          ),
         ),
+        color: widget.color,
         margin: const EdgeInsets.symmetric(vertical: 6),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -43,12 +47,7 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const CustomDropDownButton(translation: 1),
-                  IconButton(
-                    icon: const Icon(FontAwesomeIcons.star),
-                    onPressed: () {
-                      // Add your onPressed logic here
-                    },
-                  ),
+                  const CustomDropDownButton(translation: 1),
                 ],
               ),
               const SizedBox(height: 8),
@@ -73,7 +72,7 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
                     width: 22,
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       FontAwesomeIcons.trash,
                       color: kAppBarColor,
                     ),

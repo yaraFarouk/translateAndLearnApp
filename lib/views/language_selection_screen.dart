@@ -98,11 +98,13 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   String selectedLanguage = languages[selectedLanguageIndex];
                   await prefs.setString('nativeLanguage', selectedLanguage);
-                  await prefs.setString('nativeLanguageCode', languageCodes[selectedLanguage]!);
-        
+                  await prefs.setString(
+                      'nativeLanguageCode', languageCodes[selectedLanguage]!);
+
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (_) => const OnboardingScreen(),
@@ -111,7 +113,8 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kTranslatorcardColor,
-                  padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
                   textStyle: TextStyle(fontSize: 20.sp),
                   side: BorderSide(color: kGeminiColor, width: 2.w),
                   shape: RoundedRectangleBorder(
@@ -122,7 +125,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                     ),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Get Started',
                   style: TextStyle(
                     color: kAppBarColor,

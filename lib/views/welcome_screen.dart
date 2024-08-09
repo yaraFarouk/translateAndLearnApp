@@ -153,8 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           elevation: 4,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40.0),
-                            side: const BorderSide(
-                                color: kAppBarColor, width: 2.0),
+                            side: BorderSide(color: kAppBarColor, width: 2.0),
                           ),
                         ),
                       ),
@@ -181,8 +180,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           elevation: 4,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40.0),
-                            side: const BorderSide(
-                                color: kAppBarColor, width: 2.0),
+                            side: BorderSide(color: kAppBarColor, width: 2.0),
                           ),
                         ),
                       ),
@@ -215,8 +213,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           elevation: 4,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40.0),
-                            side: const BorderSide(
-                                color: kAppBarColor, width: 2.0),
+                            side: BorderSide(color: kAppBarColor, width: 2.0),
                           ),
                         ),
                       ),

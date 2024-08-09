@@ -84,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: message.isUserMessage
-                                ? kGeminiColor
+                                ? kTranslationCardColor
                                 : Colors.white,
                             border: Border.all(
                               color: kGeminiColor,
