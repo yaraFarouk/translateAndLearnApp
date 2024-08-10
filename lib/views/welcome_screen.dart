@@ -129,7 +129,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         MaterialPageRoute(builder: (_) => const SignUpScreen()),
                       );
                     },
-                    child: Text("Skip", style: TextStyle(fontSize: 18.sp)),
+                    child: FutureBuilder<String>(
+                      future: LocalizationService().fetchFromFirestore(
+                        'Skip',
+                        'Skip',
+                      ),
+                      builder: (context, snapshot) {
+                        return Text(
+                          snapshot.data ?? '',
+                          style: TextStyle(fontSize: 18.sp),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 if (currentPageIndex != 2) // Check if it's not the last page

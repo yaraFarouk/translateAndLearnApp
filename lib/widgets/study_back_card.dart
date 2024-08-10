@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/word_details_screen.dart';
@@ -34,6 +37,7 @@ class StudyBackCard extends StatefulWidget {
 class _StudyBackCardState extends State<StudyBackCard> {
   final LocalizationService _localizationService = LocalizationService();
   late Future<String> _studyTranslation;
+  final FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -42,9 +46,13 @@ class _StudyBackCardState extends State<StudyBackCard> {
         _localizationService.fetchFromFirestore('Study', 'Study');
   }
 
-  void _playSound() {
-    // Add your sound playing logic here
-    print('Playing sound for ${widget.reversedWord.translation}');
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage(
+      languageCodes[context.read<FavoritesCubit>().getLanguageFrom()] ??
+          'en_EN',
+    );
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(text);
   }
 
   @override
@@ -115,7 +123,9 @@ class _StudyBackCardState extends State<StudyBackCard> {
                 right: 10,
                 child: IconButton(
                   icon: const Icon(FontAwesomeIcons.volumeHigh),
-                  onPressed: _playSound,
+                  onPressed: () {
+                    _speak(widget.reversedWord.translation);
+                  },
                 ),
               ),
             ],

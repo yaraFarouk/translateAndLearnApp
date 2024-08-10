@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -31,6 +32,16 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
   final SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _text = '';
+  final FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage(
+      languageCodes[context.read<FavoritesCubit>().getLanguageFrom()] ??
+          'en_EN',
+    );
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(text);
+  }
 
   void listenForPermissions() async {
     final status = await Permission.microphone.status;
@@ -135,7 +146,9 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
                   const CustomDropDownButton(translation: 1),
                   IconButton(
                     icon: const Icon(FontAwesomeIcons.volumeHigh),
-                    onPressed: _clearText,
+                    onPressed: () {
+                      _speak(_text);
+                    },
                   ),
                 ],
               ),
@@ -166,10 +179,7 @@ class _MicrophonTranslatorCardState extends State<MicrophonTranslatorCard> {
                       color: kAppBarColor,
                     ),
                     onPressed: () {
-                      setState(() {
-                        _text = '';
-                      });
-                      context.read<GeminiApiCubit>().translateText(_text);
+                      _clearText();
                     },
                   ),
                 ],

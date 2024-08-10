@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
 
@@ -27,6 +29,16 @@ class Languagecard extends StatefulWidget {
 
 class _LanguagecardState extends State<Languagecard> {
   bool isFavorite = false;
+  final FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage(
+      languageCodes[context.read<FavoritesCubit>().getLanguageFrom()] ??
+          'en_EN',
+    );
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(text);
+  }
 
   @override
   void didUpdateWidget(covariant Languagecard oldWidget) {
@@ -69,8 +81,19 @@ class _LanguagecardState extends State<Languagecard> {
                         Clipboard.setData(
                             ClipboardData(text: widget.translatedText));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Text copied to clipboard')),
+                          SnackBar(
+                            content: FutureBuilder<String>(
+                              future: LocalizationService().fetchFromFirestore(
+                                'Text copied to clipboard',
+                                'Text copied to clipboard',
+                              ),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  snapshot.data ?? '',
+                                );
+                              },
+                            ),
+                          ),
                         );
                       },
               ),
@@ -111,17 +134,25 @@ class _LanguagecardState extends State<Languagecard> {
                                   widget.translatedText,
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Wait for words to be added'),
+                                  SnackBar(
+                                    content: FutureBuilder<String>(
+                                      future: LocalizationService()
+                                          .fetchFromFirestore(
+                                        'Wait for words to be added',
+                                        'Wait for words to be added',
+                                      ),
+                                      builder: (context, snapshot) {
+                                        return Text(
+                                          snapshot.data ?? '',
+                                        );
+                                      },
+                                    ),
                                   ),
                                 );
                               },
                         onPressed1: isTextEmpty
                             ? null
                             : () {
-                                setState(() {
-                                  isFavorite = !isFavorite;
-                                });
                                 isFavorite
                                     ? BlocProvider.of<FavoritesCubit>(context)
                                         .removeFavoriteTranslation(
@@ -132,15 +163,18 @@ class _LanguagecardState extends State<Languagecard> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(isFavorite
-                                        ? 'Added to favorites'
-                                        : 'Removed from favorites'),
+                                        ? 'Removed from favorites'
+                                        : 'Added to favorites'),
                                   ),
                                 );
+                                setState(() {
+                                  isFavorite = !isFavorite;
+                                });
                               },
                         onPressed2: isTextEmpty
                             ? null
                             : () {
-                                // Your TTS logic here
+                                _speak(displayedText);
                               },
                       );
               },

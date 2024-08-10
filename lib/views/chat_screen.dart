@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 // import 'package:translate_and_learn_app/models/message.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -183,18 +184,41 @@ class _ChatScreenState extends State<ChatScreen> {
           children: <Widget>[
             ListTile(
               leading: const Icon(Icons.copy),
-              title: const Text('Copy'),
+              title: FutureBuilder<String>(
+                  future:
+                      LocalizationService().fetchFromFirestore('Copy', 'Copy'),
+                  builder: (context, snapshot) {
+                    return Text(snapshot.data ?? '');
+                  }),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: message.text));
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Message copied to clipboard')),
+                  SnackBar(
+                    content: FutureBuilder<String>(
+                      future: LocalizationService().fetchFromFirestore(
+                        'Message copied to clipboard',
+                        'Message copied to clipboard',
+                      ),
+                      builder: (context, snapshot) {
+                        return Text(snapshot.data ?? '');
+                      },
+                    ),
+                  ),
                 );
               },
             ),
             ListTile(
               leading: const Icon(Icons.delete),
-              title: const Text('Delete'),
+              title: FutureBuilder<String>(
+                future: LocalizationService()
+                    .fetchFromFirestore('Delete', 'Delete'),
+                builder: (context, snapshot) {
+                  return Text(
+                    snapshot.data ?? '',
+                  );
+                },
+              ),
               onTap: () {
                 setState(() {
                   _messages.removeAt(index);

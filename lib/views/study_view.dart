@@ -157,9 +157,17 @@ class _StudyScreenState extends State<StudyScreen> {
 
                 if (filteredWords.isEmpty) {
                   return Center(
-                    child: Text(
-                      'No words found',
-                      style: TextStyle(fontFamily: kFont, fontSize: 16.sp),
+                    child: FutureBuilder<String>(
+                      future: LocalizationService().fetchFromFirestore(
+                        'No words found',
+                        'No words found',
+                      ),
+                      builder: (context, snapshot) {
+                        return Text(
+                          snapshot.data ?? '',
+                          style: TextStyle(fontFamily: kFont, fontSize: 16.sp),
+                        );
+                      },
                     ),
                   );
                 }
