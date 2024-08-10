@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -42,10 +43,18 @@ class FavoritesScreen extends StatelessWidget {
           final favoriteDocs = snapshot.data!.docs;
 
           if (favoriteDocs.isEmpty) {
-            return const Center(
-              child: Text(
-                'No favorites added yet!',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+            return Center(
+              child: FutureBuilder<String>(
+                future: LocalizationService().fetchFromFirestore(
+                  'No favorites added yet!',
+                  'No favorites added yet!',
+                ),
+                builder: (context, snapshot) {
+                  return Text(
+                    snapshot.data ?? '',
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                  );
+                },
               ),
             );
           }
@@ -69,14 +78,19 @@ class FavoritesScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'From: ${favorite['languageFrom']}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          FutureBuilder<String>(
+                              future: LocalizationService()
+                                  .fetchFromFirestore('From:', 'From:'),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  '${snapshot.data ?? ''} ${favorite['languageFrom']}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              }),
                           IconButton(
                             icon: const Icon(FontAwesomeIcons.solidStar,
                                 color: kAppBarColor),

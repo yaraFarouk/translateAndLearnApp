@@ -3,13 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/home_view.dart';
 
 import '../cubit/register/Register_Cubit.dart';
 import '../cubit/register/Register_States.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final LocalizationService _localizationService = LocalizationService();
+  late Future<String> _alreadyTranslation;
+
+  @override
+  void initState() {
+    super.initState();
+    _alreadyTranslation = _localizationService.fetchFromFirestore(
+        'Already a learner? let\'s find out!',
+        'Already a learner? let\'s find out!');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +55,21 @@ class SignInScreen extends StatelessWidget {
                       children: [
                         Container(
                           margin: EdgeInsetsDirectional.all(20.w),
-                          child: const Text(
-                            'Already a learner? let\'s find out!',
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.w800),
-                          ),
+                          child: FutureBuilder<String>(
+                              future: _alreadyTranslation,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  snapshot.data ?? '',
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w800),
+                                );
+                              }),
                         ),
 
                         Container(
-                          margin: EdgeInsetsDirectional.only(start: 20,end: 20,bottom: 20,top: 20),
+                          margin: EdgeInsetsDirectional.only(
+                              start: 20, end: 20, bottom: 20, top: 20),
                           child: TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
@@ -54,7 +77,15 @@ class SignInScreen extends StatelessWidget {
                             },
                             controller: emailController,
                             decoration: InputDecoration(
-                                label: const Text('Email'),
+                                label: FutureBuilder<String>(
+                                  future: LocalizationService()
+                                      .fetchFromFirestore('Email', 'Email'),
+                                  builder: (context, snapshot) {
+                                    return Text(
+                                      snapshot.data ?? '',
+                                    );
+                                  },
+                                ),
                                 prefixIcon: const Icon(Icons.email_outlined),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(15.r))),
@@ -62,7 +93,8 @@ class SignInScreen extends StatelessWidget {
                         ),
 
                         Container(
-                          margin: EdgeInsetsDirectional.only(start: 20,end: 20,bottom: 20),
+                          margin: EdgeInsetsDirectional.only(
+                              start: 20, end: 20, bottom: 20),
                           child: TextFormField(
                             controller: passwordController,
                             validator: (value) {
@@ -71,7 +103,16 @@ class SignInScreen extends StatelessWidget {
                             obscureText: passHidden,
                             keyboardType: TextInputType.visiblePassword,
                             decoration: InputDecoration(
-                                label: const Text('Password'),
+                                label: FutureBuilder<String>(
+                                  future:
+                                      LocalizationService().fetchFromFirestore(
+                                    'Password',
+                                    'Password',
+                                  ),
+                                  builder: (context, snapshot) {
+                                    return Text(snapshot.data ?? '');
+                                  },
+                                ),
                                 prefixIcon:
                                     const Icon(Icons.lock_outline_rounded),
                                 suffixIcon: IconButton(
@@ -111,10 +152,19 @@ class SignInScreen extends StatelessWidget {
                                               .toString());
                                     }
                                   },
-                                  child: const Text(
-                                    'Sign In',
-                                    style: TextStyle(
-                                        fontSize: 18, color: Colors.white),
+                                  child: FutureBuilder<String>(
+                                    future: LocalizationService()
+                                        .fetchFromFirestore(
+                                      'Sign In',
+                                      'Sign In',
+                                    ),
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data ?? '',
+                                        style: TextStyle(
+                                            fontSize: 18, color: Colors.white),
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
@@ -132,17 +182,26 @@ class SignInScreen extends StatelessWidget {
                         // already learner button
                         Container(
                           child: MaterialButton(
-                              onPressed: () {
-                                // go to SignInScreen
+                            onPressed: () {
+                              // go to SignInScreen
 
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
+                              Navigator.pop(context);
+                            },
+                            child: FutureBuilder<String>(
+                              future: LocalizationService().fetchFromFirestore(
                                 'Not a learner? Sign up',
-                                style: TextStyle(
-                                  color: Color(0xFF8C00FF),
-                                ),
-                              )),
+                                'Not a learner? Sign up',
+                              ),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  snapshot.data ?? '',
+                                  style: const TextStyle(
+                                    color: Color(0xFF8C00FF),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         )
                       ],
                     ),
@@ -160,7 +219,7 @@ class SignInScreen extends StatelessWidget {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => HomePage()),
-                    (Route<dynamic> route) => false);
+                (Route<dynamic> route) => false);
           }
         },
       ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 
 import '../constants.dart';
 import '../cubit/register/Register_Cubit.dart';
@@ -15,9 +16,14 @@ class AccountSettingsScreen extends StatefulWidget {
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   UserData? userModel;
   bool hiddenPass = true;
+  final LocalizationService _localizationService = LocalizationService();
+  late Future<String> _accountSettingsTranslation;
+
   @override
   void initState() {
     super.initState();
+    _accountSettingsTranslation = _localizationService.fetchFromFirestore(
+        'Account Settings', 'Account Settings');
     fetchUserData();
   }
 
@@ -38,7 +44,6 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -50,9 +55,17 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             Navigator.pop(context);
           },
         ),
-        title: Text(
-          'Account Settings',
-          style: TextStyle(color: kAppBarColor),
+        title: FutureBuilder<String>(
+          future: _accountSettingsTranslation,
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              return Text(
+                snapshot.data!,
+                style: TextStyle(color: kAppBarColor),
+              );
+            }
+            return const SizedBox();
+          },
         ),
       ),
       body: userModel == null
@@ -126,8 +139,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         ),
                         leading: Icon(Icons.key_outlined),
                         trailing: IconButton(
-                          onPressed: ()
-                          {
+                          onPressed: () {
                             setState(() {
                               hiddenPass = !hiddenPass;
                             });
@@ -135,7 +147,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                           icon: Icon(Icons.remove_red_eye_outlined),
                         ),
                         title: Text(
-                          hiddenPass ? "******" : userModel!.password.toString(),
+                          hiddenPass
+                              ? "******"
+                              : userModel!.password.toString(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -156,11 +170,19 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         ),
                         leading:
                             Icon(Icons.logout_rounded, color: Colors.white),
-                        title: Text(
-                          "Sign Out",
-                          style: TextStyle(color: Colors.white),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        title: FutureBuilder<String>(
+                          future: LocalizationService().fetchFromFirestore(
+                            'Sign Out',
+                            'Sign Out',
+                          ),
+                          builder: (context, snapshot) {
+                            return Text(
+                              snapshot.data ?? '',
+                              style: const TextStyle(color: Colors.white),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          },
                         ),
                         onTap: () {
                           FirebaseAuth.instance.signOut().then((onValue) async {

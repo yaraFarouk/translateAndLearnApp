@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_and_learn_app/cubit/register/Register_Cubit.dart';
 import 'package:translate_and_learn_app/cubit/register/Register_States.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:translate_and_learn_app/views/sign_in_screen.dart';
 
@@ -30,11 +31,15 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   String? selectedLanguageString;
+  final LocalizationService _localizationService = LocalizationService();
+  late Future<String> _alreadyTranslation;
 
   @override
   void initState() {
     super.initState();
     _loadSelectedLanguageString();
+    _alreadyTranslation = _localizationService.fetchFromFirestore(
+        'Already a learner? Sign in', 'Already a learner? Sign in');
   }
 
   Future<void> _loadSelectedLanguageString() async {
@@ -97,7 +102,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               controller: nameController,
                               keyboardType: TextInputType.name,
                               decoration: InputDecoration(
-                                  label: const Text('Name'),
+                                  label: FutureBuilder<String>(
+                                    future: LocalizationService()
+                                        .fetchFromFirestore(
+                                      'Name',
+                                      'Name',
+                                    ),
+                                    builder: (context, snapshot) {
+                                      return Text(snapshot.data ?? '');
+                                    },
+                                  ),
                                   prefixIcon:
                                       const Icon(Icons.person_outline_rounded),
                                   border: OutlineInputBorder(
@@ -119,7 +133,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                  label: const Text('Email'),
+                                  label: FutureBuilder<String>(
+                                    future: LocalizationService()
+                                        .fetchFromFirestore('Email', 'Email'),
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data ?? '',
+                                      );
+                                    },
+                                  ),
                                   prefixIcon: const Icon(Icons.email_outlined),
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -139,7 +161,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               obscureText: passHidden,
                               keyboardType: TextInputType.visiblePassword,
                               decoration: InputDecoration(
-                                  label: const Text('Password'),
+                                  label: FutureBuilder<String>(
+                                    future: LocalizationService()
+                                        .fetchFromFirestore(
+                                      'Password',
+                                      'Password',
+                                    ),
+                                    builder: (context, snapshot) {
+                                      return Text(snapshot.data ?? '');
+                                    },
+                                  ),
                                   prefixIcon:
                                       const Icon(Icons.lock_outline_rounded),
                                   suffixIcon: IconButton(
@@ -189,10 +220,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 "Not Defined");
                                       }
                                     },
-                                    child: const Text(
-                                      'Sign Up',
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.white),
+                                    child: FutureBuilder<String>(
+                                      future: LocalizationService()
+                                          .fetchFromFirestore(
+                                        'Sign Up',
+                                        'Sign Up',
+                                      ),
+                                      builder: (context, snapshot) {
+                                        return Text(
+                                          snapshot.data ?? '',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
@@ -219,12 +261,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           builder: (context) =>
                                               const SignInScreen()));
                                 },
-                                child: const Text(
-                                  'Already a learner? Sign in',
-                                  style: TextStyle(
-                                    color: Color(0xFF8C00FF),
-                                  ),
-                                )),
+                                child: FutureBuilder<String>(
+                                    future: _alreadyTranslation,
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data ?? '',
+                                        style: TextStyle(
+                                          color: Color(0xFF8C00FF),
+                                        ),
+                                      );
+                                    })),
                           )
                         ],
                       ),

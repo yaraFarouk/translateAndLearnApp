@@ -4,6 +4,7 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 
 class CustomDropDownButton extends StatefulWidget {
   const CustomDropDownButton({super.key, required this.translation});
@@ -80,7 +81,14 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
                 ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: FutureBuilder<String>(
+                        future: LocalizationService()
+                            .fetchFromFirestore(value, value),
+                        builder: (context, snapshot) {
+                          return Text(
+                            snapshot.data ?? '',
+                          );
+                        }),
                   );
                 }).toList(),
               ),

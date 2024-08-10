@@ -10,6 +10,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_feedback_cubit.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/word_details_screen.dart';
 import 'package:translate_and_learn_app/views/words_list_view.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart'; // Import flutter_bloc for BlocProvider and BlocBuilder
@@ -128,13 +129,18 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Gemini Feedback",
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                FutureBuilder<String>(
+                    future: LocalizationService().fetchFromFirestore(
+                        'Gemini Feedback', 'Gemini Feedback'),
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data ?? '',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }),
                 const SizedBox(height: 8),
                 if (feedbackContent != null)
                   RichText(
@@ -270,7 +276,12 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
                         return Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5.0),
                           child: ChoiceChip(
-                            label: Text(language),
+                            label: FutureBuilder<String>(
+                                future: LocalizationService()
+                                    .fetchFromFirestore(language, language),
+                                builder: (context, snapshot) {
+                                  return Text(snapshot.data ?? '');
+                                }),
                             selected: _selectedLanguage == language,
                             onSelected: (selected) {
                               setState(() {
@@ -314,14 +325,23 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
                               margin: EdgeInsets.all(8.r),
                               child: ListTile(
                                 title: Center(
-                                  child: Text(
-                                    "Start Studying",
-                                    style: TextStyle(
-                                      fontFamily: kFont,
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: kAppBarColor,
+                                  child: FutureBuilder<String>(
+                                    future: LocalizationService()
+                                        .fetchFromFirestore(
+                                      'Start Studyings',
+                                      'Start Studyings',
                                     ),
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data ?? '',
+                                        style: TextStyle(
+                                          fontFamily: kFont,
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: kAppBarColor,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                                 onTap: () {

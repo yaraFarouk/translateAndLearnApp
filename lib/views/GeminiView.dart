@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/gemini_chat_cubit.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -81,10 +82,18 @@ class _StartChatScreenState extends State<StartChatScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Which language do you want to learn with Gemini?',
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.center,
+              FutureBuilder<String>(
+                future: LocalizationService().fetchFromFirestore(
+                  'Which language do you want to learn with Gemini?',
+                  'Which language do you want to learn with Gemini?',
+                ),
+                builder: (context, snapshot) {
+                  return Text(
+                    snapshot.data ?? '',
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  );
+                },
               ),
               SizedBox(height: 20.h),
               Container(
@@ -114,10 +123,16 @@ class _StartChatScreenState extends State<StartChatScreen> {
                   },
                   children: languages.map((String language) {
                     return Center(
-                      child: Text(
-                        language,
-                        style: TextStyle(color: Colors.black, fontSize: 18.sp),
-                      ),
+                      child: FutureBuilder<String>(
+                          future: LocalizationService()
+                              .fetchFromFirestore(language, language),
+                          builder: (context, snapshot) {
+                            return Text(
+                              language,
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 18.sp),
+                            );
+                          }),
                     );
                   }).toList(),
                 ),
@@ -134,8 +149,17 @@ class _StartChatScreenState extends State<StartChatScreen> {
                           context.read<GeminiChatCubit>().resetTranslation();
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Please select a language first.'),
+                            SnackBar(
+                              content: FutureBuilder<String>(
+                                future:
+                                    LocalizationService().fetchFromFirestore(
+                                  'Please select a language first.',
+                                  'Please select a language first.',
+                                ),
+                                builder: (context, snapshot) {
+                                  return Text(snapshot.data ?? '');
+                                },
+                              ),
                             ),
                           );
                         }
@@ -149,9 +173,18 @@ class _StartChatScreenState extends State<StartChatScreen> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 24.w, vertical: 12.h),
                       ),
-                      child: Text(
-                        'Start Chat with Gemini',
-                        style: TextStyle(color: kAppBarColor, fontSize: 18.sp),
+                      child: FutureBuilder<String>(
+                        future: LocalizationService().fetchFromFirestore(
+                          'Start Chat with Gemini',
+                          'Start Chat with Gemini',
+                        ),
+                        builder: (context, snapshot) {
+                          return Text(
+                            snapshot.data ?? '',
+                            style:
+                                TextStyle(color: kAppBarColor, fontSize: 18.sp),
+                          );
+                        },
                       ),
                     ),
             ],

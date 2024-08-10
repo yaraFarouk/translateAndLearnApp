@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 
-class UserRankingsScreen extends StatefulWidget
-{
+class UserRankingsScreen extends StatefulWidget {
   @override
   _UserRankingsScreenState createState() => _UserRankingsScreenState();
 }
 
-class _UserRankingsScreenState extends State<UserRankingsScreen>
-{
+class _UserRankingsScreenState extends State<UserRankingsScreen> {
   String _selectedLanguage = 'English';
   ScrollController _scrollController = ScrollController();
   bool _hasScrolled = false;
@@ -62,10 +61,10 @@ class _UserRankingsScreenState extends State<UserRankingsScreen>
   Future<List<Map<String, dynamic>>> getSortedUsersByWordCount(
       String language) async {
     List<Map<String, dynamic>> usersData =
-    await fetchUsersWithWordCounts(language);
+        await fetchUsersWithWordCounts(language);
 
     usersData.sort(
-            (a, b) => b['correctWordsCount'].compareTo(a['correctWordsCount']));
+        (a, b) => b['correctWordsCount'].compareTo(a['correctWordsCount']));
 
     return usersData;
   }
@@ -92,9 +91,19 @@ class _UserRankingsScreenState extends State<UserRankingsScreen>
     User? user = FirebaseAuth.instance.currentUser;
 
     List<String> languages = [
-      'English', 'Spanish', 'French', 'German', 'Italian',
-      'Portuguese', 'Chinese', 'Japanese', 'Polish',
-      'Turkish', 'Russian', 'Dutch', 'Korean'
+      'English',
+      'Spanish',
+      'French',
+      'German',
+      'Italian',
+      'Portuguese',
+      'Chinese',
+      'Japanese',
+      'Polish',
+      'Turkish',
+      'Russian',
+      'Dutch',
+      'Korean'
     ];
 
     return Scaffold(
@@ -117,17 +126,22 @@ class _UserRankingsScreenState extends State<UserRankingsScreen>
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: languages.map((language)
-                {
+                children: languages.map((language) {
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.0),
                     child: ChoiceChip(
-                      label: Text(language),
+                      label: FutureBuilder<String>(
+                          future: LocalizationService()
+                              .fetchFromFirestore(language, language),
+                          builder: (context, snapshot) {
+                            return Text(snapshot.data ?? '');
+                          }),
                       selected: _selectedLanguage == language,
                       onSelected: (selected) {
                         setState(() {
                           _selectedLanguage = language;
-                          _usersFuture = getSortedUsersByWordCount(_selectedLanguage);
+                          _usersFuture =
+                              getSortedUsersByWordCount(_selectedLanguage);
                         });
                       },
                       checkmarkColor: Colors.white,
@@ -157,7 +171,17 @@ class _UserRankingsScreenState extends State<UserRankingsScreen>
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No data available'));
+                    return Center(
+                      child: FutureBuilder<String>(
+                        future: LocalizationService().fetchFromFirestore(
+                          'No data available',
+                          'No data available',
+                        ),
+                        builder: (context, snapshot) {
+                          return Text(snapshot.data ?? '');
+                        },
+                      ),
+                    );
                   } else {
                     List<Map<String, dynamic>> usersData = snapshot.data!;
 
@@ -171,8 +195,7 @@ class _UserRankingsScreenState extends State<UserRankingsScreen>
                       controller: _scrollController,
                       physics: BouncingScrollPhysics(),
                       itemCount: usersData.length,
-                      itemBuilder: (context, index)
-                      {
+                      itemBuilder: (context, index) {
                         final user1 = usersData[index];
                         bool isCurrentUser = user1['userId'] == user?.uid;
 
@@ -195,14 +218,13 @@ class _UserRankingsScreenState extends State<UserRankingsScreen>
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                               side: isCurrentUser
-                                  ? BorderSide(
-                                  color: kGeminiColor, width: 2.0)
+                                  ? BorderSide(color: kGeminiColor, width: 2.0)
                                   : BorderSide.none,
                             ),
                             child: ListTile(
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(user1[
-                                'userPicture'] ??
+                                        'userPicture'] ??
                                     'https://via.placeholder.com/150'), // Default picture if none provided
                               ),
                               title: Text(

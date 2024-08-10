@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
 import 'package:translate_and_learn_app/widgets/translator_card_icons.dart';
 
@@ -69,8 +70,19 @@ class _LanguagecardState extends State<Languagecard> {
                         Clipboard.setData(
                             ClipboardData(text: widget.translatedText));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Text copied to clipboard')),
+                          SnackBar(
+                            content: FutureBuilder<String>(
+                              future: LocalizationService().fetchFromFirestore(
+                                'Text copied to clipboard',
+                                'Text copied to clipboard',
+                              ),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  snapshot.data ?? '',
+                                );
+                              },
+                            ),
+                          ),
                         );
                       },
               ),
@@ -111,8 +123,19 @@ class _LanguagecardState extends State<Languagecard> {
                                   widget.translatedText,
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Wait for words to be added'),
+                                  SnackBar(
+                                    content: FutureBuilder<String>(
+                                      future: LocalizationService()
+                                          .fetchFromFirestore(
+                                        'Wait for words to be added',
+                                        'Wait for words to be added',
+                                      ),
+                                      builder: (context, snapshot) {
+                                        return Text(
+                                          snapshot.data ?? '',
+                                        );
+                                      },
+                                    ),
                                   ),
                                 );
                               },

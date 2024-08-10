@@ -7,6 +7,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:translate_and_learn_app/constants.dart';
 import 'package:translate_and_learn_app/cubit/cubit/quiz_cubit.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
+import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/widgets/text_container.dart';
 
 class QuizPage extends StatefulWidget {
@@ -178,24 +179,34 @@ class _QuizPageState extends State<QuizPage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Your Score: $_score/$totalScore',
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
-                  color: const Color.fromARGB(255, 175, 55, 196),
-                ),
-                textAlign: TextAlign.center,
-              ),
+              FutureBuilder<String>(
+                  future: LocalizationService()
+                      .fetchFromFirestore('Your Score:', 'Your Score:'),
+                  builder: (context, snapshot) {
+                    return Text(
+                      '${snapshot.data ?? ''} $_score/$totalScore',
+                      style: TextStyle(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 175, 55, 196),
+                      ),
+                      textAlign: TextAlign.center,
+                    );
+                  }),
               SizedBox(height: 16.h),
-              Text(
-                getMessage(),
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  color: getContainerColor(),
-                ),
-                textAlign: TextAlign.center,
-              ),
+              FutureBuilder<String>(
+                  future: LocalizationService()
+                      .fetchFromFirestore(getMessage(), getMessage()),
+                  builder: (context, snapshot) {
+                    return Text(
+                      snapshot.data ?? '',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        color: getContainerColor(),
+                      ),
+                      textAlign: TextAlign.center,
+                    );
+                  }),
               SizedBox(height: 16.h),
               FutureBuilder<int>(
                 future: getUserRank(),
@@ -219,15 +230,20 @@ class _QuizPageState extends State<QuizPage> {
                       ),
                     );
                   } else {
-                    return Text(
-                      'Your New Rank: ${snapshot.data}',
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                        color: kGeminiColor,
-                      ),
-                      textAlign: TextAlign.center,
-                    );
+                    return FutureBuilder<String>(
+                        future: LocalizationService().fetchFromFirestore(
+                            'Your New Rank:', 'Your New Rank:'),
+                        builder: (context, snapshot) {
+                          return Text(
+                            '${snapshot.data ?? ''} ${snapshot.data}',
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                              color: kGeminiColor,
+                            ),
+                            textAlign: TextAlign.center,
+                          );
+                        });
                   }
                 },
               ),
@@ -240,7 +256,15 @@ class _QuizPageState extends State<QuizPage> {
                 Navigator.of(context)
                     .pop(); // Navigate back to the words list screen
               },
-              child: const Text('RETURN'),
+              child: FutureBuilder<String>(
+                future: LocalizationService().fetchFromFirestore(
+                  'RETURN',
+                  'RETURN',
+                ),
+                builder: (context, snapshot) {
+                  return Text(snapshot.data ?? '');
+                },
+              ),
             ),
           ],
         );
