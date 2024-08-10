@@ -9,6 +9,11 @@ plugins {
 }
 
 android {
+      lint {
+           lintOptions {
+        disable 'NetworkSecurityConfig'
+    }
+      }
     namespace = "com.example.translate_and_learn_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion

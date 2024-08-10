@@ -153,9 +153,6 @@ class _LanguagecardState extends State<Languagecard> {
                         onPressed1: isTextEmpty
                             ? null
                             : () {
-                                setState(() {
-                                  isFavorite = !isFavorite;
-                                });
                                 isFavorite
                                     ? BlocProvider.of<FavoritesCubit>(context)
                                         .removeFavoriteTranslation(
@@ -166,10 +163,13 @@ class _LanguagecardState extends State<Languagecard> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(isFavorite
-                                        ? 'Added to favorites'
-                                        : 'Removed from favorites'),
+                                        ? 'Removed from favorites'
+                                        : 'Added to favorites'),
                                   ),
                                 );
+                                setState(() {
+                                  isFavorite = !isFavorite;
+                                });
                               },
                         onPressed2: isTextEmpty
                             ? null
