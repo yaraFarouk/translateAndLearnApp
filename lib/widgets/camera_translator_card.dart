@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/cubit/cubit/image_to_text_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:translate_and_learn_app/widgets/custom_drop_down_button.dart';
@@ -27,6 +29,16 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
   String selectedValue = 'English';
   XFile? _image;
   String _text = 'Text will appear here';
+  final FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage(
+      languageCodes[context.read<FavoritesCubit>().getLanguageFrom()] ??
+          'en_EN',
+    );
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(text);
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     final ImagePicker _picker = ImagePicker();
@@ -90,7 +102,7 @@ class _CameraTranslatorCardState extends State<CameraTranslatorCard> {
                     IconButton(
                       icon: const Icon(FontAwesomeIcons.volumeHigh),
                       onPressed: () {
-                        // Add your onPressed logic here
+                        _speak(_text);
                       },
                     ),
                   ],

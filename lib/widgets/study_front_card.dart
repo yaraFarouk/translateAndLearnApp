@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:translate_and_learn_app/constants.dart';
+import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
 import 'package:translate_and_learn_app/models/word_details_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class StudyFrontCard extends StatelessWidget {
+class StudyFrontCard extends StatefulWidget {
   const StudyFrontCard({
     super.key,
     required this.context,
@@ -17,9 +20,20 @@ class StudyFrontCard extends StatelessWidget {
   final Color cardColor;
   final WordDetailsModel filteredWord;
 
-  void _playSound() {
-    // Add your sound playing logic here
-    print('Playing sound for ${filteredWord.word}');
+  @override
+  State<StudyFrontCard> createState() => _StudyFrontCardState();
+}
+
+class _StudyFrontCardState extends State<StudyFrontCard> {
+  final FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage(
+      languageCodes[widget.context.read<FavoritesCubit>().getLanguageFrom()] ??
+          'en_EN',
+    );
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(text);
   }
 
   @override
@@ -28,7 +42,7 @@ class StudyFrontCard extends StatelessWidget {
       children: [
         Card(
           key: const ValueKey(false),
-          color: cardColor,
+          color: widget.cardColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
             side: BorderSide(
@@ -38,7 +52,7 @@ class StudyFrontCard extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              filteredWord.word,
+              widget.filteredWord.word,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 33,
@@ -53,7 +67,9 @@ class StudyFrontCard extends StatelessWidget {
           right: 10,
           child: IconButton(
             icon: const Icon(FontAwesomeIcons.volumeHigh),
-            onPressed: _playSound,
+            onPressed: () {
+              _speak(widget.filteredWord.word);
+            },
           ),
         ),
       ],
