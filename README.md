@@ -59,7 +59,7 @@ Welcome to **Translate And Learn App build with Gemini**, your ultimate language
    
 8. **Study the Word Screen**
 
-   <img src="https://github.com/user-attachments/assets/8cb9e969-96de-4efe-a0fb-354b2bad0b7c" alt="Study the Word" width="300">
+   <img src="https://github.com/user-attachments/assets/6294f685-042b-4c07-a77a-aca6e7891fa1" alt="Study the Word" width="300">
    
 9. **Words List Screen**
 
