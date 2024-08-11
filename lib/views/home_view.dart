@@ -81,33 +81,33 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [],
+        body: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [],
+            ),
+            Expanded(
+              child: IndexedStack(
+                index: _currentIndex,
+                children: const
+                [
+                  TranslatorcardsView(),
+                  StudyScreen(),
+                  TrackProgressPage(),
+                  StartChatScreen(),
+                  FavoritesScreen(),
+                ],
               ),
-              Expanded(
-                child: IndexedStack(
-                  index: _currentIndex,
-                  children: const [
-                    TranslatorcardsView(),
-                    StudyScreen(),
-                    TrackProgressPage(),
-                    StartChatScreen(),
-                    FavoritesScreen(),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
         bottomNavigationBar: CustomBottomAppBar(
           currentIndex: _currentIndex,
-          onItemTapped: (index) {
-            setState(() {
+          onItemTapped: (index)
+          {
+            setState(()
+            {
               _currentIndex = index;
             });
           },

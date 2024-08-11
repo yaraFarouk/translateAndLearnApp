@@ -24,66 +24,69 @@ class TranslatorcardsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => TranslatorCardCubit(),
-      child: FutureBuilder(
-        future: Future.wait([
-          getLocalizedText('tap_to_enter_text', 'Tap to enter text'),
-          getLocalizedText(
-              'translation_will_appear_here', 'Translation will appear here'),
-          getLocalizedText('text_will_appear_here', 'Text will appear here'),
-        ]),
-        builder: (context, AsyncSnapshot<List<String>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Error loading localizations'));
-          } else {
-            List<String> localizedTexts = snapshot.data!;
-            return ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                BlocBuilder<TranslatorCardCubit, TranslatorCardState>(
-                  builder: (context, state) {
-                    final geminiApiCubit = context.read<GeminiApiCubit>();
-                    if (state is TranslatorCardMicrophoneSelected) {
+      child: Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: FutureBuilder(
+          future: Future.wait([
+            getLocalizedText('tap_to_enter_text', 'Tap to enter text'),
+            getLocalizedText(
+                'translation_will_appear_here', 'Translation will appear here'),
+            getLocalizedText('text_will_appear_here', 'Text will appear here'),
+          ]),
+          builder: (context, AsyncSnapshot<List<String>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Error loading localizations'));
+            } else {
+              List<String> localizedTexts = snapshot.data!;
+              return ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  BlocBuilder<TranslatorCardCubit, TranslatorCardState>(
+                    builder: (context, state) {
+                      final geminiApiCubit = context.read<GeminiApiCubit>();
+                      if (state is TranslatorCardMicrophoneSelected) {
+                        geminiApiCubit.resetTranslation();
+                        return MicrophonTranslatorCard(
+                          color: kTranslatorcardColor,
+                          hint: localizedTexts[2],
+                        );
+                      } else if (state is TranslatorCardCameraSelected) {
+                        geminiApiCubit.resetTranslation();
+                        return CameraTranslatorCard(
+                            color: kTranslatorcardColor, hint: localizedTexts[2]);
+                      }
                       geminiApiCubit.resetTranslation();
-                      return MicrophonTranslatorCard(
+                      return TranslatorCard(
+                        hint: localizedTexts[0],
                         color: kTranslatorcardColor,
-                        hint: localizedTexts[2],
                       );
-                    } else if (state is TranslatorCardCameraSelected) {
-                      geminiApiCubit.resetTranslation();
-                      return CameraTranslatorCard(
-                          color: kTranslatorcardColor, hint: localizedTexts[2]);
-                    }
-                    geminiApiCubit.resetTranslation();
-                    return TranslatorCard(
-                      hint: localizedTexts[0],
-                      color: kTranslatorcardColor,
-                    );
-                  },
-                ),
-                BlocBuilder<GeminiApiCubit, GeminiApiState>(
-                  builder: (context, state) {
-                    String translatedText = "";
-                    if (state is GeminiApiSuccess) {
-                      translatedText = state.response;
-                    } else if (state is GeminiApiError) {
-                      translatedText = state.error;
-                    }
-                    return Languagecard(
-                      translatedText:
-                          translatedText, // The actual translated text
-                      hintText: localizedTexts[1], // The hint text
-                      color: kTranslationCardColor,
-                    );
-                  },
-                ),
-                SizedBox(height: 20.h),
-                const ThreeFloatingButtons(),
-              ],
-            );
-          }
-        },
+                    },
+                  ),
+                  BlocBuilder<GeminiApiCubit, GeminiApiState>(
+                    builder: (context, state) {
+                      String translatedText = "";
+                      if (state is GeminiApiSuccess) {
+                        translatedText = state.response;
+                      } else if (state is GeminiApiError) {
+                        translatedText = state.error;
+                      }
+                      return Languagecard(
+                        translatedText:
+                            translatedText, // The actual translated text
+                        hintText: localizedTexts[1], // The hint text
+                        color: kTranslationCardColor,
+                      );
+                    },
+                  ),
+                  SizedBox(height: 20.h),
+                  const ThreeFloatingButtons(),
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }

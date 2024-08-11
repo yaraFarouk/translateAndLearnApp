@@ -32,14 +32,24 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   String? selectedLanguageString;
   final LocalizationService _localizationService = LocalizationService();
-  late Future<String> _alreadyTranslation;
+
+  bool passHidden = true;
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  String? nameLabel;
+  String? emailLabel;
+  String? passwordLabel;
+  String? signUpLabel;
+  String? alreadyLearnerText;
 
   @override
   void initState() {
     super.initState();
     _loadSelectedLanguageString();
-    _alreadyTranslation = _localizationService.fetchFromFirestore(
-        'Already a learner? Sign in', 'Already a learner? Sign in');
+    _loadLabels();
   }
 
   Future<void> _loadSelectedLanguageString() async {
@@ -49,15 +59,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
+  Future<void> _loadLabels() async {
+    nameLabel = await LocalizationService().fetchFromFirestore('Name', 'Name');
+    emailLabel = await LocalizationService().fetchFromFirestore('Email', 'Email');
+    passwordLabel = await LocalizationService().fetchFromFirestore('Password', 'Password');
+    signUpLabel = await LocalizationService().fetchFromFirestore('Sign Up', 'Sign Up');
+    alreadyLearnerText = await LocalizationService().fetchFromFirestore(
+        'Already a learner? Sign in', 'Already a learner? Sign in');
+
+    // Ensure the labels are loaded and the UI is updated
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var formKey = GlobalKey<FormState>();
-
-    var nameController = TextEditingController();
-    var emailController = TextEditingController();
-    var passwordController = TextEditingController();
-
-    var passHidden = true;
 
     return BlocProvider(
       create: (context) => RegisterCubit(),
@@ -100,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                         SizedBox(height: 30.h),
 
-                        // name input
+                        // Name input
                         TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) return 'Enter your name';
@@ -108,17 +132,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           controller: nameController,
                           keyboardType: TextInputType.name,
                           decoration: InputDecoration(
-                            label: FutureBuilder<String>(
-                              future: LocalizationService().fetchFromFirestore(
-                                'Name',
-                                'Name',
-                              ),
-                              builder: (context, snapshot) {
-                                return Text(snapshot.data ?? '');
-                              },
-                            ),
-                            prefixIcon:
-                                const Icon(Icons.person_outline_rounded),
+                            labelText: nameLabel ?? '',
+                            prefixIcon: const Icon(Icons.person_outline_rounded),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15.r)),
                           ),
@@ -129,22 +144,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         // Email input
                         TextFormField(
                           validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter a valid email';
-                            }
+                            if (value!.isEmpty) return 'Enter a valid email';
                           },
                           controller: emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            label: FutureBuilder<String>(
-                              future: LocalizationService().fetchFromFirestore(
-                                'Email',
-                                'Email',
-                              ),
-                              builder: (context, snapshot) {
-                                return Text(snapshot.data ?? '');
-                              },
-                            ),
+                            labelText: emailLabel ?? '',
                             prefixIcon: const Icon(Icons.email_outlined),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15.r)),
@@ -153,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                         SizedBox(height: 20.h),
 
-                        // password input
+                        // Password input
                         TextFormField(
                           controller: passwordController,
                           validator: (value) {
@@ -162,15 +167,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           obscureText: passHidden,
                           keyboardType: TextInputType.visiblePassword,
                           decoration: InputDecoration(
-                            label: FutureBuilder<String>(
-                              future: LocalizationService().fetchFromFirestore(
-                                'Password',
-                                'Password',
-                              ),
-                              builder: (context, snapshot) {
-                                return Text(snapshot.data ?? '');
-                              },
-                            ),
+                            labelText: passwordLabel ?? '',
                             prefixIcon: const Icon(Icons.lock_outline_rounded),
                             suffixIcon: IconButton(
                               onPressed: () {
@@ -178,7 +175,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   passHidden = !passHidden;
                                 });
                               },
-                              icon: const Icon(Icons.remove_red_eye_outlined),
+                              icon: Icon(
+                                passHidden
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                              ),
                             ),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15.r)),
@@ -187,52 +188,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                         SizedBox(height: 30.h),
 
-                        // Sign up button
+                        // Sign Up button
                         state is RegisterNewUserLoadingState
                             ? Container(
-                                margin: EdgeInsets.only(top: 20.h),
-                                child: const CupertinoActivityIndicator())
+                            margin: EdgeInsets.only(top: 20.h),
+                            child: const CupertinoActivityIndicator())
                             : Center(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF8C00FF),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 80.w, vertical: 20.h),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                  onPressed: () async {
-                                    if (formKey.currentState!.validate()) {
-                                      String? selectedLanguage =
-                                          await getSelectedLanguageString();
-
-                                      cubit.registerNewUser(
-                                          name: nameController.text.trim(),
-                                          email: emailController.text.trim(),
-                                          password: passwordController.text,
-                                          language: selectedLanguage ??
-                                              "Not Defined");
-                                    }
-                                  },
-                                  child: FutureBuilder<String>(
-                                    future: LocalizationService()
-                                        .fetchFromFirestore(
-                                      'Sign Up',
-                                      'Sign Up',
-                                    ),
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data ?? '',
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF8C00FF),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 80.w, vertical: 20.h),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
                               ),
+                            ),
+                            onPressed: () async {
+                              if (formKey.currentState!.validate()) {
+                                String? selectedLanguage =
+                                await getSelectedLanguageString();
+
+                                cubit.registerNewUser(
+                                    name: nameController.text.trim(),
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text,
+                                    language: selectedLanguage ??
+                                        "Not Defined");
+                              }
+                            },
+                            child: Text(
+                              signUpLabel ?? '',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
 
                         SizedBox(height: 20.h),
 
@@ -243,30 +235,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                         SizedBox(height: 10.h),
 
-                        // already learner button
+                        // Already learner button
                         Center(
                           child: MaterialButton(
                             onPressed: () {
-                              // go to SignInScreen
+                              // Go to SignInScreen
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const SignInScreen()));
+                                      const SignInScreen()));
                             },
-                            child: FutureBuilder<String>(
-                              future: _alreadyTranslation,
-                              builder: (context, snapshot) {
-                                return Text(
-                                  snapshot.data ?? '',
-                                  style: const TextStyle(
-                                    color: Color(0xFF8C00FF),
-                                  ),
-                                );
-                              },
+                            child: Text(
+                              alreadyLearnerText ?? '',
+                              style: const TextStyle(
+                                color: Color(0xFF8C00FF),
+                              ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -283,7 +270,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
-                (Route<dynamic> route) => false);
+                    (Route<dynamic> route) => false);
           }
         },
       ),

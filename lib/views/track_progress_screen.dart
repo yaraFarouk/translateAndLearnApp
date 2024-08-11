@@ -262,52 +262,52 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
       child: Scaffold(
         backgroundColor: kPrimaryColor,
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 60.h,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: languages.map((language) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5.0),
-                          child: ChoiceChip(
-                            label: FutureBuilder<String>(
-                                future: LocalizationService()
-                                    .fetchFromFirestore(language, language),
-                                builder: (context, snapshot) {
-                                  return Text(snapshot.data ?? '');
-                                }),
-                            selected: _selectedLanguage == language,
-                            onSelected: (selected) {
-                              setState(() {
-                                _selectedLanguage = language;
-                              });
-                            },
-                            checkmarkColor: Colors.white,
-                            selectedColor: kAppBarColor,
-                            backgroundColor: Colors.grey[300],
-                            labelStyle: TextStyle(
-                              color: _selectedLanguage == language
-                                  ? Colors.white
-                                  : Colors.black87,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                height: 60.h,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: languages.map((language) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5.0),
+                        child: ChoiceChip(
+                          label: FutureBuilder<String>(
+                              future: LocalizationService()
+                                  .fetchFromFirestore(language, language),
+                              builder: (context, snapshot) {
+                                return Text(snapshot.data ?? '');
+                              }),
+                          selected: _selectedLanguage == language,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedLanguage = language;
+                            });
+                          },
+                          checkmarkColor: Colors.white,
+                          selectedColor: kAppBarColor,
+                          backgroundColor: Colors.grey[300],
+                          labelStyle: TextStyle(
+                            color: _selectedLanguage == language
+                                ? Colors.white
+                                : Colors.black87,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      }).toList(),
-                    ),
+                          padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                StreamBuilder<QuerySnapshot>(
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 25,right: 25,top: 10,bottom: 10),
+                child: StreamBuilder<QuerySnapshot>(
                   stream: _fetchProgressData(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -476,8 +476,8 @@ class _TrackProgressPageState extends State<TrackProgressPage> {
                     );
                   },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

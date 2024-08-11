@@ -64,7 +64,8 @@ class _StudyScreenState extends State<StudyScreen> {
         .map((snapshot) => snapshot.size);
   }
 
-  Stream<int> _totalWordsCountStream(String language) {
+  Stream<int> _totalWordsCountStream(String language)
+  {
     User? user = FirebaseAuth.instance.currentUser;
     return FirebaseFirestore.instance
         .collection('users')
@@ -116,157 +117,160 @@ class _StudyScreenState extends State<StudyScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          if (!_isSearchBarVisible)
-            SizedBox(height: 16.h), // Add spacing when search bar is hidden
-          Expanded(
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _wordsStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return const Text('Error loading words');
-                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return FutureBuilder<String>(
-                    future: _noWordsFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return const Text('Error loading message');
-                      } else {
-                        return Center(
-                          child: Text(
-                            snapshot.data!,
-                            style:
-                                TextStyle(fontFamily: kFont, fontSize: 16.sp),
-                          ),
-                        );
-                      }
-                    },
-                  );
-                }
-
-                final filteredWords = snapshot.data!.docs.where((doc) {
-                  return (doc['language'] as String)
-                      .toLowerCase()
-                      .contains(_searchQuery);
-                }).toList();
-
-                if (filteredWords.isEmpty) {
-                  return Center(
-                    child: FutureBuilder<String>(
-                      future: LocalizationService().fetchFromFirestore(
-                        'No words found',
-                        'No words found',
-                      ),
+      body: Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: Column(
+          children: [
+            if (!_isSearchBarVisible)
+              SizedBox(height: 16.h), // Add spacing when search bar is hidden
+            Expanded(
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: _wordsStream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return const Text('Error loading words');
+                  } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return FutureBuilder<String>(
+                      future: _noWordsFuture,
                       builder: (context, snapshot) {
-                        return Text(
-                          snapshot.data ?? '',
-                          style: TextStyle(fontFamily: kFont, fontSize: 16.sp),
-                        );
-                      },
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  itemCount: filteredWords.length,
-                  itemBuilder: (context, index) {
-                    final entry = filteredWords[index];
-                    final cardColor = index % 2 == 0
-                        ? kTranslationCardColor
-                        : kTranslatorcardColor;
-
-                    return StreamBuilder<int>(
-                      stream: _learnedWordsCountStream(entry['language']),
-                      builder: (context, learnedWordsSnapshot) {
-                        if (learnedWordsSnapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
                           return const CircularProgressIndicator();
-                        } else if (learnedWordsSnapshot.hasError) {
-                          return const Text('Error loading progress');
+                        } else if (snapshot.hasError) {
+                          return const Text('Error loading message');
                         } else {
-                          final learnedWordsCount = learnedWordsSnapshot.data!;
-                          return StreamBuilder<int>(
-                            stream: _totalWordsCountStream(entry['language']),
-                            builder: (context, totalWordsSnapshot) {
-                              if (totalWordsSnapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const CircularProgressIndicator();
-                              } else if (totalWordsSnapshot.hasError) {
-                                return const Text('Error loading total words');
-                              } else {
-                                final totalWords = totalWordsSnapshot.data!;
-                                final progress = learnedWordsCount / totalWords;
-
-                                return Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    side: BorderSide(
-                                      color:
-                                          kGeminiColor, // Set the border color
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  color: cardColor,
-                                  margin: EdgeInsets.all(10.r),
-                                  child: ListTile(
-                                    title: Center(
-                                      child: Text(
-                                        entry['language'],
-                                        style: TextStyle(
-                                          fontFamily: kFont,
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: kAppBarColor,
-                                        ),
-                                      ),
-                                    ),
-                                    subtitle: Padding(
-                                      padding: EdgeInsets.only(top: 8.0),
-                                      child: LinearPercentIndicator(
-                                        lineHeight: 14.0,
-                                        percent: progress > 1 ? 1 : progress,
-                                        center: Text(
-                                          '$learnedWordsCount/$totalWords',
-                                          style: const TextStyle(
-                                            fontSize: 12.0,
-                                            color: kAppBarColor,
-                                          ),
-                                        ),
-                                        barRadius: Radius.circular(7.0),
-                                        backgroundColor:
-                                            Color.fromARGB(255, 254, 249, 255),
-                                        progressColor: kPurpil,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => WordListScreen(
-                                            language: entry['language'],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              }
-                            },
+                          return Center(
+                            child: Text(
+                              snapshot.data!,
+                              style:
+                                  TextStyle(fontFamily: kFont, fontSize: 16.sp),
+                            ),
                           );
                         }
                       },
                     );
-                  },
-                );
-              },
+                  }
+
+                  final filteredWords = snapshot.data!.docs.where((doc) {
+                    return (doc['language'] as String)
+                        .toLowerCase()
+                        .contains(_searchQuery);
+                  }).toList();
+
+                  if (filteredWords.isEmpty) {
+                    return Center(
+                      child: FutureBuilder<String>(
+                        future: LocalizationService().fetchFromFirestore(
+                          'No words found',
+                          'No words found',
+                        ),
+                        builder: (context, snapshot) {
+                          return Text(
+                            snapshot.data ?? '',
+                            style: TextStyle(fontFamily: kFont, fontSize: 16.sp),
+                          );
+                        },
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: filteredWords.length,
+                    itemBuilder: (context, index) {
+                      final entry = filteredWords[index];
+                      final cardColor = index % 2 == 0
+                          ? kTranslationCardColor
+                          : kTranslatorcardColor;
+
+                      return StreamBuilder<int>(
+                        stream: _learnedWordsCountStream(entry['language']),
+                        builder: (context, learnedWordsSnapshot) {
+                          if (learnedWordsSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (learnedWordsSnapshot.hasError) {
+                            return const Text('Error loading progress');
+                          } else {
+                            final learnedWordsCount = learnedWordsSnapshot.data!;
+                            return StreamBuilder<int>(
+                              stream: _totalWordsCountStream(entry['language']),
+                              builder: (context, totalWordsSnapshot) {
+                                if (totalWordsSnapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else if (totalWordsSnapshot.hasError) {
+                                  return const Text('Error loading total words');
+                                } else {
+                                  final totalWords = totalWordsSnapshot.data!;
+                                  final progress = learnedWordsCount / totalWords;
+
+                                  return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      side: BorderSide(
+                                        color:
+                                            kGeminiColor, // Set the border color
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    color: cardColor,
+                                    margin: EdgeInsets.all(10.r),
+                                    child: ListTile(
+                                      title: Center(
+                                        child: Text(
+                                          entry['language'],
+                                          style: TextStyle(
+                                            fontFamily: kFont,
+                                            fontSize: 20.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: kAppBarColor,
+                                          ),
+                                        ),
+                                      ),
+                                      subtitle: Padding(
+                                        padding: EdgeInsets.only(top: 8.0),
+                                        child: LinearPercentIndicator(
+                                          lineHeight: 14.0,
+                                          percent: progress > 1 ? 1 : progress,
+                                          center: Text(
+                                            '$learnedWordsCount/$totalWords',
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                              color: kAppBarColor,
+                                            ),
+                                          ),
+                                          barRadius: Radius.circular(7.0),
+                                          backgroundColor:
+                                              Color.fromARGB(255, 254, 249, 255),
+                                          progressColor: kPurpil,
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => WordListScreen(
+                                              language: entry['language'],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
+                              },
+                            );
+                          }
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
