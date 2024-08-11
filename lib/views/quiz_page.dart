@@ -449,15 +449,24 @@ class _QuizPageState extends State<QuizPage> {
                                     if (_answerSubmitted)
                                       Padding(
                                         padding: const EdgeInsets.all(16.0),
-                                        child: TextContainer(
-                                          title:
-                                              "Correct Answer: ${_shuffledWords[_currentWordIndex].word}",
-                                          content: Text(
-                                            'Proof: ${state.quizModel.proof}',
-                                            style: TextStyle(fontSize: 16.sp),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
+                                        child: FutureBuilder<String>(
+                                            future: LocalizationService()
+                                                .fetchFromFirestore(
+                                              'Correct Answer',
+                                              'Correct Answer',
+                                            ),
+                                            builder: (context, snapshot) {
+                                              return TextContainer(
+                                                title:
+                                                    "${snapshot.data ?? ''}: ${_shuffledWords[_currentWordIndex].word}",
+                                                content: Text(
+                                                  'Proof: ${state.quizModel.proof}',
+                                                  style: TextStyle(
+                                                      fontSize: 16.sp),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              );
+                                            }),
                                       ),
                                   ],
                                 ),

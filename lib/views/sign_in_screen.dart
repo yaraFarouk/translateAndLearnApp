@@ -90,12 +90,20 @@ class _SignInScreenState extends State<SignInScreen> {
                               // Sign in text
                               Container(
                                 margin: EdgeInsets.only(top: 25.h),
-                                child: const Text(
-                                  'Already a Learner? Let\'s Find Out.',
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w800),
-                                ),
+                                child: FutureBuilder<String>(
+                                    future: LocalizationService().fetchFromFirestore(
+                                        'Already a learner? let\'s find out!',
+                                        'Already a learner? let\'s find out!'),
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data ?? '',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      );
+                                    }),
                               ),
                             ],
                           ),
@@ -233,9 +241,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 context,
                 MaterialPageRoute(builder: (context) => HomePage()),
                 (Route<dynamic> route) => false);
-          } else if (state is LoginErrorState)
-          {
-
+          } else if (state is LoginErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(

@@ -61,9 +61,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _loadLabels() async {
     nameLabel = await LocalizationService().fetchFromFirestore('Name', 'Name');
-    emailLabel = await LocalizationService().fetchFromFirestore('Email', 'Email');
-    passwordLabel = await LocalizationService().fetchFromFirestore('Password', 'Password');
-    signUpLabel = await LocalizationService().fetchFromFirestore('Sign Up', 'Sign Up');
+    emailLabel =
+        await LocalizationService().fetchFromFirestore('Email', 'Email');
+    passwordLabel =
+        await LocalizationService().fetchFromFirestore('Password', 'Password');
+    signUpLabel =
+        await LocalizationService().fetchFromFirestore('Sign Up', 'Sign Up');
     alreadyLearnerText = await LocalizationService().fetchFromFirestore(
         'Already a learner? Sign in', 'Already a learner? Sign in');
 
@@ -111,12 +114,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               // Sign up text
                               Container(
                                 margin: EdgeInsets.only(top: 20.h),
-                                child: const Text(
-                                  'Let\'s sign you up!',
-                                  style: TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w800),
-                                ),
+                                child: FutureBuilder<String>(
+                                    future: LocalizationService()
+                                        .fetchFromFirestore(
+                                            'Let\'s sign you up!',
+                                            'Let\'s sign you up!'),
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data ?? '',
+                                        style: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w800),
+                                      );
+                                    }),
                               ),
                             ],
                           ),
@@ -133,7 +143,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           keyboardType: TextInputType.name,
                           decoration: InputDecoration(
                             labelText: nameLabel ?? '',
-                            prefixIcon: const Icon(Icons.person_outline_rounded),
+                            prefixIcon:
+                                const Icon(Icons.person_outline_rounded),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15.r)),
                           ),
@@ -191,42 +202,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         // Sign Up button
                         state is RegisterNewUserLoadingState
                             ? Center(
-                              child: Container(
-                              margin: EdgeInsets.only(top: 20.h),
-                              child: const CupertinoActivityIndicator()),
-                            )
+                                child: Container(
+                                    margin: EdgeInsets.only(top: 20.h),
+                                    child: const CupertinoActivityIndicator()),
+                              )
                             : Center(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF8C00FF),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 80.w, vertical: 20.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            onPressed: () async {
-                              if (formKey.currentState!.validate()) {
-                                String? selectedLanguage =
-                                await getSelectedLanguageString();
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF8C00FF),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 80.w, vertical: 20.h),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    if (formKey.currentState!.validate()) {
+                                      String? selectedLanguage =
+                                          await getSelectedLanguageString();
 
-                                cubit.registerNewUser(
-                                    name: nameController.text.trim(),
-                                    email: emailController.text.trim(),
-                                    password: passwordController.text,
-                                    language: selectedLanguage ??
-                                        "Not Defined");
-                              }
-                            },
-                            child: Text(
-                              signUpLabel ?? '',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
+                                      cubit.registerNewUser(
+                                          name: nameController.text.trim(),
+                                          email: emailController.text.trim(),
+                                          password: passwordController.text,
+                                          language: selectedLanguage ??
+                                              "Not Defined");
+                                    }
+                                  },
+                                  child: Text(
+                                    signUpLabel ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
 
                         SizedBox(height: 20.h),
 
@@ -246,7 +257,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                      const SignInScreen()));
+                                          const SignInScreen()));
                             },
                             child: Text(
                               alreadyLearnerText ?? '',
@@ -265,18 +276,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
           );
         },
         listener: (BuildContext context, Object? state) async {
-          if ((state is SaveDataSuccessState) || (state is  RegisterNewUserSuccessState))
-          {
+          if ((state is SaveDataSuccessState) ||
+              (state is RegisterNewUserSuccessState)) {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setBool('hasSeenWelcome', true);
 
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
-                    (Route<dynamic> route) => false);
-          }
-          else if(state is RegisterNewUserErrorState)
-          {
+                (Route<dynamic> route) => false);
+          } else if (state is RegisterNewUserErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.errorMessage),

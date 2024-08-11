@@ -231,8 +231,16 @@ class _UserRankingsScreenState extends State<UserRankingsScreen> {
                                 user1['userName'],
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              subtitle: Text(
-                                  'Learned Words: ${user1['correctWordsCount']}'),
+                              subtitle: FutureBuilder<String>(
+                                  future:
+                                      LocalizationService().fetchFromFirestore(
+                                    'learned Words',
+                                    'learned Words',
+                                  ),
+                                  builder: (context, snapshot) {
+                                    return Text(
+                                        '${snapshot.data ?? ''}: ${user1['correctWordsCount']}');
+                                  }),
                               trailing: Container(
                                 width: 40.w,
                                 height: 40.h,
