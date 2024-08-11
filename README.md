@@ -25,7 +25,8 @@ Welcome to **Gemini**, your ultimate language learning companion! Gemini is desi
 
 1. **Home Screen**
    
-   <img src="https://github.com/user-attachments/assets/e5f8deb5-1c6b-47b1-8bc3-ca7405345e58" alt="Home Screen" width="300">
+   <img src="https://github.com/user-attachments/assets/61c2d23b-e006-4c8d-8bc1-d8cf2b8b5ae3
+" alt="Home Screen" width="300">
    
 2. **Track Progress and Feedback Screen**
 
