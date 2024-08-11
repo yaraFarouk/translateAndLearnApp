@@ -5,7 +5,8 @@ import 'package:translate_and_learn_app/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:translate_and_learn_app/views/welcome_screen.dart';
 
-class LanguageSelectionPage extends StatefulWidget {
+class LanguageSelectionPage extends StatefulWidget
+{
   const LanguageSelectionPage({super.key});
 
   @override

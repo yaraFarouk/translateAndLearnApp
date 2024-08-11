@@ -61,7 +61,7 @@ class _SignInScreenState extends State<SignInScreen> {
       create: (context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
         builder: (context, state) {
-          var cubit = RegisterCubit.get(context);
+          // var cubit = RegisterCubit.get(context);
 
           return Scaffold(
             body: SafeArea(
@@ -118,7 +118,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         // Password input
                         TextFormField(
                           controller: passwordController,
-                          validator: (value) {
+                          validator: (value)
+                          {
                             if (value!.isEmpty) return 'Password is empty';
                           },
                           obscureText: passHidden,
