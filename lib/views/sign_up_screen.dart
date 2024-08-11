@@ -117,8 +117,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 child: FutureBuilder<String>(
                                     future: LocalizationService()
                                         .fetchFromFirestore(
-                                            'Let\'s sign you up!',
-                                            'Let\'s sign you up!'),
+                                      'Let\'s sign you up',
+                                      'Let\'s sign you up',
+                                    ),
                                     builder: (context, snapshot) {
                                       return Text(
                                         snapshot.data ?? '',

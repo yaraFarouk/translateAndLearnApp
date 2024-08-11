@@ -487,7 +487,15 @@ class _QuizPageState extends State<QuizPage> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: _onFinishQuiz,
-                                    child: Text('Finish'),
+                                    child: FutureBuilder<String>(
+                                        future: LocalizationService()
+                                            .fetchFromFirestore(
+                                          'Finish',
+                                          'Finish',
+                                        ),
+                                        builder: (context, snapshot) {
+                                          return Text(snapshot.data ?? '');
+                                        }),
                                   ),
                                   if (!_isLastWord) ...[
                                     SizedBox(
@@ -499,8 +507,19 @@ class _QuizPageState extends State<QuizPage> {
                                           : _selectedAnswer != null
                                               ? _onSubmitAnswer
                                               : null,
-                                      child: Text(
-                                          _answerSubmitted ? 'Next' : 'Submit'),
+                                      child: FutureBuilder<String>(
+                                          future: LocalizationService()
+                                              .fetchFromFirestore(
+                                            _answerSubmitted
+                                                ? 'Next'
+                                                : 'Submit',
+                                            _answerSubmitted
+                                                ? 'Next'
+                                                : 'Submit',
+                                          ),
+                                          builder: (context, snapshot) {
+                                            return Text(snapshot.data ?? '');
+                                          }),
                                     ),
                                   ],
                                 ],
