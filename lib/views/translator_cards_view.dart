@@ -74,7 +74,7 @@ class TranslatorcardsView extends StatelessWidget {
                       }
                       return Languagecard(
                         translatedText:
-                            translatedText, // The actual translated text
+                        translatedText, // The actual translated text
                         hintText: localizedTexts[1], // The hint text
                         color: kTranslationCardColor,
                       );
@@ -91,3 +91,4 @@ class TranslatorcardsView extends StatelessWidget {
     );
   }
 }
+

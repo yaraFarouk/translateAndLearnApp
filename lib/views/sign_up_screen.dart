@@ -190,9 +190,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                         // Sign Up button
                         state is RegisterNewUserLoadingState
-                            ? Container(
-                            margin: EdgeInsets.only(top: 20.h),
-                            child: const CupertinoActivityIndicator())
+                            ? Center(
+                              child: Container(
+                              margin: EdgeInsets.only(top: 20.h),
+                              child: const CupertinoActivityIndicator()),
+                            )
                             : Center(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -263,7 +265,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           );
         },
         listener: (BuildContext context, Object? state) async {
-          if (state is SaveDataSuccessState) {
+          if ((state is SaveDataSuccessState) || (state is  RegisterNewUserSuccessState))
+          {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setBool('hasSeenWelcome', true);
 
@@ -271,6 +274,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
                     (Route<dynamic> route) => false);
+          }
+          else if(state is RegisterNewUserErrorState)
+          {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         },
       ),

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:translate_and_learn_app/constants.dart';
 import 'Register_States.dart';
 
 class UserData
@@ -49,7 +50,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
   }
 
   void registerNewUser(
-      {required name, required email, required password, required language}) {
+      {required String name, required String email, required String password, required String language}) {
     emit(RegisterNewUserLoadingState());
 
     FirebaseAuth.instance
@@ -70,11 +71,35 @@ class RegisterCubit extends Cubit<RegisterStates> {
     }).catchError((onError) {
       print(onError.toString());
 
-      emit(RegisterNewUserErrorState());
+      String err_msg;
+      if (onError is FirebaseAuthException) {
+        // Extract the error code
+        switch (onError.code) {
+          case 'invalid-email':
+            err_msg = 'The email address is badly formatted.';
+            break;
+          case 'email-already-in-use':
+            err_msg = 'The email address is already in use by another account.';
+            break;
+          case 'weak-password':
+            err_msg = 'The password must be at least 6 characters.';
+            break;
+          case 'operation-not-allowed':
+            err_msg = 'Email/Password accounts are not enabled.';
+            break;
+          default:
+            err_msg = 'An unknown error occurred.';
+        }
+      } else {
+        err_msg = 'An unexpected error occurred.';
+      }
+
+      emit(RegisterNewUserErrorState(err_msg));
     });
   }
 
-  void loginUser({required email, required password}) {
+
+  void loginUser({required String email, required String password}) {
     emit(LoginLoadingState());
 
     FirebaseAuth.instance
@@ -85,14 +110,40 @@ class RegisterCubit extends Cubit<RegisterStates> {
       // CacheHelper.saveValue(key: 'UID', value: value.user!.uid);
 
       emit(LoginSuccessState());
-    }).catchError((onError) {
+
+    }).catchError((onError)
+    {
       print(onError.toString());
 
-      print(onError.toString());
+      String err_msg;
+      if (onError is FirebaseAuthException)
+      {
+        // Extract the error code
+        switch (onError.code) {
+          case 'invalid-email':
+            err_msg = 'The email address is badly formatted.';
+            break;
+          case 'user-disabled':
+            err_msg = 'The user corresponding to the given email has been disabled.';
+            break;
+          case 'user-not-found':
+            err_msg = 'There is no user corresponding to the given email.';
+            break;
+          case 'wrong-password':
+            err_msg = 'The password is invalid for the given email.';
+            break;
+          default:
+            err_msg = 'An unknown error occurred.';
+        }
+      } else {
+        err_msg = 'An unexpected error occurred.';
+      }
 
-      emit(LoginErrorState());
+      emit(LoginErrorState(err_msg));
+
     });
   }
+
 
   void userSaveData(
       {required String name,

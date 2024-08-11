@@ -9,6 +9,8 @@ import 'package:translate_and_learn_app/services/localization_service.dart';
 import 'package:translate_and_learn_app/views/home_view.dart';
 import 'package:translate_and_learn_app/views/sign_up_screen.dart';
 
+import '../constants.dart';
+
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -36,9 +38,12 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _loadLabels() async {
-    emailLabel = await _localizationService.fetchFromFirestore('Email', 'Email');
-    passwordLabel = await _localizationService.fetchFromFirestore('Password', 'Password');
-    signInLabel = await _localizationService.fetchFromFirestore('Sign In', 'Sign In');
+    emailLabel =
+        await _localizationService.fetchFromFirestore('Email', 'Email');
+    passwordLabel =
+        await _localizationService.fetchFromFirestore('Password', 'Password');
+    signInLabel =
+        await _localizationService.fetchFromFirestore('Sign In', 'Sign In');
     notLearnerText = await _localizationService.fetchFromFirestore(
         'Not a learner? Sign up', 'Not a learner? Sign up');
 
@@ -61,7 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
       create: (context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
         builder: (context, state) {
-          // var cubit = RegisterCubit.get(context);
+          var cubit = RegisterCubit.get(context);
 
           return Scaffold(
             body: SafeArea(
@@ -118,8 +123,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         // Password input
                         TextFormField(
                           controller: passwordController,
-                          validator: (value)
-                          {
+                          validator: (value) {
                             if (value!.isEmpty) return 'Password is empty';
                           },
                           obscureText: passHidden,
@@ -149,32 +153,40 @@ class _SignInScreenState extends State<SignInScreen> {
                         // Sign in button
                         state is RegisterNewUserLoadingState
                             ? Container(
-                            margin: EdgeInsets.only(top: 20.h),
-                            child: const CupertinoActivityIndicator())
+                                margin: EdgeInsets.only(top: 20.h),
+                                child: const CupertinoActivityIndicator())
                             : Center(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF8C00FF),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 80.w, vertical: 20.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF8C00FF),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 80.w, vertical: 20.h),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate()) {
+                                      if (formKey.currentState!.validate()) {
+                                        cubit.loginUser(
+                                          email: emailController.text
+                                              .trim()
+                                              .toString(),
+                                          password: passwordController.text
+                                              .toString(),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  child: Text(
+                                    signInLabel ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                // Handle sign in
-                              }
-                            },
-                            child: Text(
-                              signInLabel ?? '',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
 
                         SizedBox(height: 20.h),
 
@@ -194,7 +206,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                      const SignUpScreen()));
+                                          const SignUpScreen()));
                             },
                             child: Text(
                               notLearnerText ?? '',
@@ -213,14 +225,26 @@ class _SignInScreenState extends State<SignInScreen> {
           );
         },
         listener: (BuildContext context, Object? state) async {
-          if (state is SaveDataSuccessState) {
+          if (state is LoginSuccessState) {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setBool('hasSeenWelcome', true);
 
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-                    (Route<dynamic> route) => false);
+                MaterialPageRoute(builder: (context) => HomePage()),
+                (Route<dynamic> route) => false);
+          } else if (state is LoginErrorState)
+          {
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  state.errorMessage,
+                  style: TextStyle(fontSize: 14.0), // Set the desired font size
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         },
       ),
