@@ -1,13 +1,13 @@
 # Translate And Learn App
 
-Welcome to **Translate And Learn App build with Gemini**, your ultimate language learning companion! Gemini is designed to transform your language learning journey into an engaging, efficient, and enjoyable experience. Whether you're a beginner or an advanced learner, Gemini offers a suite of powerful features to help you master new languages with ease.
+Welcome to **Translate And Learn App**, your ultimate language learning companion! designed to transform your language learning journey into an engaging, efficient, and enjoyable experience. Whether you're a beginner or an advanced learner, it offers a suite of powerful features to help you master new languages with ease.
 
 ## Features
 
 - **Instant Translation**: Translate entire sentences effortlessly and add all the words to your language list with just one click using the **plus icon**. No need to search for each word individually!
-- **Comprehensive Word Details**: For each word, Gemini provides translations, meanings, definitions, and example sentences to ensure thorough understanding.
+- **Comprehensive Word Details**: For each word, it provides translations, meanings, definitions, and example sentences to ensure thorough understanding.
 - **Interactive Quizzes**: Test your knowledge with randomized word quizzes. Get immediate feedback, see your score, and track your progress.
-- **Daily Progress Tracking**: Monitor the number of words you learn each day with an intuitive graph. Receive personalized feedback from Gemini to stay motivated.
+- **Daily Progress Tracking**: Monitor the number of words you learn each day with an intuitive graph. Receive personalized feedback to stay motivated.
 - **Global Rankings**: Compare your progress with other users. The more words you learn, the higher your rank!
 - **Favorites List**: Create and manage a list of your favorite words for quick access and review.
 - **Chat with Gemini**: Select a language to learn and engage in interactive conversations with Gemini. Practice in a conversational context to enhance your fluency.
@@ -65,18 +65,3 @@ Welcome to **Translate And Learn App build with Gemini**, your ultimate language
 
    <img src="https://github.com/user-attachments/assets/b2374215-b4fe-4f58-9d0f-90b39e01a1c1" alt="Words List Screen" width="300">
 
-## Getting Started
-
-Follow these steps to get started with the Gemini Language Learning App:
-
-### Prerequisites
-
-- Flutter SDK: [Install Flutter](https://flutter.dev/docs/get-started/install)
-- Android Studio or Visual Studio Code: [Install Android Studio](https://developer.android.com/studio) | [Install Visual Studio Code](https://code.visualstudio.com/)
-- An emulator or physical device for testing
-
-### Installation
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/gemini-language-app.git
