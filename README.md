@@ -29,37 +29,41 @@ Welcome to **Gemini**, your ultimate language learning companion! Gemini is desi
    
 2. **Track Progress and Feedback Screen**
 
-   <img src="https://github.com/user-attachments/assets/9b8331aa-b404-46dd-a336-1e1cb2981551" alt="Track Progress and Feedback" width="300">
+   <img src="https://github.com/user-attachments/assets/035eaa56-d4bb-4b53-84f0-b957cdbf9b9a" alt="Track Progress and Feedback" width="300">
    
 3. **Chat Screen**
 
-   <img src="https://github.com/user-attachments/assets/b8d763c0-ce4c-44ca-9120-79b52c685da8" alt="Select Screen" width="300">
+   <img src="https://github.com/user-attachments/assets/94f3df69-2d26-4111-9a24-5ef7015cab75" alt="Select Screen" width="300">
    
-   <img src="https://github.com/user-attachments/assets/c9f49e4e-57b1-4cba-a163-84ad4478279b" alt="Chat Screen" width="300">
+   <img src="https://github.com/user-attachments/assets/b6ac90dd-32ce-4345-a66f-25b27386f4a7" alt="Chat Screen" width="300">
    
 4. **Quiz Screen**
 
-   <img src="https://github.com/user-attachments/assets/9509f2d8-47f0-42e5-951a-90a2e0653db7" alt="Quiz Screen" width="300">
+   <img src="https://github.com/user-attachments/assets/6272b707-c0fa-44ca-b6ff-441b585687c8" alt="Quiz Screen" width="300">
+
+   <img src="https://github.com/user-attachments/assets/9ccae121-f2b8-428f-b9d0-0b5d0b83bf5a" alt="Quiz Screen2" width="300">
+
+   <img src="https://github.com/user-attachments/assets/8ebdea3b-a06b-4c6d-917b-c915b00ca467" alt="Quiz Screen3" width="300">
    
 5. **Ranking Screen**
 
-   <img src="https://github.com/user-attachments/assets/90c88126-b74f-40de-8630-038a6e85b823" alt="Ranking Screen" width="300">
+   <img src="https://github.com/user-attachments/assets/2404c2e2-9824-4e59-b1ce-7f5a76445a7d" alt="Ranking Screen" width="300">
    
 6. **Favorites Screen**
 
-   <img src="https://github.com/user-attachments/assets/af8446d3-394c-428d-8df1-c998c2255c62" alt="Favorites Screen" width="300">
+   <img src="https://github.com/user-attachments/assets/e2847d06-a03a-48be-8e3b-7a1980309b61" alt="Favorites Screen" width="300">
    
 7. **List of Languages to Study Screen**
 
-   <img src="https://github.com/user-attachments/assets/20395067-eff7-4031-b685-7eb0fe05a9b1" alt="List of Languages" width="300">
+   <img src="https://github.com/user-attachments/assets/0f2007eb-8914-4306-ae89-441d60280482" alt="List of Languages" width="300">
    
 8. **Study the Word Screen**
 
-   <img src="https://github.com/user-attachments/assets/64decaad-ad0d-43ef-9d69-8083618d9310" alt="Study the Word" width="300">
+   <img src="https://github.com/user-attachments/assets/8cb9e969-96de-4efe-a0fb-354b2bad0b7c" alt="Study the Word" width="300">
    
 9. **Words List Screen**
 
-   <img src="https://github.com/user-attachments/assets/983608f6-7e7f-4fa2-9956-a50f0294e591" alt="Words List Screen" width="300">
+   <img src="https://github.com/user-attachments/assets/b2374215-b4fe-4f58-9d0f-90b39e01a1c1" alt="Words List Screen" width="300">
 
 ## Getting Started
 
