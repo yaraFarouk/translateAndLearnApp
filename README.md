@@ -1,6 +1,6 @@
-# Gemini Language Learning App
+# Translate And Learn App
 
-Welcome to **Gemini**, your ultimate language learning companion! Gemini is designed to transform your language learning journey into an engaging, efficient, and enjoyable experience. Whether you're a beginner or an advanced learner, Gemini offers a suite of powerful features to help you master new languages with ease.
+Welcome to **Translate And Learn App build with Gemini**, your ultimate language learning companion! Gemini is designed to transform your language learning journey into an engaging, efficient, and enjoyable experience. Whether you're a beginner or an advanced learner, Gemini offers a suite of powerful features to help you master new languages with ease.
 
 ## Features
 
