@@ -48,8 +48,7 @@ class _StudyBackCardState extends State<StudyBackCard> {
 
   Future<void> _speak(String text) async {
     await flutterTts.setLanguage(
-      languageCodes[context.read<FavoritesCubit>().getLanguageFrom()] ??
-          'en_EN',
+      languageCodes[widget.reversedWord.languageofWord] ?? 'en_EN',
     );
     await flutterTts.setPitch(1.0);
     await flutterTts.speak(text);

@@ -29,8 +29,7 @@ class _StudyFrontCardState extends State<StudyFrontCard> {
 
   Future<void> _speak(String text) async {
     await flutterTts.setLanguage(
-      languageCodes[widget.context.read<FavoritesCubit>().getLanguageFrom()] ??
-          'en_EN',
+      languageCodes[widget.filteredWord.languageoftranslation] ?? 'en_EN',
     );
     await flutterTts.setPitch(1.0);
     await flutterTts.speak(text);
