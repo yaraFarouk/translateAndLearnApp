@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translate_and_learn_app/constants.dart';
-import 'package:translate_and_learn_app/cubit/cubit/favorites_cubit.dart';
+import 'package:translate_and_learn_app/cubit/cubit/study_words_cubit.dart';
 import 'package:translate_and_learn_app/cubit/gemini_api_cubit.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:translate_and_learn_app/services/localization_service.dart';
 
 class CustomDropDownButton extends StatefulWidget {
   const CustomDropDownButton({super.key, required this.translation});
@@ -22,77 +21,67 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
     return Row(
       children: [
         Container(
-          width: 0.4.sw, // Set width to 30% of the screen width
-          height: 40.h, // Slightly reduced height for a more compact design
-          padding: EdgeInsets.symmetric(horizontal: 8.w), // Adjusted padding
+          width: 150.w,
+          height: 40.h,
+          padding: const EdgeInsets.only(left: 16),
           decoration: BoxDecoration(
             color: kAppBarColor,
-            borderRadius: BorderRadius.circular(8.r), // Adjusted border radius
+            borderRadius: BorderRadius.circular(10.0),
           ),
-          child: DropdownButton<String>(
-            isExpanded:
-                true, // Make the dropdown button expand to fill the container
-            borderRadius: BorderRadius.circular(8.r),
-            dropdownColor: kAppBarColor,
-            value: selectedValue,
-            icon: const Icon(Icons.arrow_drop_down),
-            iconSize: 20.sp, // Reduced icon size
-            elevation: 16,
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 14.sp), // Slightly smaller font size
-            underline: Container(
-              height: 0, // Remove underline
-            ),
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedValue = newValue!;
-                // Update both the FavoritesCubit and GeminiApiCubit with the new selected language
-                if (widget.translation == 1) {
-                  context
-                      .read<FavoritesCubit>()
-                      .updateLanguageFrom(selectedValue);
-                  context
-                      .read<GeminiApiCubit>()
-                      .updateLanguageFrom(selectedValue);
-                } else if (widget.translation == 0) {
-                  context
-                      .read<FavoritesCubit>()
-                      .updateLanguageTo(selectedValue);
-                  context
-                      .read<GeminiApiCubit>()
-                      .updateLanguageTo(selectedValue);
-                }
-              });
-            },
-            items: <String>[
-              'English',
-              'Spanish',
-              'French',
-              'German',
-              'Italian',
-              'Portuguese',
-              'Chinese',
-              'Japanese',
-              'Polish',
-              'Turkish',
-              'Russian',
-              'Dutch',
-              'Korean'
-            ].map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: FutureBuilder<String>(
-                  future:
-                      LocalizationService().fetchFromFirestore(value, value),
-                  builder: (context, snapshot) {
-                    return Text(
-                      snapshot.data ?? '',
-                    );
-                  },
+          child: Row(
+            children: [
+              DropdownButton<String>(
+                borderRadius: BorderRadius.circular(8),
+                dropdownColor: kAppBarColor,
+                value: selectedValue,
+                icon: const Icon(Icons.arrow_drop_down),
+                iconSize: 24,
+                elevation: 16,
+                style: const TextStyle(color: Colors.white, fontSize: 18),
+                underline: Container(
+                  height: 2,
+                  color: kAppBarColor, // No underline
                 ),
-              );
-            }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedValue = newValue!;
+                    // Update the Cubit with the new selected language
+                    if (widget.translation == 1) {
+                      context
+                          .read<GeminiApiCubit>()
+                          .updateLanguageFrom(selectedValue);
+                    } else if (widget.translation == 0) {
+                      context
+                          .read<GeminiApiCubit>()
+                          .updateLanguageTo(selectedValue);
+                      context
+                          .read<StudyWordsCubit>()
+                          .updateLanguageTo(selectedValue);
+                    } else {}
+                  });
+                },
+                items: <String>[
+                  'English',
+                  'Spanish',
+                  'French',
+                  'German',
+                  'Italian',
+                  'Portuguese',
+                  'Chinese',
+                  'Japanese',
+                  'Polish',
+                  'Turkish',
+                  'Russian',
+                  'Dutch',
+                  'Korean'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
         ),
       ],
